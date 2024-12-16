@@ -8,12 +8,20 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Logo and Hero Section */}
       <section className="hero-pattern py-20 px-4">
         <div className="container mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-display font-bold text-ceremonial-maroon mb-6">
+          <div className="mb-12">
+            <h1 className="text-4xl font-display font-bold text-ceremonial-gold mb-2">
+              Subhakaryam
+            </h1>
+            <p className="text-ceremonial-maroon text-sm font-medium">
+              Celebrating Sacred Traditions
+            </p>
+          </div>
+          <h2 className="text-5xl md:text-6xl font-display font-bold text-ceremonial-maroon mb-6">
             Sacred Ceremonies Made Simple
-          </h1>
+          </h2>
           <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
             Book all your ceremonial services in one place. From poojas to weddings, we've got you covered.
           </p>
