@@ -8,6 +8,25 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Navigation Buttons */}
+      <div className="absolute top-4 right-4 flex gap-4">
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
+            onClick={() => navigate("/login")}
+          >
+            Sign In
+          </Button>
+          <Button 
+            className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+            onClick={() => navigate("/register")}
+          >
+            Join Us
+          </Button>
+        </div>
+      </div>
+
       {/* Logo and Hero Section */}
       <section className="hero-pattern py-20 px-4">
         <div className="container mx-auto text-center">
@@ -25,12 +44,20 @@ const Index = () => {
           <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
             Book all your ceremonial services in one place. From poojas to weddings, we've got you covered.
           </p>
-          <Button 
-            className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg"
-            onClick={() => navigate("/book-event")}
-          >
-            Plan Your Ceremony
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Button 
+              className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white px-8 py-6 text-lg"
+              onClick={() => navigate("/register/provider")}
+            >
+              Join as Service Provider
+            </Button>
+            <Button 
+              className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg"
+              onClick={() => navigate("/register/guest")}
+            >
+              Book Services as Guest
+            </Button>
+          </div>
         </div>
       </section>
 
