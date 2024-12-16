@@ -68,29 +68,28 @@ const Index = () => {
             Our Services
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {serviceCategories.map((service) => (
-              <Card key={service.id} className="service-card">
-                <img
-                  src={service.icon}
-                  alt={service.name}
-                  className="w-16 h-16 mb-4"
-                />
-                <h3 className="text-xl font-display font-semibold mb-2 text-ceremonial-maroon">
-                  {service.name}
-                </h3>
-                <p className="text-gray-600 mb-4">{service.description}</p>
-                <p className="text-ceremonial-gold font-semibold">
-                  Starting from ₹{service.basePrice.toLocaleString()}
-                </p>
-                <Button 
-                  variant="outline" 
-                  className="mt-4 border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
-                  onClick={() => navigate(`/services/${service.id}`)}
-                >
-                  Learn More
-                </Button>
-              </Card>
-            ))}
+            {serviceCategories.map((service) => {
+              const IconComponent = service.icon;
+              return (
+                <Card key={service.id} className="service-card">
+                  <IconComponent className="w-12 h-12 mb-4 text-ceremonial-gold" />
+                  <h3 className="text-xl font-display font-semibold mb-2 text-ceremonial-maroon">
+                    {service.name}
+                  </h3>
+                  <p className="text-gray-600 mb-4">{service.description}</p>
+                  <p className="text-ceremonial-gold font-semibold">
+                    Starting from ₹{service.basePrice.toLocaleString()}
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    className="mt-4 border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
+                    onClick={() => navigate(`/services/${service.id}`)}
+                  >
+                    Learn More
+                  </Button>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 export type ServiceProvider = {
   id: string;
   name: string;
@@ -12,6 +14,6 @@ export type ServiceCategory = {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
   basePrice: number;
 };
