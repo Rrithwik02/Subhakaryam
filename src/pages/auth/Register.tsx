@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -10,7 +10,6 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual registration logic
     toast({
       title: "Coming Soon",
       description: "Registration functionality will be implemented soon.",
@@ -65,15 +64,27 @@ const Register = () => {
             Create Account
           </Button>
         </form>
-        <div className="text-center text-sm">
-          <span className="text-gray-600">Already have an account?</span>{" "}
-          <Button
-            variant="link"
-            className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 p-0"
-            onClick={() => navigate("/login")}
-          >
-            Sign in here
-          </Button>
+        <div className="text-center space-y-4">
+          <div>
+            <span className="text-gray-600">Are you a service provider?</span>{" "}
+            <Button
+              variant="link"
+              className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 p-0"
+              onClick={() => navigate("/register/service-provider")}
+            >
+              Register here
+            </Button>
+          </div>
+          <div>
+            <span className="text-gray-600">Already have an account?</span>{" "}
+            <Button
+              variant="link"
+              className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 p-0"
+              onClick={() => navigate("/login")}
+            >
+              Sign in here
+            </Button>
+          </div>
         </div>
       </Card>
     </div>
