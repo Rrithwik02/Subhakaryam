@@ -1,18 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { serviceCategories } from "@/data/services";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { BasicInformation } from "@/components/service-provider/BasicInformation";
+import { ServiceSelection } from "@/components/service-provider/ServiceSelection";
+import { ServiceAreas } from "@/components/service-provider/ServiceAreas";
 
 const ServiceProviderRegister = () => {
   const navigate = useNavigate();
@@ -51,10 +46,7 @@ const ServiceProviderRegister = () => {
               <label className="text-sm font-medium text-gray-700">
                 Languages Known
               </label>
-              <Input
-                placeholder="e.g., Sanskrit, Hindi, Tamil"
-                required
-              />
+              <Input placeholder="e.g., Sanskrit, Hindi, Tamil" required />
             </div>
           </>
         );
@@ -214,7 +206,7 @@ const ServiceProviderRegister = () => {
 
       default:
         return null;
-    }
+    };
   };
 
   return (
@@ -226,49 +218,15 @@ const ServiceProviderRegister = () => {
           </h1>
           <p className="text-gray-600">Join our network of trusted professionals</p>
         </div>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Basic Information */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Business Name
-              </label>
-              <Input required />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Owner's Full Name
-              </label>
-              <Input required />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Email</label>
-              <Input type="email" required />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Phone</label>
-              <Input type="tel" required />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Service Category
-              </label>
-              <Select onValueChange={setSelectedService}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your service category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {serviceCategories.map((service) => (
-                    <SelectItem key={service.id} value={service.id}>
-                      {service.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <BasicInformation className="space-y-4" />
+          
+          <ServiceSelection 
+            className="space-y-4" 
+            onServiceChange={setSelectedService} 
+          />
 
-          {/* Service Specific Fields */}
           {selectedService && (
             <div className="space-y-4 pt-4 border-t">
               <h2 className="text-xl font-display font-semibold text-ceremonial-maroon">
@@ -278,20 +236,13 @@ const ServiceProviderRegister = () => {
             </div>
           )}
 
-          {/* Common Additional Fields */}
           <div className="space-y-4 pt-4 border-t">
             <h2 className="text-xl font-display font-semibold text-ceremonial-maroon">
               Additional Information
             </h2>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Service Areas
-              </label>
-              <Input
-                placeholder="Cities/Areas where you provide services"
-                required
-              />
-            </div>
+            
+            <ServiceAreas className="space-y-4" />
+            
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
                 Base Price (₹)
@@ -316,6 +267,7 @@ const ServiceProviderRegister = () => {
             Register as Service Provider
           </Button>
         </form>
+        
         <div className="text-center text-sm">
           <span className="text-gray-600">Already have an account?</span>{" "}
           <Button
