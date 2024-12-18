@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { BasicInformation } from "@/components/service-provider/BasicInformation";
 import { ServiceSelection } from "@/components/service-provider/ServiceSelection";
 import { ServiceAreas } from "@/components/service-provider/ServiceAreas";
+import { ServiceDetails } from "@/components/service-provider/ServiceDetails";
 
 const ServiceProviderRegister = () => {
   const navigate = useNavigate();
@@ -20,193 +21,6 @@ const ServiceProviderRegister = () => {
       title: "Coming Soon",
       description: "Service provider registration will be implemented soon.",
     });
-  };
-
-  const renderServiceSpecificFields = () => {
-    switch (selectedService) {
-      case "poojari":
-        return (
-          <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Years of Experience
-              </label>
-              <Input type="number" required min="0" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Specializations
-              </label>
-              <Textarea
-                placeholder="List your specializations in different types of pujas and ceremonies"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Languages Known
-              </label>
-              <Input placeholder="e.g., Sanskrit, Hindi, Tamil" required />
-            </div>
-          </>
-        );
-
-      case "mehendi":
-        return (
-          <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Style Specialties
-              </label>
-              <Input
-                placeholder="e.g., Arabic, Indian, Indo-Arabic"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Maximum Designs Per Day
-              </label>
-              <Input type="number" required min="1" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Portfolio Link
-              </label>
-              <Input type="url" placeholder="Link to your work samples" />
-            </div>
-          </>
-        );
-
-      case "photo":
-        return (
-          <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Equipment Details
-              </label>
-              <Textarea
-                placeholder="List your camera equipment and accessories"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Photography Style
-              </label>
-              <Input
-                placeholder="e.g., Traditional, Contemporary, Candid"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Portfolio Website
-              </label>
-              <Input type="url" placeholder="Link to your portfolio" required />
-            </div>
-          </>
-        );
-
-      case "catering":
-        return (
-          <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Cuisine Specialties
-              </label>
-              <Textarea
-                placeholder="List the types of cuisines you specialize in"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Maximum Capacity
-              </label>
-              <Input
-                type="number"
-                placeholder="Maximum number of people you can serve"
-                required
-                min="1"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Food License Number
-              </label>
-              <Input required />
-            </div>
-          </>
-        );
-
-      case "music":
-        return (
-          <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Instruments
-              </label>
-              <Textarea
-                placeholder="List the instruments you/your team plays"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Group Size
-              </label>
-              <Input
-                type="number"
-                placeholder="Number of performers in your group"
-                required
-                min="1"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Sample Performance Link
-              </label>
-              <Input type="url" placeholder="Link to your performance video" />
-            </div>
-          </>
-        );
-
-      case "decoration":
-        return (
-          <>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Decoration Styles
-              </label>
-              <Textarea
-                placeholder="List your decoration specialties"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Maximum Event Size
-              </label>
-              <Input
-                type="number"
-                placeholder="Maximum venue size you can handle (in sq ft)"
-                required
-                min="1"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Portfolio Link
-              </label>
-              <Input type="url" placeholder="Link to your previous work" />
-            </div>
-          </>
-        );
-
-      default:
-        return null;
-    };
   };
 
   return (
@@ -228,12 +42,10 @@ const ServiceProviderRegister = () => {
           />
 
           {selectedService && (
-            <div className="space-y-4 pt-4 border-t">
-              <h2 className="text-xl font-display font-semibold text-ceremonial-maroon">
-                Service Details
-              </h2>
-              {renderServiceSpecificFields()}
-            </div>
+            <ServiceDetails 
+              selectedService={selectedService}
+              className="space-y-4 pt-4 border-t"
+            />
           )}
 
           <div className="space-y-4 pt-4 border-t">
