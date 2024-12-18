@@ -16,21 +16,21 @@ const Services = () => {
           {serviceCategories.map((service) => {
             const IconComponent = service.icon;
             return (
-              <Card key={service.id} className="service-card">
+              <Card key={service.id} className="p-6">
                 <IconComponent className="w-12 h-12 mb-4 text-ceremonial-gold" />
                 <h3 className="text-xl font-display font-semibold mb-2 text-ceremonial-maroon">
                   {service.name}
                 </h3>
                 <p className="text-gray-600 mb-4">{service.description}</p>
-                <p className="text-ceremonial-gold font-semibold">
+                <p className="text-ceremonial-gold font-semibold mb-4">
                   Starting from ₹{service.basePrice.toLocaleString()}
                 </p>
                 <Button 
                   variant="outline" 
-                  className="mt-4 border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
-                  onClick={() => navigate(`/services/${service.id}`)}
+                  className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
+                  onClick={() => navigate("/search")}
                 >
-                  Learn More
+                  Find Providers
                 </Button>
               </Card>
             );
