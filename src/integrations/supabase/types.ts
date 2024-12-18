@@ -9,7 +9,83 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_type: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+          user_type?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_type?: string | null
+        }
+        Relationships: []
+      }
+      service_providers: {
+        Row: {
+          base_price: number
+          business_name: string
+          city: string
+          created_at: string
+          description: string | null
+          id: string
+          is_premium: boolean | null
+          portfolio_link: string | null
+          profile_id: string | null
+          rating: number | null
+          service_type: string
+        }
+        Insert: {
+          base_price: number
+          business_name: string
+          city: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_premium?: boolean | null
+          portfolio_link?: string | null
+          profile_id?: string | null
+          rating?: number | null
+          service_type: string
+        }
+        Update: {
+          base_price?: number
+          business_name?: string
+          city?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_premium?: boolean | null
+          portfolio_link?: string | null
+          profile_id?: string | null
+          rating?: number | null
+          service_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_providers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
