@@ -11,13 +11,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Loader2, MapPin, IndianRupee, Star } from "lucide-react";
+import AdminDashboard from "@/components/admin/AdminDashboard";
 
 const Search = () => {
   const [city, setCity] = useState("");
   const [sortBy, setSortBy] = useState("price_asc");
   const { toast } = useToast();
+
+  const { data: userProfile } = useQuery({
+    queryKey: ["user-profile"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching user profile:", error);
+        return null;
+      }
+
+      return data;
+    },
+  });
 
   const { data: services, isLoading } = useQuery({
     queryKey: ["services", city, sortBy],
@@ -25,8 +47,14 @@ const Search = () => {
       let query = supabase
         .from("service_providers")
         .select("*")
-        .order(sortBy === "price_asc" ? "base_price" : sortBy === "price_desc" ? "base_price" : "rating", 
-          { ascending: sortBy === "price_asc" });
+        .order(
+          sortBy === "price_asc" 
+            ? "base_price" 
+            : sortBy === "price_desc" 
+              ? "base_price" 
+              : "rating", 
+          { ascending: sortBy === "price_asc" }
+        );
 
       if (city) {
         query = query.ilike("city", `%${city}%`);
@@ -47,6 +75,11 @@ const Search = () => {
     },
     enabled: true,
   });
+
+  // Show admin dashboard for admin users
+  if (userProfile?.user_type === "admin") {
+    return <AdminDashboard />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
