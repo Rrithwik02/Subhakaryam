@@ -1,20 +1,29 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Coming Soon",
-      description: "Registration functionality will be implemented soon.",
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_UP") {
+        toast({
+          title: "Welcome!",
+          description: "Your account has been created successfully.",
+        });
+        navigate("/");
+      }
     });
-  };
+
+    return () => subscription.unsubscribe();
+  }, [navigate, toast]);
 
   return (
     <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
@@ -23,68 +32,34 @@ const Register = () => {
           <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-2">
             Create Account
           </h1>
-          <p className="text-gray-600">Join our community today</p>
+          <p className="text-gray-600 mb-6">Join our community today</p>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-medium text-gray-700">
-              Full Name
-            </label>
-            <Input id="name" type="text" placeholder="Enter your name" required />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Create a password"
-              required
-            />
-          </div>
+        <Auth
+          supabaseClient={supabase}
+          appearance={{
+            theme: ThemeSupa,
+            variables: {
+              default: {
+                colors: {
+                  brand: '#B8860B',
+                  brandAccent: '#966F08',
+                }
+              }
+            }
+          }}
+          theme="light"
+          providers={[]}
+          view="sign_up"
+        />
+        <div className="text-center">
+          <span className="text-gray-600">Are you a service provider?</span>{" "}
           <Button
-            type="submit"
-            className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+            variant="link"
+            className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 p-0"
+            onClick={() => navigate("/register/service-provider")}
           >
-            Create Account
+            Register here
           </Button>
-        </form>
-        <div className="text-center space-y-4">
-          <div>
-            <span className="text-gray-600">Are you a service provider?</span>{" "}
-            <Button
-              variant="link"
-              className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 p-0"
-              onClick={() => navigate("/register/service-provider")}
-            >
-              Register here
-            </Button>
-          </div>
-          <div>
-            <span className="text-gray-600">Already have an account?</span>{" "}
-            <Button
-              variant="link"
-              className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 p-0"
-              onClick={() => navigate("/login")}
-            >
-              Sign in here
-            </Button>
-          </div>
         </div>
       </Card>
     </div>
