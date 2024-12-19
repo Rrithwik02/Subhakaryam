@@ -15,7 +15,7 @@ import { supabase } from "./integrations/supabase/client";
 const queryClient = new QueryClient();
 
 // Protected Route Component
-const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { session, isLoading } = useSessionContext();
 
   const checkIsAdmin = async () => {
@@ -46,7 +46,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-function App() {
+const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionContextProvider supabaseClient={supabase}>
@@ -71,6 +71,6 @@ function App() {
       </SessionContextProvider>
     </QueryClientProvider>
   );
-}
+};
 
 export default App;
