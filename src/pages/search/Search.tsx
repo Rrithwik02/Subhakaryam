@@ -20,7 +20,7 @@ const Search = () => {
   const [searchParams] = useSearchParams();
   const initialServiceType = searchParams.get("service");
   const [city, setCity] = useState("");
-  const [serviceType, setServiceType] = useState(initialServiceType?.toLowerCase() || "");
+  const [serviceType, setServiceType] = useState(initialServiceType?.toLowerCase() || "all");
   const [sortBy, setSortBy] = useState<"price_asc" | "price_desc" | "rating_desc">("rating_desc");
   const { toast } = useToast();
 
@@ -35,7 +35,7 @@ const Search = () => {
         query = query.ilike("city", `%${city}%`);
       }
 
-      if (serviceType) {
+      if (serviceType && serviceType !== "all") {
         query = query.ilike("service_type", `%${serviceType}%`);
       }
 
@@ -96,7 +96,7 @@ const Search = () => {
                     <SelectValue placeholder="Select service type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Services</SelectItem>
+                    <SelectItem value="all">All Services</SelectItem>
                     {serviceCategories.map((category) => (
                       <SelectItem key={category.id} value={category.name.toLowerCase()}>
                         {category.name}
