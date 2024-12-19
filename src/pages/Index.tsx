@@ -13,17 +13,39 @@ const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
+
+      if (session?.user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', session.user.id)
+          .single();
+        
+        setIsAdmin(data?.user_type === 'admin');
+      }
     };
 
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setIsAuthenticated(!!session);
+      if (session?.user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', session.user.id)
+          .single();
+        
+        setIsAdmin(data?.user_type === 'admin');
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -59,6 +81,15 @@ const Index = () => {
               >
                 Search Services
               </Button>
+              {isAdmin && (
+                <Button
+                  variant="outline"
+                  className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
+                  onClick={() => navigate("/admin")}
+                >
+                  Admin Dashboard
+                </Button>
+              )}
               <Button
                 className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
                 onClick={handleSignOut}
