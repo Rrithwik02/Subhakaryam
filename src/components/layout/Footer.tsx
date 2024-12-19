@@ -1,4 +1,11 @@
 const Footer = () => {
+  const scrollToServices = () => {
+    const servicesSection = document.getElementById('services-section');
+    if (servicesSection) {
+      servicesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="bg-ceremonial-maroon text-white py-12 px-4">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -22,6 +29,14 @@ const Footer = () => {
             <li><a href="/services/poojari" className="hover:text-ceremonial-gold transition-colors">Poojari Services</a></li>
             <li><a href="/services/mehendi" className="hover:text-ceremonial-gold transition-colors">Mehendi & Makeup</a></li>
             <li><a href="/services/catering" className="hover:text-ceremonial-gold transition-colors">Catering</a></li>
+            <li>
+              <button 
+                onClick={scrollToServices}
+                className="text-ceremonial-gold hover:text-ceremonial-gold/80 transition-colors cursor-pointer"
+              >
+                Read More Services →
+              </button>
+            </li>
           </ul>
         </div>
         <div>
