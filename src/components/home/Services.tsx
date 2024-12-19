@@ -6,6 +6,10 @@ import { useNavigate } from "react-router-dom";
 const Services = () => {
   const navigate = useNavigate();
 
+  const handleFindProviders = (serviceType: string) => {
+    navigate(`/search?service=${encodeURIComponent(serviceType.toLowerCase())}`);
+  };
+
   return (
     <section className="py-16 px-4 bg-white">
       <div className="container mx-auto">
@@ -28,7 +32,7 @@ const Services = () => {
                 <Button 
                   variant="outline" 
                   className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
-                  onClick={() => navigate("/search")}
+                  onClick={() => handleFindProviders(service.name)}
                 >
                   Find Providers
                 </Button>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSearchParams } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -15,12 +16,14 @@ import { Card } from "@/components/ui/card";
 import { Loader2, Star } from "lucide-react";
 
 const Search = () => {
+  const [searchParams] = useSearchParams();
+  const initialServiceType = searchParams.get("service");
   const [city, setCity] = useState("");
   const [sortBy, setSortBy] = useState<"price_asc" | "price_desc" | "rating_desc">("rating_desc");
   const { toast } = useToast();
 
   const { data: services, isLoading } = useQuery({
-    queryKey: ["services", city, sortBy],
+    queryKey: ["services", city, sortBy, initialServiceType],
     queryFn: async () => {
       let query = supabase
         .from("service_providers")
@@ -28,6 +31,10 @@ const Search = () => {
 
       if (city) {
         query = query.ilike("city", `%${city}%`);
+      }
+
+      if (initialServiceType) {
+        query = query.ilike("service_type", `%${initialServiceType}%`);
       }
 
       switch (sortBy) {
@@ -61,6 +68,11 @@ const Search = () => {
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-8">
         Find Services
+        {initialServiceType && (
+          <span className="text-lg font-normal ml-2">
+            - {initialServiceType}
+          </span>
+        )}
       </h1>
 
       <div className="flex flex-col md:flex-row gap-4 mb-8">
