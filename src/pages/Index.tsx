@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Shield } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -70,13 +71,13 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {/* Navigation Buttons */}
-      <div className="absolute top-4 right-4 flex gap-4">
+      <div className="absolute top-4 right-4 flex gap-4 z-50">
         <div className="flex gap-2">
           {isAuthenticated ? (
             <>
               <Button
                 variant="outline"
-                className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
+                className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
                 onClick={() => navigate("/search")}
               >
                 Search Services
@@ -84,14 +85,15 @@ const Index = () => {
               {isAdmin && (
                 <Button
                   variant="outline"
-                  className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
+                  className="border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
                   onClick={() => navigate("/admin")}
                 >
+                  <Shield className="w-4 h-4" />
                   Admin Dashboard
                 </Button>
               )}
               <Button
-                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
                 onClick={handleSignOut}
               >
                 Sign Out
@@ -101,13 +103,13 @@ const Index = () => {
             <>
               <Button
                 variant="outline"
-                className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
+                className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
                 onClick={() => navigate("/login")}
               >
                 Sign In
               </Button>
               <Button
-                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
                 onClick={() => navigate("/register")}
               >
                 Join Us
