@@ -10,6 +10,7 @@ import Search from "./pages/search/Search";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import { Toaster } from "./components/ui/toaster";
 import { supabase } from "./integrations/supabase/client";
+import { useToast } from "./hooks/use-toast";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -17,28 +18,56 @@ const queryClient = new QueryClient();
 // Protected Route Component
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { session, isLoading } = useSessionContext();
-
-  const checkIsAdmin = async () => {
-    if (!session?.user) return false;
-    
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('user_type')
-      .eq('id', session.user.id)
-      .single();
-    
-    if (error || !data) return false;
-    return data.user_type === 'admin';
-  };
-
-  const [isAdmin, setIsAdmin] = React.useState(false);
+  const { toast } = useToast();
+  const [isAdmin, setIsAdmin] = React.useState<boolean | null>(null);
 
   React.useEffect(() => {
-    checkIsAdmin().then(setIsAdmin);
-  }, [session]);
+    const checkIsAdmin = async () => {
+      if (!session?.user) {
+        setIsAdmin(false);
+        return;
+      }
+      
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        
+        if (error) throw error;
+        
+        const isUserAdmin = data?.user_type === 'admin';
+        setIsAdmin(isUserAdmin);
+        
+        if (!isUserAdmin) {
+          toast({
+            variant: "destructive",
+            title: "Access Denied",
+            description: "You don't have admin privileges.",
+          });
+        }
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      }
+    };
 
-  if (isLoading) return null;
+    if (!isLoading) {
+      checkIsAdmin();
+    }
+  }, [session, isLoading, toast]);
 
+  // Show loading state while checking admin status
+  if (isLoading || isAdmin === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+      </div>
+    );
+  }
+
+  // Redirect non-admin users to login
   if (!session || !isAdmin) {
     return <Navigate to="/login" replace />;
   }
