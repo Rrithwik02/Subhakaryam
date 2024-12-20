@@ -47,7 +47,8 @@ const Login = () => {
             }
           }}
           theme="light"
-          providers={[]}
+          providers={["google"]}
+          redirectTo={`${window.location.origin}/`}
         />
       </Card>
     </div>
