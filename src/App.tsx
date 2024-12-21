@@ -11,6 +11,7 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import { Toaster } from "./components/ui/toaster";
 import { supabase } from "./integrations/supabase/client";
 import { useToast } from "./hooks/use-toast";
+import BackButton from "./components/layout/BackButton";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -80,6 +81,7 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <SessionContextProvider supabaseClient={supabase}>
         <Router>
+          <BackButton />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
