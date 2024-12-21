@@ -48,7 +48,7 @@ const Register = () => {
             }
           }}
           theme="light"
-          providers={["google"]}
+          providers={[]}
           view="sign_up"
           redirectTo={`${window.location.origin}/`}
         />
