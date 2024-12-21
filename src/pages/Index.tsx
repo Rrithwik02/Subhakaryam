@@ -9,61 +9,54 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Shield } from "lucide-react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { session } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-
+    const checkAdminStatus = async () => {
       if (session?.user) {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('profiles')
           .select('user_type')
           .eq('id', session.user.id)
           .single();
+        
+        if (error) {
+          console.error('Error checking admin status:', error);
+          return;
+        }
         
         setIsAdmin(data?.user_type === 'admin');
       }
     };
 
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setIsAuthenticated(!!session);
-      if (session?.user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('user_type')
-          .eq('id', session.user.id)
-          .single();
-        
-        setIsAdmin(data?.user_type === 'admin');
-      } else {
-        setIsAdmin(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    checkAdminStatus();
+  }, [session]);
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+      
+      // Force navigation to home and reload to clear any cached states
+      navigate("/");
+      window.location.reload();
+    } catch (error) {
+      console.error('Error signing out:', error);
       toast({
         variant: "destructive",
         title: "Error",
         description: "Failed to sign out. Please try again.",
-      });
-    } else {
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
       });
     }
   };
@@ -73,7 +66,7 @@ const Index = () => {
       {/* Navigation Buttons */}
       <div className="absolute top-4 right-4 flex gap-4 z-50">
         <div className="flex gap-2">
-          {isAuthenticated ? (
+          {session ? (
             <>
               <Button
                 variant="outline"

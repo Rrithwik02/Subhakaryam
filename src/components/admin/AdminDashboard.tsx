@@ -7,8 +7,61 @@ import {
 } from "@/components/ui/tabs";
 import ServiceProvidersTable from "./ServiceProvidersTable";
 import UsersTable from "./UsersTable";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const { session } = useSessionContext();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAdminAccess = async () => {
+      if (!session?.user) {
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (error) throw error;
+        
+        if (data?.user_type !== 'admin') {
+          toast({
+            variant: "destructive",
+            title: "Access Denied",
+            description: "You don't have admin privileges.",
+          });
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        navigate('/');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAdminAccess();
+  }, [session, navigate, toast]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
       <div className="max-w-7xl mx-auto space-y-8">
