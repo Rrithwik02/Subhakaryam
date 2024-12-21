@@ -68,7 +68,8 @@ const Search = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto py-8 px-4">
+      {/* Add pt-16 to create space for the fixed back button */}
+      <div className="container mx-auto py-8 px-4 pt-16">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl font-display font-bold text-ceremonial-maroon mb-2">
             Find Services
