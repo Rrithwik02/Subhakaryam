@@ -96,7 +96,7 @@ const ServiceDashboard = () => {
                         request.status === "pending"
                           ? "default"
                           : request.status === "accepted"
-                          ? "success"
+                          ? "secondary"
                           : "destructive"
                       }
                     >

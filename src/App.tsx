@@ -15,8 +15,15 @@ import BackButton from "./components/layout/BackButton";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminRoute from "./components/auth/AdminRoute";
 
-// Create a client
-const queryClient = new QueryClient();
+// Create a client and configure it
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App: React.FC = () => {
   return (
