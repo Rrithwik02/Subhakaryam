@@ -13,7 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Loader2, Star, MapPin, IndianRupee, Crown, Search as SearchIcon } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Loader2, Star, MapPin, IndianRupee, Crown, Search as SearchIcon, AlertCircle } from "lucide-react";
 import { serviceCategories } from "@/data/services";
 
 const Search = () => {
@@ -24,51 +25,74 @@ const Search = () => {
   const [sortBy, setSortBy] = useState<"price_asc" | "price_desc" | "rating_desc">("rating_desc");
   const { toast } = useToast();
 
-  const { data: services, isLoading } = useQuery({
+  const { data: services, isLoading, error, refetch } = useQuery({
     queryKey: ["services", city, sortBy, serviceType],
     queryFn: async () => {
-      let query = supabase
-        .from("service_providers")
-        .select("*, profiles(full_name)");
+      try {
+        let query = supabase
+          .from("service_providers")
+          .select("*, profiles(full_name)");
 
-      if (city) {
-        query = query.ilike("city", `%${city}%`);
+        if (city) {
+          query = query.ilike("city", `%${city}%`);
+        }
+
+        if (serviceType && serviceType !== "all") {
+          query = query.ilike("service_type", `%${serviceType}%`);
+        }
+
+        switch (sortBy) {
+          case "price_asc":
+            query = query.order("base_price", { ascending: true });
+            break;
+          case "price_desc":
+            query = query.order("base_price", { ascending: false });
+            break;
+          case "rating_desc":
+            query = query.order("rating", { ascending: false });
+            break;
+        }
+
+        const { data, error: supabaseError } = await query;
+
+        if (supabaseError) {
+          throw new Error(supabaseError.message);
+        }
+
+        return data;
+      } catch (err) {
+        console.error("Error fetching services:", err);
+        throw err;
       }
-
-      if (serviceType && serviceType !== "all") {
-        query = query.ilike("service_type", `%${serviceType}%`);
-      }
-
-      switch (sortBy) {
-        case "price_asc":
-          query = query.order("base_price", { ascending: true });
-          break;
-        case "price_desc":
-          query = query.order("base_price", { ascending: false });
-          break;
-        case "rating_desc":
-          query = query.order("rating", { ascending: false });
-          break;
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to fetch services",
-        });
-        return [];
-      }
-
-      return data;
     },
+    retry: 1,
   });
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16">
+        <div className="container mx-auto px-4 py-8">
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              Failed to load services. Please try again later.
+              <Button 
+                variant="outline" 
+                className="mt-2"
+                onClick={() => refetch()}
+              >
+                Retry
+              </Button>
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Add pt-16 to create space for the fixed back button */}
       <div className="container mx-auto py-8 px-4 pt-16">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl font-display font-bold text-ceremonial-maroon mb-2">
@@ -126,7 +150,7 @@ const Search = () => {
               <Loader2 className="h-8 w-8 animate-spin text-ceremonial-gold" />
             </div>
           ) : services?.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-12 bg-white rounded-lg shadow-sm">
               <h3 className="text-xl font-semibold text-gray-700 mb-2">No services found</h3>
               <p className="text-gray-500">Try adjusting your search criteria</p>
             </div>
