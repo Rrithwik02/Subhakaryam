@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import { Inbox } from "lucide-react"; // Import the Inbox icon for empty state
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
@@ -63,6 +64,16 @@ const ServiceDashboard = () => {
     );
   }
 
+  const EmptyState = () => (
+    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+      <Inbox className="h-16 w-16 mb-4" />
+      <h3 className="text-lg font-semibold mb-2">No Service Requests Yet</h3>
+      <p className="text-sm text-center max-w-md">
+        When customers request your services, they will appear here. Make sure your profile is complete to attract more customers.
+      </p>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -71,61 +82,58 @@ const ServiceDashboard = () => {
         </h2>
         
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Client Name</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Service Type</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Requested On</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {requests?.map((request) => (
-                <TableRow key={request.id}>
-                  <TableCell>{request.profiles?.full_name}</TableCell>
-                  <TableCell>{request.profiles?.email}</TableCell>
-                  <TableCell className="capitalize">{request.service_type}</TableCell>
-                  <TableCell>{request.description}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        request.status === "pending"
-                          ? "default"
-                          : request.status === "accepted"
-                          ? "secondary"
-                          : "destructive"
-                      }
-                    >
-                      {request.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(request.created_at), "PPp")}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                    >
-                      View Details
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {requests?.length === 0 && (
+          {requests && requests.length > 0 ? (
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
-                    No service requests yet
-                  </TableCell>
+                  <TableHead>Client Name</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Service Type</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Requested On</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {requests.map((request) => (
+                  <TableRow key={request.id}>
+                    <TableCell>{request.profiles?.full_name}</TableCell>
+                    <TableCell>{request.profiles?.email}</TableCell>
+                    <TableCell className="capitalize">{request.service_type}</TableCell>
+                    <TableCell>{request.description}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          request.status === "pending"
+                            ? "default"
+                            : request.status === "accepted"
+                            ? "secondary"
+                            : "destructive"
+                        }
+                      >
+                        {request.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {format(new Date(request.created_at), "PPp")}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="hover:bg-ceremonial-gold hover:text-white transition-colors"
+                      >
+                        View Details
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <EmptyState />
+          )}
         </div>
       </div>
     </div>
