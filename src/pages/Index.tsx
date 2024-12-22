@@ -8,34 +8,52 @@ import Footer from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Shield } from "lucide-react";
+import { Shield, UserCog } from "lucide-react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
+import SuggestionForm from "@/components/suggestions/SuggestionForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { session } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isServiceProvider, setIsServiceProvider] = useState(false);
 
   useEffect(() => {
-    const checkAdminStatus = async () => {
+    const checkUserStatus = async () => {
       if (session?.user) {
-        const { data, error } = await supabase
+        // Check admin status
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('user_type')
           .eq('id', session.user.id)
           .single();
         
-        if (error) {
-          console.error('Error checking admin status:', error);
+        if (profileError) {
+          console.error('Error checking user status:', profileError);
           return;
         }
         
-        setIsAdmin(data?.user_type === 'admin');
+        setIsAdmin(profileData?.user_type === 'admin');
+
+        // Check service provider status
+        const { data: providerData, error: providerError } = await supabase
+          .from('service_providers')
+          .select('id')
+          .eq('profile_id', session.user.id)
+          .maybeSingle();
+        
+        if (providerError) {
+          console.error('Error checking provider status:', providerError);
+          return;
+        }
+        
+        setIsServiceProvider(!!providerData);
       }
     };
 
-    checkAdminStatus();
+    checkUserStatus();
   }, [session]);
 
   const handleSignOut = async () => {
@@ -48,7 +66,6 @@ const Index = () => {
         description: "You have been successfully signed out.",
       });
       
-      // Force navigation to home and reload to clear any cached states
       navigate("/");
       window.location.reload();
     } catch (error) {
@@ -63,7 +80,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Navigation Buttons */}
       <div className="absolute top-4 right-4 flex gap-4 z-50">
         <div className="flex gap-2">
           {session ? (
@@ -75,6 +91,18 @@ const Index = () => {
               >
                 Search Services
               </Button>
+              
+              {isServiceProvider && (
+                <Button
+                  variant="outline"
+                  className="border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  <UserCog className="w-4 h-4" />
+                  Provider Dashboard
+                </Button>
+              )}
+              
               {isAdmin && (
                 <Button
                   variant="outline"
@@ -85,6 +113,7 @@ const Index = () => {
                   Admin Dashboard
                 </Button>
               )}
+              
               <Button
                 className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
                 onClick={handleSignOut}
@@ -116,6 +145,27 @@ const Index = () => {
       <Services />
       <HowItWorks />
       <Testimonials />
+      
+      {session && (
+        <div className="max-w-md mx-auto px-4 py-12">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+              >
+                Suggest a Service
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Suggest a Service</DialogTitle>
+              </DialogHeader>
+              <SuggestionForm />
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
+      
       <Footer />
     </div>
   );

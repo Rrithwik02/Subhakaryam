@@ -8,6 +8,7 @@ import Register from "./pages/auth/Register";
 import ServiceProviderRegister from "./pages/auth/ServiceProviderRegister";
 import Search from "./pages/search/Search";
 import AdminDashboard from "./components/admin/AdminDashboard";
+import ServiceDashboard from "./components/service-provider/ServiceDashboard";
 import { Toaster } from "./components/ui/toaster";
 import { supabase } from "./integrations/supabase/client";
 import BackButton from "./components/layout/BackButton";
@@ -40,6 +41,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Search />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <ServiceDashboard />
                 </ProtectedRoute>
               } 
             />
