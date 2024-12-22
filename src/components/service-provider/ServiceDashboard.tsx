@@ -13,21 +13,39 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Inbox } from "lucide-react"; // Import the Inbox icon for empty state
+import { Inbox } from "lucide-react";
+import AvailabilityCalendar from "./AvailabilityCalendar";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
 
-  const { data: requests, isLoading } = useQuery({
-    queryKey: ["service-requests"],
+  const { data: provider } = useQuery({
+    queryKey: ["service-provider"],
     queryFn: async () => {
-      const { data: provider } = await supabase
+      const { data, error } = await supabase
         .from("service_providers")
         .select("id")
         .eq("profile_id", session?.user?.id)
         .single();
 
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch provider information",
+        });
+        return null;
+      }
+
+      return data;
+    },
+    enabled: !!session?.user,
+  });
+
+  const { data: requests, isLoading } = useQuery({
+    queryKey: ["service-requests"],
+    queryFn: async () => {
       if (!provider) return [];
 
       const { data, error } = await supabase
@@ -53,7 +71,7 @@ const ServiceDashboard = () => {
 
       return data;
     },
-    enabled: !!session?.user,
+    enabled: !!provider,
   });
 
   if (isLoading) {
@@ -77,63 +95,71 @@ const ServiceDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        <h2 className="text-3xl font-display font-bold text-ceremonial-maroon">
-          Service Requests
-        </h2>
-        
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          {requests && requests.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Client Name</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Service Type</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Requested On</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {requests.map((request) => (
-                  <TableRow key={request.id}>
-                    <TableCell>{request.profiles?.full_name}</TableCell>
-                    <TableCell>{request.profiles?.email}</TableCell>
-                    <TableCell className="capitalize">{request.service_type}</TableCell>
-                    <TableCell>{request.description}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          request.status === "pending"
-                            ? "default"
-                            : request.status === "accepted"
-                            ? "secondary"
-                            : "destructive"
-                        }
-                      >
-                        {request.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {format(new Date(request.created_at), "PPp")}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                      >
-                        View Details
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <EmptyState />
-          )}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="md:col-span-2">
+            <h2 className="text-3xl font-display font-bold text-ceremonial-maroon mb-6">
+              Service Requests
+            </h2>
+            
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              {requests && requests.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Client Name</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>Service Type</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Requested On</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {requests.map((request) => (
+                      <TableRow key={request.id}>
+                        <TableCell>{request.profiles?.full_name}</TableCell>
+                        <TableCell>{request.profiles?.email}</TableCell>
+                        <TableCell className="capitalize">{request.service_type}</TableCell>
+                        <TableCell>{request.description}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              request.status === "pending"
+                                ? "default"
+                                : request.status === "accepted"
+                                ? "secondary"
+                                : "destructive"
+                            }
+                          >
+                            {request.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(request.created_at), "PPp")}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="hover:bg-ceremonial-gold hover:text-white transition-colors"
+                          >
+                            View Details
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <EmptyState />
+              )}
+            </div>
+          </div>
+          
+          <div>
+            {provider && <AvailabilityCalendar providerId={provider.id} />}
+          </div>
         </div>
       </div>
     </div>
