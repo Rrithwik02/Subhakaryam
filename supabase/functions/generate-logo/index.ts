@@ -8,11 +8,19 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
+    if (!RUNWARE_API_KEY) {
+      console.error('RUNWARE_API_KEY is not set');
+      throw new Error('API key not configured');
+    }
+
+    console.log('Generating logo with Runware API');
+    
     const response = await fetch('https://api.runware.ai/v1', {
       method: 'POST',
       headers: {
@@ -40,6 +48,7 @@ serve(async (req) => {
     })
 
     const data = await response.json()
+    console.log('Runware API response:', data);
     
     return new Response(
       JSON.stringify(data),
@@ -51,6 +60,7 @@ serve(async (req) => {
       }
     )
   } catch (error) {
+    console.error('Error in generate-logo function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
