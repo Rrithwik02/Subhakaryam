@@ -15,11 +15,11 @@ serve(async (req) => {
 
   try {
     if (!RUNWARE_API_KEY) {
-      console.error('RUNWARE_API_KEY is not set');
-      throw new Error('API key not configured');
+      console.error('RUNWARE_API_KEY is not set in Edge Function secrets');
+      throw new Error('API key not configured. Please add RUNWARE_API_KEY to Edge Function secrets.');
     }
 
-    console.log('Generating logo with Runware API');
+    console.log('Starting logo generation with Runware API');
     
     const response = await fetch('https://api.runware.ai/v1', {
       method: 'POST',
@@ -47,8 +47,19 @@ serve(async (req) => {
       ])
     })
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Runware API error response:', errorText);
+      throw new Error(`Runware API returned status ${response.status}: ${errorText}`);
+    }
+
     const data = await response.json()
     console.log('Runware API response:', data);
+    
+    if (!data.data || !Array.isArray(data.data) || data.data.length < 2) {
+      console.error('Unexpected Runware API response format:', data);
+      throw new Error('Invalid response format from Runware API');
+    }
     
     return new Response(
       JSON.stringify(data),
@@ -62,7 +73,10 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in generate-logo function:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.stack 
+      }),
       { 
         headers: { 
           ...corsHeaders, 
