@@ -10,14 +10,18 @@ const BackButton = () => {
   if (location.pathname === "/") return null;
 
   return (
-    <Button
-      variant="ghost"
-      className="fixed top-4 left-4 z-50 bg-white/30 backdrop-blur-md hover:bg-white/50"
-      onClick={() => navigate(-1)}
-    >
-      <ArrowLeft className="w-4 h-4 mr-2" />
-      Back
-    </Button>
+    <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b">
+      <div className="container mx-auto px-4">
+        <Button
+          variant="ghost"
+          className="my-2"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Button>
+      </div>
+    </div>
   );
 };
 
