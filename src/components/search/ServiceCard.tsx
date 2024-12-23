@@ -2,9 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Crown, MapPin, IndianRupee, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import ReviewForm from "@/components/reviews/ReviewForm";
 
 interface ServiceCardProps {
   service: {
+    id: string;
     business_name: string;
     profiles?: {
       full_name: string;
@@ -18,6 +21,7 @@ interface ServiceCardProps {
 
 const ServiceCard = ({ service }: ServiceCardProps) => {
   const { toast } = useToast();
+  const [showReviewForm, setShowReviewForm] = useState(false);
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -47,23 +51,43 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
               {service.base_price.toLocaleString()}
             </span>
           </div>
-          <div className="flex items-center">
-            <Star className="h-4 w-4 text-yellow-400 fill-current mr-1" />
-            <span className="font-medium">{service.rating || "New"}</span>
+          <div className="flex items-center gap-1">
+            <Star className="h-4 w-4 text-yellow-400 fill-current" />
+            <span className="font-medium">
+              {service.rating ? service.rating.toFixed(1) : "New"}
+            </span>
           </div>
         </div>
 
-        <Button 
-          className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
-          onClick={() => {
-            toast({
-              title: "Coming Soon",
-              description: "Booking functionality will be available soon!",
-            });
-          }}
-        >
-          Book Now
-        </Button>
+        <div className="space-y-2">
+          <Button 
+            className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+            onClick={() => {
+              toast({
+                title: "Coming Soon",
+                description: "Booking functionality will be available soon!",
+              });
+            }}
+          >
+            Book Now
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => setShowReviewForm(!showReviewForm)}
+          >
+            Write a Review
+          </Button>
+        </div>
+
+        {showReviewForm && (
+          <div className="mt-4 pt-4 border-t">
+            <ReviewForm
+              providerId={service.id}
+              onSuccess={() => setShowReviewForm(false)}
+            />
+          </div>
+        )}
       </div>
     </Card>
   );

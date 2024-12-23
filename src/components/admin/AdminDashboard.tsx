@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/tabs";
 import ServiceProvidersTable from "./ServiceProvidersTable";
 import UsersTable from "./UsersTable";
+import ReviewsTable from "./ReviewsTable";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -86,6 +87,12 @@ const AdminDashboard = () => {
             >
               User Management
             </TabsTrigger>
+            <TabsTrigger 
+              value="reviews"
+              className="data-[state=active]:bg-ceremonial-gold data-[state=active]:text-white"
+            >
+              Reviews
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="services" className="space-y-4">
@@ -100,6 +107,13 @@ const AdminDashboard = () => {
               User Management
             </h3>
             <UsersTable />
+          </TabsContent>
+
+          <TabsContent value="reviews" className="space-y-4">
+            <h3 className="text-xl font-semibold text-ceremonial-maroon">
+              Review Management
+            </h3>
+            <ReviewsTable />
           </TabsContent>
         </Tabs>
       </div>
