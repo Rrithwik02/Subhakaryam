@@ -139,7 +139,7 @@ const ReviewsTable = () => {
                   <Badge
                     variant={
                       review.status === "approved"
-                        ? "success"
+                        ? "secondary"
                         : review.status === "rejected"
                         ? "destructive"
                         : "default"
