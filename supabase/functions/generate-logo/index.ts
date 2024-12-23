@@ -56,13 +56,24 @@ serve(async (req) => {
     const data = await response.json()
     console.log('Runware API response:', data);
     
-    if (!data.data || !Array.isArray(data.data) || data.data.length < 2) {
-      console.error('Unexpected Runware API response format:', data);
+    // Check if data exists and has the expected structure
+    if (!data || !Array.isArray(data)) {
+      console.error('Unexpected Runware API response format (not an array):', data);
       throw new Error('Invalid response format from Runware API');
+    }
+
+    // Find the image inference result
+    const imageResult = data.find(item => 
+      item.taskType === "imageInference" && item.imageURL
+    );
+
+    if (!imageResult) {
+      console.error('No valid image result found in response:', data);
+      throw new Error('No valid image generated');
     }
     
     return new Response(
-      JSON.stringify(data),
+      JSON.stringify({ data: [imageResult] }),
       { 
         headers: { 
           ...corsHeaders, 
