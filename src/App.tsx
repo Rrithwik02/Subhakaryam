@@ -17,8 +17,9 @@ import AdminRoute from "./components/auth/AdminRoute";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import Navbar from "./components/layout/Navbar";
+import UserProfile from "./pages/profile/UserProfile";
+import ServiceProviderProfile from "./pages/profile/ServiceProviderProfile";
 
-// Create a client and configure it
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -41,6 +42,22 @@ const App: React.FC = () => {
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <UserProfile />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/provider/profile" 
+              element={
+                <ProtectedRoute>
+                  <ServiceProviderProfile />
+                </ProtectedRoute>
+              } 
+            />
             <Route 
               path="/register/service-provider" 
               element={
