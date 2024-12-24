@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Crown, MapPin, IndianRupee, Star } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import ReviewForm from "@/components/reviews/ReviewForm";
+import BookingDialog from "@/components/bookings/BookingDialog";
 
 interface ServiceCardProps {
   service: {
@@ -20,8 +20,8 @@ interface ServiceCardProps {
 }
 
 const ServiceCard = ({ service }: ServiceCardProps) => {
-  const { toast } = useToast();
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [showBookingDialog, setShowBookingDialog] = useState(false);
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -62,12 +62,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
         <div className="space-y-2">
           <Button 
             className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
-            onClick={() => {
-              toast({
-                title: "Coming Soon",
-                description: "Booking functionality will be available soon!",
-              });
-            }}
+            onClick={() => setShowBookingDialog(true)}
           >
             Book Now
           </Button>
@@ -88,6 +83,12 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
             />
           </div>
         )}
+
+        <BookingDialog
+          isOpen={showBookingDialog}
+          onClose={() => setShowBookingDialog(false)}
+          provider={service}
+        />
       </div>
     </Card>
   );
