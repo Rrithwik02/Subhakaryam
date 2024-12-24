@@ -14,6 +14,8 @@ import { supabase } from "./integrations/supabase/client";
 import BackButton from "./components/layout/BackButton";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminRoute from "./components/auth/AdminRoute";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
 
 // Create a client and configure it
 const queryClient = new QueryClient({
@@ -33,6 +35,8 @@ const App: React.FC = () => {
           <BackButton />
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/contact" element={<ContactUs />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route 
