@@ -3,6 +3,9 @@ const Footer = () => {
     const servicesSection = document.getElementById('services-section');
     if (servicesSection) {
       servicesSection.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // If we're not on the home page, redirect to home page services section
+      window.location.href = '/#services-section';
     }
   };
 
@@ -19,16 +22,44 @@ const Footer = () => {
           <h4 className="font-semibold mb-4">Quick Links</h4>
           <ul className="space-y-2">
             <li><a href="/about" className="hover:text-ceremonial-gold transition-colors">About Us</a></li>
-            <li><a href="/services" className="hover:text-ceremonial-gold transition-colors">Services</a></li>
+            <li>
+              <button 
+                onClick={scrollToServices}
+                className="hover:text-ceremonial-gold transition-colors text-white"
+              >
+                Services
+              </button>
+            </li>
             <li><a href="/contact" className="hover:text-ceremonial-gold transition-colors">Contact</a></li>
           </ul>
         </div>
         <div>
           <h4 className="font-semibold mb-4">Services</h4>
           <ul className="space-y-2">
-            <li><a href="/services/poojari" className="hover:text-ceremonial-gold transition-colors">Poojari Services</a></li>
-            <li><a href="/services/mehendi" className="hover:text-ceremonial-gold transition-colors">Mehendi & Makeup</a></li>
-            <li><a href="/services/catering" className="hover:text-ceremonial-gold transition-colors">Catering</a></li>
+            <li>
+              <button 
+                onClick={scrollToServices}
+                className="text-white hover:text-ceremonial-gold transition-colors cursor-pointer"
+              >
+                Poojari Services
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={scrollToServices}
+                className="text-white hover:text-ceremonial-gold transition-colors cursor-pointer"
+              >
+                Mehendi & Makeup
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={scrollToServices}
+                className="text-white hover:text-ceremonial-gold transition-colors cursor-pointer"
+              >
+                Catering
+              </button>
+            </li>
             <li>
               <button 
                 onClick={scrollToServices}
