@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminRoute from "./components/auth/AdminRoute";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
+import Navbar from "./components/layout/Navbar";
 
 // Create a client and configure it
 const queryClient = new QueryClient({
@@ -32,6 +33,7 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <SessionContextProvider supabaseClient={supabase}>
         <Router>
+          <Navbar />
           <BackButton />
           <Routes>
             <Route path="/" element={<Index />} />

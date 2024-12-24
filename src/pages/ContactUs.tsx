@@ -34,7 +34,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pt-20">
       <div className="container mx-auto px-4 py-16">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-center text-ceremonial-maroon mb-8">
           Contact Us

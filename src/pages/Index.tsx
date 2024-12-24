@@ -79,8 +79,8 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen">
-      <div className="absolute top-4 right-4 flex gap-4 z-50">
+    <div className="min-h-screen pt-16">
+      <div className="absolute top-20 right-4 flex gap-4 z-50">
         <div className="flex gap-2">
           {session ? (
             <>
