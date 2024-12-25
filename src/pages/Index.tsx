@@ -8,10 +8,11 @@ import Footer from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, UserCog } from "lucide-react";
+import { Shield, UserCog, Plus } from "lucide-react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import SuggestionForm from "@/components/suggestions/SuggestionForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Index = () => {
   const { session } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isServiceProvider, setIsServiceProvider] = useState(false);
+  const [serviceProviderId, setServiceProviderId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -50,6 +52,9 @@ const Index = () => {
         }
         
         setIsServiceProvider(!!providerData);
+        if (providerData) {
+          setServiceProviderId(providerData.id);
+        }
       }
     };
 
@@ -93,14 +98,35 @@ const Index = () => {
               </Button>
               
               {isServiceProvider && (
-                <Button
-                  variant="outline"
-                  className="border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  <UserCog className="w-4 h-4" />
-                  Provider Dashboard
-                </Button>
+                <>
+                  <Button
+                    variant="outline"
+                    className="border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    <UserCog className="w-4 h-4" />
+                    Provider Dashboard
+                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Extra Service
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Add Additional Service</DialogTitle>
+                      </DialogHeader>
+                      {serviceProviderId && (
+                        <AdditionalServiceForm providerId={serviceProviderId} />
+                      )}
+                    </DialogContent>
+                  </Dialog>
+                </>
               )}
               
               {isAdmin && (
@@ -146,7 +172,7 @@ const Index = () => {
       <HowItWorks />
       <Testimonials />
       
-      {session && (
+      {session && !isServiceProvider && (
         <div className="max-w-md mx-auto px-4 py-12">
           <Dialog>
             <DialogTrigger asChild>
