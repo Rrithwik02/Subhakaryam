@@ -1,5 +1,5 @@
 import { useSessionContext } from "@supabase/auth-helpers-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,7 @@ const ServiceProviderProfile = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
 
-  const { data: provider } = useQuery({
+  const { data: provider, refetch: refetchProvider } = useQuery({
     queryKey: ["service-provider-profile"],
     queryFn: async () => {
       const { data: profile, error: profileError } = await supabase
@@ -38,6 +38,29 @@ const ServiceProviderProfile = () => {
           variant: "destructive",
           title: "Error",
           description: "Failed to fetch provider information",
+        });
+      },
+    },
+  });
+
+  const updateProfileImage = useMutation({
+    mutationFn: async (imageUrl: string) => {
+      const { error } = await supabase
+        .from("service_providers")
+        .update({ profile_image: imageUrl })
+        .eq("profile_id", session?.user?.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      refetchProvider();
+    },
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to update profile image",
         });
       },
     },
@@ -92,6 +115,9 @@ const ServiceProviderProfile = () => {
               email={provider?.email}
               phone={provider?.phone}
               city={provider?.city}
+              profileImage={provider?.profile_image}
+              isServiceProvider={true}
+              onImageUpload={(url) => updateProfileImage.mutate(url)}
             />
           </CardContent>
         </Card>

@@ -1,5 +1,10 @@
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 interface ProfileHeaderProps {
   businessName?: string;
@@ -8,6 +13,9 @@ interface ProfileHeaderProps {
   email?: string;
   phone?: string;
   city?: string;
+  profileImage?: string;
+  isServiceProvider?: boolean;
+  onImageUpload?: (url: string) => void;
 }
 
 const ProfileHeader = ({
@@ -17,15 +25,81 @@ const ProfileHeader = ({
   email,
   phone,
   city,
+  profileImage,
+  isServiceProvider,
+  onImageUpload,
 }: ProfileHeaderProps) => {
+  const [uploading, setUploading] = useState(false);
+  const { session } = useSessionContext();
+  const { toast } = useToast();
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (!event.target.files || event.target.files.length === 0) {
+        return;
+      }
+      setUploading(true);
+
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const userId = session?.user?.id;
+      const filePath = `${userId}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('profile_images')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile_images')
+        .getPublicUrl(filePath);
+
+      if (onImageUpload) {
+        onImageUpload(publicUrl);
+      }
+
+      toast({
+        title: "Success",
+        description: isServiceProvider ? "Service logo updated successfully" : "Profile picture updated successfully",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to upload image. Please try again.",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className="flex items-center gap-6">
-      <Avatar className="h-24 w-24">
-        <AvatarImage src="/placeholder.svg" />
-        <AvatarFallback>
-          {businessName?.charAt(0) || "SP"}
-        </AvatarFallback>
-      </Avatar>
+      <div className="relative group">
+        <Avatar className="h-24 w-24">
+          <AvatarImage src={profileImage} />
+          <AvatarFallback>
+            {businessName?.charAt(0) || "U"}
+          </AvatarFallback>
+        </Avatar>
+        <label 
+          className="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 rounded-full cursor-pointer transition-opacity"
+          htmlFor="image-upload"
+        >
+          <Upload className="h-6 w-6" />
+        </label>
+        <input
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleImageUpload}
+          disabled={uploading}
+        />
+      </div>
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold">{businessName}</h2>
         {(rating !== undefined || basePrice !== undefined) && (

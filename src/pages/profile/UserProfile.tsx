@@ -1,18 +1,15 @@
 import { useSessionContext } from "@supabase/auth-helpers-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, Mail, Phone, MapPin, Clock } from "lucide-react";
-import { format } from "date-fns";
+import ProfileHeader from "@/components/profile/ProfileHeader";
 
 const UserProfile = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
 
-  const { data: profile } = useQuery({
+  const { data: profile, refetch: refetchProfile } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -34,6 +31,29 @@ const UserProfile = () => {
           variant: "destructive",
           title: "Error",
           description: "Failed to fetch profile information",
+        });
+      },
+    },
+  });
+
+  const updateProfileImage = useMutation({
+    mutationFn: async (imageUrl: string) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ profile_image: imageUrl })
+        .eq("id", session?.user?.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      refetchProfile();
+    },
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to update profile image",
         });
       },
     },
@@ -75,7 +95,6 @@ const UserProfile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Profile Information */}
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl font-display text-ceremonial-maroon">
@@ -83,33 +102,16 @@ const UserProfile = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center gap-6">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>
-                  {profile?.full_name?.charAt(0) || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h2 className="text-2xl font-semibold">{profile?.full_name}</h2>
-                <div className="flex items-center gap-2 text-gray-600 mt-2">
-                  <Mail className="h-4 w-4" />
-                  <span>{profile?.email}</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Phone className="h-4 w-4" />
-                  <span>{profile?.phone || "Not provided"}</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <MapPin className="h-4 w-4" />
-                  <span>{profile?.address || "Not provided"}</span>
-                </div>
-              </div>
-            </div>
+            <ProfileHeader
+              businessName={profile?.full_name}
+              email={profile?.email}
+              phone={profile?.phone}
+              profileImage={profile?.profile_image}
+              onImageUpload={(url) => updateProfileImage.mutate(url)}
+            />
           </CardContent>
         </Card>
 
-        {/* Bookings */}
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl font-display text-ceremonial-maroon">
@@ -130,27 +132,17 @@ const UserProfile = () => {
                           {booking.service_providers?.service_type}
                         </p>
                         <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-                          <Calendar className="h-4 w-4" />
                           <span>
-                            {format(new Date(booking.service_date), "PPP")}
+                            {new Date(booking.service_date).toLocaleDateString()}
                           </span>
-                          <Clock className="h-4 w-4 ml-2" />
                           <span>
-                            {format(new Date(`2000-01-01T${booking.time_slot}`), "p")}
+                            {new Date(`2000-01-01T${booking.time_slot}`).toLocaleTimeString()}
                           </span>
                         </div>
                       </div>
-                      <Badge
-                        variant={
-                          booking.status === "pending"
-                            ? "default"
-                            : booking.status === "confirmed"
-                            ? "secondary"
-                            : "destructive"
-                        }
-                      >
+                      <div className="px-2 py-1 rounded text-sm capitalize">
                         {booking.status}
-                      </Badge>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
