@@ -22,17 +22,21 @@ const UserProfile = () => {
         .single();
 
       if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to fetch profile information",
-        });
-        return null;
+        throw error;
       }
 
       return data;
     },
     enabled: !!session?.user,
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch profile information",
+        });
+      },
+    },
   });
 
   const { data: bookings } = useQuery({
@@ -51,17 +55,21 @@ const UserProfile = () => {
         .order("created_at", { ascending: false });
 
       if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to fetch booking information",
-        });
-        return [];
+        throw error;
       }
 
       return data;
     },
     enabled: !!session?.user,
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch booking information",
+        });
+      },
+    },
   });
 
   return (

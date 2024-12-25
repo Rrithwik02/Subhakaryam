@@ -42,12 +42,14 @@ const ServiceProviderProfile = () => {
       return { ...provider, ...profile };
     },
     enabled: !!session?.user,
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch provider information",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch provider information",
+        });
+      },
     },
   });
 
@@ -72,12 +74,14 @@ const ServiceProviderProfile = () => {
       return data;
     },
     enabled: !!provider?.id,
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch booking information",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch booking information",
+        });
+      },
     },
   });
 
