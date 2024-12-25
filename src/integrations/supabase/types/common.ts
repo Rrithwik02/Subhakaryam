@@ -1,3 +1,9 @@
+import { AdditionalServicesTable, ServiceProvidersTable, ServiceProviderAvailabilityTable } from './services';
+import { BookingsTable } from './bookings';
+import { ProfilesTable } from './profiles';
+import { ReviewsTable } from './reviews';
+import { ServiceRequestsTable, ServiceSuggestionsTable } from './requests';
+
 export type Json =
   | string
   | number
