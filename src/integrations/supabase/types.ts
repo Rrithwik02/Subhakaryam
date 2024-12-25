@@ -106,6 +106,7 @@ export type Database = {
           full_name: string | null
           id: string
           phone: string | null
+          profile_image: string | null
           updated_at: string
           user_type: string | null
         }
@@ -116,6 +117,7 @@ export type Database = {
           full_name?: string | null
           id: string
           phone?: string | null
+          profile_image?: string | null
           updated_at?: string
           user_type?: string | null
         }
@@ -126,6 +128,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          profile_image?: string | null
           updated_at?: string
           user_type?: string | null
         }
@@ -231,6 +234,7 @@ export type Database = {
           is_premium: boolean | null
           portfolio_link: string | null
           profile_id: string | null
+          profile_image: string | null
           rating: number | null
           service_type: string
         }
@@ -244,6 +248,7 @@ export type Database = {
           is_premium?: boolean | null
           portfolio_link?: string | null
           profile_id?: string | null
+          profile_image?: string | null
           rating?: number | null
           service_type: string
         }
@@ -257,6 +262,7 @@ export type Database = {
           is_premium?: boolean | null
           portfolio_link?: string | null
           profile_id?: string | null
+          profile_image?: string | null
           rating?: number | null
           service_type?: string
         }
