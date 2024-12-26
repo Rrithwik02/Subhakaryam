@@ -31,7 +31,7 @@ const Hero = () => {
           <Button 
             variant="outline"
             className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white px-8 py-6 text-lg order-2 sm:order-2"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/register/service-provider")}
           >
             Join as Service Provider
           </Button>
