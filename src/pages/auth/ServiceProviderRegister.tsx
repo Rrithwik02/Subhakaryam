@@ -23,20 +23,26 @@ const ServiceProviderRegister = () => {
 
     try {
       const formData = new FormData(e.target as HTMLFormElement);
-      const data = Object.fromEntries(formData.entries());
+      const user = await supabase.auth.getUser();
+      
+      if (!user.data.user?.id) {
+        throw new Error("User not authenticated");
+      }
+
+      // Convert form data to the correct types
+      const serviceProviderData = {
+        profile_id: user.data.user.id,
+        service_type: selectedService,
+        business_name: formData.get('business_name') as string,
+        description: formData.get('description') as string,
+        city: formData.get('city') as string,
+        // Convert base_price to number
+        base_price: Number(formData.get('base_price')),
+      };
 
       const { data: serviceProvider, error } = await supabase
         .from('service_providers')
-        .insert([
-          {
-            profile_id: (await supabase.auth.getUser()).data.user?.id,
-            service_type: selectedService,
-            business_name: data.business_name,
-            description: data.description,
-            city: data.city,
-            base_price: data.base_price,
-          }
-        ])
+        .insert(serviceProviderData)
         .select()
         .single();
 
