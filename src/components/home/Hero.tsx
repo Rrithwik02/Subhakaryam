@@ -23,16 +23,17 @@ const Hero = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Button 
-            className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white px-8 py-6 text-lg"
-            onClick={() => navigate("/register")}
-          >
-            Join as Service Provider
-          </Button>
-          <Button 
-            className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg"
+            className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg order-1 sm:order-1 transform hover:scale-105 transition-transform shadow-lg"
             onClick={() => navigate("/register")}
           >
             Book Services as Guest
+          </Button>
+          <Button 
+            variant="outline"
+            className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white px-8 py-6 text-lg order-2 sm:order-2"
+            onClick={() => navigate("/register")}
+          >
+            Join as Service Provider
           </Button>
         </div>
       </div>

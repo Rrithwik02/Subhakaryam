@@ -9,18 +9,55 @@ import { BasicInformation } from "@/components/service-provider/BasicInformation
 import { ServiceSelection } from "@/components/service-provider/ServiceSelection";
 import { ServiceAreas } from "@/components/service-provider/ServiceAreas";
 import { ServiceDetails } from "@/components/service-provider/ServiceDetails";
+import { supabase } from "@/integrations/supabase/client";
 
 const ServiceProviderRegister = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedService, setSelectedService] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Coming Soon",
-      description: "Service provider registration will be implemented soon.",
-    });
+    setIsSubmitting(true);
+
+    try {
+      const formData = new FormData(e.target as HTMLFormElement);
+      const data = Object.fromEntries(formData.entries());
+
+      const { data: serviceProvider, error } = await supabase
+        .from('service_providers')
+        .insert([
+          {
+            profile_id: (await supabase.auth.getUser()).data.user?.id,
+            service_type: selectedService,
+            business_name: data.business_name,
+            description: data.description,
+            city: data.city,
+            base_price: data.base_price,
+          }
+        ])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Your service provider profile has been created successfully.",
+      });
+      
+      navigate("/dashboard");
+    } catch (error) {
+      console.error('Error registering service provider:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to register as service provider. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -59,13 +96,14 @@ const ServiceProviderRegister = () => {
               <label className="text-sm font-medium text-gray-700">
                 Base Price (₹)
               </label>
-              <Input type="number" min="0" required />
+              <Input type="number" name="base_price" min="0" required />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
                 About Your Services
               </label>
               <Textarea
+                name="description"
                 placeholder="Tell us more about your services and experience"
                 required
               />
@@ -75,8 +113,9 @@ const ServiceProviderRegister = () => {
           <Button
             type="submit"
             className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+            disabled={isSubmitting}
           >
-            Register as Service Provider
+            {isSubmitting ? "Registering..." : "Register as Service Provider"}
           </Button>
         </form>
         
