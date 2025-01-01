@@ -17,6 +17,8 @@ const ServiceProviderRegister = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedService, setSelectedService] = useState("");
+  const [primaryLocation, setPrimaryLocation] = useState("");
+  const [secondaryLocation, setSecondaryLocation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAuthForm, setShowAuthForm] = useState(true);
 
@@ -25,28 +27,29 @@ const ServiceProviderRegister = () => {
     setIsSubmitting(true);
 
     try {
-      const user = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user.data.user?.id) {
+      if (!user?.id) {
         throw new Error("User not authenticated");
       }
 
       const formData = new FormData(e.target as HTMLFormElement);
       
       const serviceProviderData = {
-        profile_id: user.data.user.id,
+        profile_id: user.id,
         service_type: selectedService,
         business_name: formData.get('business_name') as string,
         description: formData.get('description') as string,
-        city: formData.get('city') as string,
-        base_price: Number(formData.get('base_price')),
+        city: primaryLocation,
+        secondary_city: secondaryLocation || null,
+        base_price: parseFloat(formData.get('base_price') as string),
       };
 
       // Update the user's profile type to service_provider
       await supabase
         .from('profiles')
         .update({ user_type: 'service_provider' })
-        .eq('id', user.data.user.id);
+        .eq('id', user.id);
 
       const { data: serviceProvider, error } = await supabase
         .from('service_providers')
@@ -132,7 +135,11 @@ const ServiceProviderRegister = () => {
                 Additional Information
               </h2>
               
-              <ServiceAreas className="space-y-4" />
+              <ServiceAreas 
+                className="space-y-4" 
+                onPrimaryLocationChange={setPrimaryLocation}
+                onSecondaryLocationChange={setSecondaryLocation}
+              />
               
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
