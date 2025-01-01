@@ -2,6 +2,8 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -39,23 +41,91 @@ const Login = () => {
             </h1>
             <p className="text-gray-600 mb-6">Sign in to your account</p>
           </div>
-          <Auth
-            supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: '#B8860B',
-                    brandAccent: '#966F08',
-                  }
-                }
-              }
-            }}
-            theme="light"
-            providers={[]}
-            redirectTo={`${window.location.origin}/`}
-          />
+
+          <Tabs defaultValue="user" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="user">Regular User</TabsTrigger>
+              <TabsTrigger value="provider">Service Provider</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="user">
+              <div className="space-y-4">
+                <Auth
+                  supabaseClient={supabase}
+                  appearance={{
+                    theme: ThemeSupa,
+                    variables: {
+                      default: {
+                        colors: {
+                          brand: '#B8860B',
+                          brandAccent: '#966F08',
+                        }
+                      }
+                    },
+                    className: {
+                      container: 'w-full',
+                      button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+                      divider: 'my-4',
+                    }
+                  }}
+                  theme="light"
+                  providers={["google"]}
+                  redirectTo={`${window.location.origin}/`}
+                />
+                <div className="text-center mt-4">
+                  <p className="text-sm text-gray-600">
+                    New user?{" "}
+                    <Button
+                      variant="link"
+                      className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 p-0"
+                      onClick={() => navigate("/register")}
+                    >
+                      Create an account
+                    </Button>
+                  </p>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="provider">
+              <div className="space-y-4">
+                <Auth
+                  supabaseClient={supabase}
+                  appearance={{
+                    theme: ThemeSupa,
+                    variables: {
+                      default: {
+                        colors: {
+                          brand: '#B8860B',
+                          brandAccent: '#966F08',
+                        }
+                      }
+                    },
+                    className: {
+                      container: 'w-full',
+                      button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+                      divider: 'my-4',
+                    }
+                  }}
+                  theme="light"
+                  providers={["google"]}
+                  redirectTo={`${window.location.origin}/dashboard`}
+                />
+                <div className="text-center mt-4">
+                  <p className="text-sm text-gray-600">
+                    Want to offer services?{" "}
+                    <Button
+                      variant="link"
+                      className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 p-0"
+                      onClick={() => navigate("/register/service-provider")}
+                    >
+                      Register as provider
+                    </Button>
+                  </p>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </Card>
       </div>
     );
