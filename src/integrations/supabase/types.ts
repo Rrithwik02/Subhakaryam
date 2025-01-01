@@ -236,6 +236,7 @@ export type Database = {
           profile_id: string | null
           profile_image: string | null
           rating: number | null
+          secondary_city: string | null
           service_type: string
         }
         Insert: {
@@ -250,6 +251,7 @@ export type Database = {
           profile_id?: string | null
           profile_image?: string | null
           rating?: number | null
+          secondary_city?: string | null
           service_type: string
         }
         Update: {
@@ -264,6 +266,7 @@ export type Database = {
           profile_id?: string | null
           profile_image?: string | null
           rating?: number | null
+          secondary_city?: string | null
           service_type?: string
         }
         Relationships: [

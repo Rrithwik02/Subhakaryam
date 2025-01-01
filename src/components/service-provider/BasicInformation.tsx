@@ -14,19 +14,19 @@ export function BasicInformation({ className }: BasicInformationProps) {
       <div className="space-y-4">
         <div className="space-y-2">
           <Label>Business Name</Label>
-          <Input required />
+          <Input name="business_name" required />
         </div>
         <div className="space-y-2">
           <Label>Owner's Full Name</Label>
-          <Input required />
+          <Input name="owner_name" required />
         </div>
         <div className="space-y-2">
           <Label>Email</Label>
-          <Input type="email" required />
+          <Input name="email" type="email" required />
         </div>
         <div className="space-y-2">
           <Label>Phone</Label>
-          <Input type="tel" required />
+          <Input name="phone" type="tel" required />
         </div>
       </div>
     </div>

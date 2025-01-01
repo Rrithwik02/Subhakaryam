@@ -35,6 +35,20 @@ const ServiceProviderRegister = () => {
 
       const formData = new FormData(e.target as HTMLFormElement);
       
+      // First update the user's profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ 
+          user_type: 'service_provider',
+          full_name: formData.get('owner_name') as string,
+          email: formData.get('email') as string,
+          phone: formData.get('phone') as string
+        })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+      
+      // Then create the service provider record
       const serviceProviderData = {
         profile_id: user.id,
         service_type: selectedService,
@@ -45,19 +59,13 @@ const ServiceProviderRegister = () => {
         base_price: parseFloat(formData.get('base_price') as string),
       };
 
-      // Update the user's profile type to service_provider
-      await supabase
-        .from('profiles')
-        .update({ user_type: 'service_provider' })
-        .eq('id', user.id);
-
-      const { data: serviceProvider, error } = await supabase
+      const { error: providerError } = await supabase
         .from('service_providers')
         .insert(serviceProviderData)
         .select()
         .single();
 
-      if (error) throw error;
+      if (providerError) throw providerError;
 
       toast({
         title: "Success",
