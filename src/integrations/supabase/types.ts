@@ -98,6 +98,80 @@ export type Database = {
           },
         ]
       }
+      favorites: {
+        Row: {
+          created_at: string | null
+          id: string
+          provider_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          provider_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          provider_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "favorites_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          read: boolean | null
+          title: string
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          read?: boolean | null
+          title: string
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          read?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
@@ -232,12 +306,14 @@ export type Database = {
           description: string | null
           id: string
           is_premium: boolean | null
+          portfolio_images: string[] | null
           portfolio_link: string | null
           profile_id: string | null
           profile_image: string | null
           rating: number | null
           secondary_city: string | null
           service_type: string
+          specializations: string[] | null
         }
         Insert: {
           base_price: number
@@ -247,12 +323,14 @@ export type Database = {
           description?: string | null
           id?: string
           is_premium?: boolean | null
+          portfolio_images?: string[] | null
           portfolio_link?: string | null
           profile_id?: string | null
           profile_image?: string | null
           rating?: number | null
           secondary_city?: string | null
           service_type: string
+          specializations?: string[] | null
         }
         Update: {
           base_price?: number
@@ -262,12 +340,14 @@ export type Database = {
           description?: string | null
           id?: string
           is_premium?: boolean | null
+          portfolio_images?: string[] | null
           portfolio_link?: string | null
           profile_id?: string | null
           profile_image?: string | null
           rating?: number | null
           secondary_city?: string | null
           service_type?: string
+          specializations?: string[] | null
         }
         Relationships: [
           {

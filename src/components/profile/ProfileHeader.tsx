@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionContext } from "@supabase/auth-helpers-react";
+import { Progress } from "@/components/ui/progress";
 
 interface ProfileHeaderProps {
   businessName?: string;
@@ -30,6 +31,7 @@ const ProfileHeader = ({
   onImageUpload,
 }: ProfileHeaderProps) => {
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const { session } = useSessionContext();
   const { toast } = useToast();
 
@@ -39,15 +41,30 @@ const ProfileHeader = ({
         return;
       }
       setUploading(true);
+      setUploadProgress(0);
 
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
       const userId = session?.user?.id;
       const filePath = `${userId}/${Date.now()}.${fileExt}`;
 
+      // Simulate upload progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 95) {
+            clearInterval(progressInterval);
+            return prev;
+          }
+          return prev + 5;
+        });
+      }, 100);
+
       const { error: uploadError, data } = await supabase.storage
         .from('profile_images')
         .upload(filePath, file, { upsert: true });
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
 
       if (uploadError) {
         throw uploadError;
@@ -72,7 +89,10 @@ const ProfileHeader = ({
         description: "Failed to upload image. Please try again.",
       });
     } finally {
-      setUploading(false);
+      setTimeout(() => {
+        setUploading(false);
+        setUploadProgress(0);
+      }, 500);
     }
   };
 
@@ -100,6 +120,11 @@ const ProfileHeader = ({
           disabled={uploading}
         />
       </div>
+      {uploading && (
+        <div className="absolute top-0 left-0 right-0 p-2 bg-white/80 backdrop-blur-sm">
+          <Progress value={uploadProgress} className="h-2" />
+        </div>
+      )}
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold">{businessName}</h2>
         {(rating !== undefined || basePrice !== undefined) && (

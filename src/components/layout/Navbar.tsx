@@ -5,6 +5,7 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { UserRound } from "lucide-react";
+import NotificationBell from "@/components/notifications/NotificationBell";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -90,14 +91,17 @@ const Navbar = () => {
             </NavigationMenu>
 
             {session && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-ceremonial-maroon hover:text-ceremonial-gold"
-                onClick={handleProfileClick}
-              >
-                <UserRound className="h-5 w-5" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <NotificationBell />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-ceremonial-maroon hover:text-ceremonial-gold"
+                  onClick={handleProfileClick}
+                >
+                  <UserRound className="h-5 w-5" />
+                </Button>
+              </div>
             )}
           </div>
         </div>
