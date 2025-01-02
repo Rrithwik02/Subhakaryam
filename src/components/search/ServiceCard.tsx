@@ -4,6 +4,7 @@ import { Crown, MapPin, IndianRupee, Star } from "lucide-react";
 import { useState } from "react";
 import ReviewForm from "@/components/reviews/ReviewForm";
 import BookingDialog from "@/components/bookings/BookingDialog";
+import FavoriteButton from "@/components/favorites/FavoriteButton";
 
 interface ServiceCardProps {
   service: {
@@ -35,9 +36,12 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
               By {service.profiles?.full_name}
             </p>
           </div>
-          {service.is_premium && (
-            <Crown className="h-6 w-6 text-ceremonial-gold" />
-          )}
+          <div className="flex items-center gap-2">
+            {service.is_premium && (
+              <Crown className="h-6 w-6 text-ceremonial-gold" />
+            )}
+            <FavoriteButton providerId={service.id} />
+          </div>
         </div>
         
         <div className="space-y-2 mb-4">
