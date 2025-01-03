@@ -89,14 +89,6 @@ const Index = () => {
         <div className="flex gap-2">
           {session ? (
             <>
-              <Button
-                variant="outline"
-                className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
-                onClick={() => navigate("/search")}
-              >
-                Search Services
-              </Button>
-              
               {isServiceProvider && (
                 <>
                   <Button
