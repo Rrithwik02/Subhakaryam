@@ -36,6 +36,7 @@ interface BookingDialogProps {
   provider: {
     id: string;
     business_name: string;
+    base_price: number;
   };
 }
 
@@ -68,6 +69,33 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
     },
   });
 
+  const handlePayment = async (bookingId: string) => {
+    try {
+      const advanceAmount = provider.base_price * 0.3; // 30% advance payment
+      
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          bookingId,
+          paymentType: 'advance',
+          amount: advanceAmount,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to process payment. Please try again.",
+      });
+    }
+  };
+
   const onSubmit = async (data: FormData) => {
     if (!session?.user) {
       toast({
@@ -80,20 +108,22 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("bookings").insert({
+      const { data: booking, error } = await supabase.from("bookings").insert({
         user_id: session.user.id,
         provider_id: provider.id,
         service_date: format(data.date, "yyyy-MM-dd"),
         time_slot: data.timeSlot,
         special_requirements: data.specialRequirements,
-      });
+      }).select().single();
 
       if (error) throw error;
 
       toast({
         title: "Success",
-        description: "Your booking has been submitted successfully!",
+        description: "Your booking has been submitted. Proceeding to payment...",
       });
+
+      await handlePayment(booking.id);
       onClose();
     } catch (error) {
       console.error("Error creating booking:", error);
@@ -178,13 +208,19 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
               )}
             />
 
+            <div className="text-sm text-gray-500">
+              <p>Advance Payment (30%): ${(provider.base_price * 0.3).toFixed(2)}</p>
+              <p>Final Payment (70%): ${(provider.base_price * 0.7).toFixed(2)}</p>
+              <p className="font-semibold">Total: ${provider.base_price.toFixed(2)}</p>
+            </div>
+
             <DialogFooter>
               <Button
                 type="submit"
                 className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Book Now"}
+                {isSubmitting ? "Processing..." : "Book and Pay"}
               </Button>
             </DialogFooter>
           </form>
