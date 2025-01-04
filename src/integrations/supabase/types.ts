@@ -49,6 +49,9 @@ export type Database = {
       }
       bookings: {
         Row: {
+          completion_confirmed_by_customer: boolean | null
+          completion_confirmed_by_provider: boolean | null
+          completion_status: string | null
           created_at: string | null
           id: string
           provider_id: string
@@ -60,6 +63,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          completion_confirmed_by_customer?: boolean | null
+          completion_confirmed_by_provider?: boolean | null
+          completion_status?: string | null
           created_at?: string | null
           id?: string
           provider_id: string
@@ -71,6 +77,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          completion_confirmed_by_customer?: boolean | null
+          completion_confirmed_by_provider?: boolean | null
+          completion_status?: string | null
           created_at?: string | null
           id?: string
           provider_id?: string
@@ -92,6 +101,58 @@ export type Database = {
           {
             foreignKeyName: "bookings_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          booking_id: string | null
+          created_at: string | null
+          id: string
+          message: string
+          read: boolean | null
+          receiver_id: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          message: string
+          read?: boolean | null
+          receiver_id?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string
+          read?: boolean | null
+          receiver_id?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
