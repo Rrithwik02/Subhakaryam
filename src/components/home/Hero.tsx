@@ -43,69 +43,66 @@ const Hero = () => {
   });
   
   return (
-    <section className="hero-pattern py-20 px-4">
+    <section className="hero-pattern min-h-[calc(100vh-4rem)] flex items-center py-20 px-4">
       <div className="container mx-auto text-center">
         <div className="mb-12">
-          <h1 className="text-4xl font-display font-bold text-ceremonial-gold mb-2">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-ceremonial-gold mb-2">
             Subhakaryam
           </h1>
-          <p className="text-ceremonial-maroon text-sm font-medium mt-4">
+          <p className="text-ceremonial-maroon text-sm md:text-base font-medium mt-4">
             Celebrating Sacred Traditions
           </p>
         </div>
-        <h2 className="text-5xl md:text-6xl font-display font-bold text-ceremonial-maroon mb-6">
+        <h2 className="text-4xl md:text-6xl font-display font-bold text-ceremonial-maroon mb-6">
           Sacred Ceremonies Made Simple
         </h2>
-        <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
+        <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
           Book all your ceremonial services in one place. From poojas to weddings, we've got you covered.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           {!session ? (
-            // Not logged in - show register options
             <>
               <Button 
-                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg order-1 sm:order-1 transform hover:scale-105 transition-transform shadow-lg"
+                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg w-full sm:w-auto order-1 sm:order-1 transform hover:scale-105 transition-transform shadow-lg"
                 onClick={() => navigate("/register")}
               >
                 Register as Guest
               </Button>
               <Button 
                 variant="outline"
-                className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white px-8 py-6 text-lg order-2 sm:order-2"
+                className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white px-8 py-6 text-lg w-full sm:w-auto order-2 sm:order-2"
                 onClick={() => navigate("/register/service-provider")}
               >
                 Join as Service Provider
               </Button>
             </>
           ) : serviceProvider ? (
-            // Logged in as service provider
             <>
               <Button 
-                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg transform hover:scale-105 transition-transform shadow-lg"
+                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg w-full sm:w-auto transform hover:scale-105 transition-transform shadow-lg"
                 onClick={() => navigate("/dashboard")}
               >
                 Go to Dashboard
               </Button>
               <Button 
                 variant="outline"
-                className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white px-8 py-6 text-lg"
+                className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white px-8 py-6 text-lg w-full sm:w-auto"
                 onClick={() => navigate("/provider/profile")}
               >
                 View Profile
               </Button>
             </>
           ) : (
-            // Logged in as regular user
             <>
               <Button 
-                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg transform hover:scale-105 transition-transform shadow-lg"
+                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-6 text-lg w-full sm:w-auto transform hover:scale-105 transition-transform shadow-lg"
                 onClick={() => navigate("/search")}
               >
                 Search Services
               </Button>
               <Button 
                 variant="outline"
-                className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white px-8 py-6 text-lg"
+                className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white px-8 py-6 text-lg w-full sm:w-auto"
                 onClick={() => navigate("/profile")}
               >
                 View Profile

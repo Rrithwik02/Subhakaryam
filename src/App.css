@@ -1,7 +1,6 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -39,4 +38,48 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Fix for mobile padding */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Improve button hover states */
+.button-hover-effect {
+  transition: all 0.2s ease-in-out;
+}
+
+.button-hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Improve form input styles */
+input:focus, 
+textarea:focus, 
+select:focus {
+  outline: 2px solid rgba(212, 175, 55, 0.2);
+  outline-offset: 2px;
+}
+
+/* Improve dropdown menu positioning */
+.dropdown-menu {
+  z-index: 1000;
+  transform-origin: top;
+  animation: dropdownAnimation 0.2s ease-out;
+}
+
+@keyframes dropdownAnimation {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
