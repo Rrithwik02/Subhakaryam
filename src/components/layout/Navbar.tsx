@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu, Bell } from "lucide-react";
+import { UserRound, Menu } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -45,13 +45,13 @@ const Navbar = () => {
   const NavLinks = () => (
     <>
       <NavigationMenuLink 
-        className="text-gray-600 hover:text-ceremonial-gold transition-colors cursor-pointer block py-2 px-4 rounded-md hover:bg-gray-50"
+        className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
         onClick={() => navigate("/about")}
       >
         About Us
       </NavigationMenuLink>
       <NavigationMenuLink 
-        className="text-gray-600 hover:text-ceremonial-gold transition-colors cursor-pointer block py-2 px-4 rounded-md hover:bg-gray-50"
+        className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
         onClick={() => {
           const servicesSection = document.getElementById('services-section');
           if (servicesSection) {
@@ -64,7 +64,7 @@ const Navbar = () => {
         Services
       </NavigationMenuLink>
       <NavigationMenuLink 
-        className="text-gray-600 hover:text-ceremonial-gold transition-colors cursor-pointer block py-2 px-4 rounded-md hover:bg-gray-50"
+        className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
         onClick={() => navigate("/contact")}
       >
         Contact
@@ -73,18 +73,18 @@ const Navbar = () => {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b shadow-sm">
-      <div className="container mx-auto px-4">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-ceremonial-cream border-b border-ceremonial-gold/10">
+      <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Button 
             variant="ghost" 
-            className="font-display text-xl text-ceremonial-maroon hover:text-ceremonial-gold transition-colors"
+            className="font-display text-2xl text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors p-0"
             onClick={() => navigate("/")}
           >
             Subhakaryam
           </Button>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <NavigationMenu className="hidden md:block">
               <NavigationMenuList className="flex space-x-2">
                 <NavigationMenuItem>
@@ -94,32 +94,46 @@ const Navbar = () => {
             </NavigationMenu>
 
             <div className="flex items-center gap-4">
-              {session && (
-                <div className="relative">
-                  <NotificationBell />
-                </div>
-              )}
+              {session && <NotificationBell />}
               
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-ceremonial-maroon hover:text-ceremonial-gold transition-colors"
+                className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
                 onClick={handleProfileClick}
               >
                 <UserRound className="h-5 w-5" />
               </Button>
+
+              {!session && (
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="ghost"
+                    className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
+                    onClick={() => navigate("/login")}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+                    onClick={() => navigate("/register")}
+                  >
+                    Join Us
+                  </Button>
+                </div>
+              )}
               
               <Sheet>
                 <SheetTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-gold transition-colors"
+                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[250px] sm:w-[300px]">
+                <SheetContent side="right" className="w-[250px] sm:w-[300px] bg-ceremonial-cream">
                   <nav className="flex flex-col gap-2 mt-8">
                     <NavLinks />
                   </nav>
