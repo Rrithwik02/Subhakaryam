@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu } from "lucide-react";
+import { UserRound, Menu, Bell } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -45,13 +45,13 @@ const Navbar = () => {
   const NavLinks = () => (
     <>
       <NavigationMenuLink 
-        className="text-gray-600 hover:text-ceremonial-gold transition-colors cursor-pointer block py-2"
+        className="text-gray-600 hover:text-ceremonial-gold transition-colors cursor-pointer block py-2 px-4 rounded-md hover:bg-gray-50"
         onClick={() => navigate("/about")}
       >
         About Us
       </NavigationMenuLink>
       <NavigationMenuLink 
-        className="text-gray-600 hover:text-ceremonial-gold transition-colors cursor-pointer block py-2"
+        className="text-gray-600 hover:text-ceremonial-gold transition-colors cursor-pointer block py-2 px-4 rounded-md hover:bg-gray-50"
         onClick={() => {
           const servicesSection = document.getElementById('services-section');
           if (servicesSection) {
@@ -64,7 +64,7 @@ const Navbar = () => {
         Services
       </NavigationMenuLink>
       <NavigationMenuLink 
-        className="text-gray-600 hover:text-ceremonial-gold transition-colors cursor-pointer block py-2"
+        className="text-gray-600 hover:text-ceremonial-gold transition-colors cursor-pointer block py-2 px-4 rounded-md hover:bg-gray-50"
         onClick={() => navigate("/contact")}
       >
         Contact
@@ -73,32 +73,37 @@ const Navbar = () => {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Button 
             variant="ghost" 
-            className="font-display text-xl text-ceremonial-maroon hover:text-ceremonial-gold"
+            className="font-display text-xl text-ceremonial-maroon hover:text-ceremonial-gold transition-colors"
             onClick={() => navigate("/")}
           >
             Subhakaryam
           </Button>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <NavigationMenu className="hidden md:block">
-              <NavigationMenuList className="flex space-x-4">
+              <NavigationMenuList className="flex space-x-2">
                 <NavigationMenuItem>
                   <NavLinks />
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
 
-            <div className="flex items-center gap-2">
-              {session && <NotificationBell />}
+            <div className="flex items-center gap-4">
+              {session && (
+                <div className="relative">
+                  <NotificationBell />
+                </div>
+              )}
+              
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-ceremonial-maroon hover:text-ceremonial-gold"
+                className="text-ceremonial-maroon hover:text-ceremonial-gold transition-colors"
                 onClick={handleProfileClick}
               >
                 <UserRound className="h-5 w-5" />
@@ -109,13 +114,13 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-gold"
+                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-gold transition-colors"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[250px] sm:w-[300px]">
-                  <nav className="flex flex-col gap-4 mt-8">
+                  <nav className="flex flex-col gap-2 mt-8">
                     <NavLinks />
                   </nav>
                 </SheetContent>
