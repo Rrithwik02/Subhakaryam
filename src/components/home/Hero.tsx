@@ -7,22 +7,24 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 
 const eventImages = [
   {
-    url: "https://images.unsplash.com/photo-1472396961693-142e6e269027",
-    alt: "Traditional ceremony",
+    url: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622",
+    alt: "Traditional Indian wedding ceremony",
   },
   {
-    url: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
-    alt: "Wedding celebration",
+    url: "https://images.unsplash.com/photo-1583939003579-730e3918a45a",
+    alt: "Elegant catering setup",
   },
   {
-    url: "https://images.unsplash.com/photo-1493962853295-0fd70327578a",
-    alt: "Cultural event",
+    url: "https://images.unsplash.com/photo-1509264279362-c1b418e7e91d",
+    alt: "Bridal mehendi ceremony",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1519225421980-715cb0215aed",
+    alt: "Professional makeup session",
   },
 ];
 
@@ -67,28 +69,28 @@ const Hero = () => {
   return (
     <div className="min-h-[calc(100vh-4rem)] pt-16 bg-ceremonial-cream">
       {/* Main Hero Banner */}
-      <div className="relative w-full h-[70vh] bg-gradient-to-r from-ceremonial-maroon to-ceremonial-gold overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
+      <div className="relative w-full h-[70vh] overflow-hidden">
+        <div className="absolute inset-0 z-10 flex items-center justify-center text-white text-center p-4">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-6 leading-tight">
               Discover Sacred Traditions
             </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto font-body">
+            <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-2xl mx-auto font-body">
               Connect with expert ceremonial service providers for your most important occasions
             </p>
             {!session ? (
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg"
-                  className="bg-white text-ceremonial-maroon hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1"
+                  className="bg-white text-ceremonial-maroon hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full"
                   onClick={() => navigate("/search")}
                 >
-                  Explore Services
+                  Get an Estimate
                 </Button>
                 <Button 
                   size="lg"
                   variant="outline"
-                  className="border-2 border-white text-white hover:bg-white hover:text-ceremonial-maroon transition-all duration-300 transform hover:-translate-y-1"
+                  className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-ceremonial-maroon transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full"
                   onClick={() => navigate("/register/service-provider")}
                 >
                   Become a Provider
@@ -99,8 +101,8 @@ const Hero = () => {
         </div>
 
         {/* Event Images Carousel */}
-        <div className="absolute inset-0 z-0">
-          <Carousel className="w-full h-full" opts={{ loop: true }}>
+        <div className="absolute inset-0">
+          <Carousel className="w-full h-full" opts={{ loop: true, duration: 40000 }}>
             <CarouselContent>
               {eventImages.map((image, index) => (
                 <CarouselItem key={index} className="w-full h-full">
@@ -108,8 +110,9 @@ const Hero = () => {
                     <img
                       src={image.url}
                       alt={image.alt}
-                      className="w-full h-full object-cover opacity-20"
+                      className="w-full h-full object-cover"
                     />
+                    <div className="absolute inset-0 bg-black/50" />
                   </div>
                 </CarouselItem>
               ))}
@@ -130,7 +133,7 @@ const Hero = () => {
                 <>
                   <Button 
                     size="lg"
-                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-all duration-300 transform hover:-translate-y-1"
+                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full"
                     onClick={() => navigate("/dashboard")}
                   >
                     Provider Dashboard
@@ -138,7 +141,7 @@ const Hero = () => {
                   <Button 
                     size="lg"
                     variant="outline"
-                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1"
+                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full"
                     onClick={() => navigate("/provider/profile")}
                   >
                     View Profile
@@ -148,7 +151,7 @@ const Hero = () => {
                 <>
                   <Button 
                     size="lg"
-                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-all duration-300 transform hover:-translate-y-1"
+                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full"
                     onClick={() => navigate("/search")}
                   >
                     Find Services
@@ -156,7 +159,7 @@ const Hero = () => {
                   <Button 
                     size="lg"
                     variant="outline"
-                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1"
+                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full"
                     onClick={() => navigate("/profile")}
                   >
                     My Profile
