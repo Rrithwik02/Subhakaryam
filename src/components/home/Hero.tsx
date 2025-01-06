@@ -3,6 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+const eventImages = [
+  {
+    url: "https://images.unsplash.com/photo-1472396961693-142e6e269027",
+    alt: "Traditional ceremony",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
+    alt: "Wedding celebration",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1493962853295-0fd70327578a",
+    alt: "Cultural event",
+  },
+];
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -66,7 +88,7 @@ const Hero = () => {
                 <Button 
                   size="lg"
                   variant="outline"
-                  className="border-2 border-white text-white hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1"
+                  className="border-2 border-white text-white hover:bg-white hover:text-ceremonial-maroon transition-all duration-300 transform hover:-translate-y-1"
                   onClick={() => navigate("/register/service-provider")}
                 >
                   Become a Provider
@@ -74,6 +96,25 @@ const Hero = () => {
               </div>
             ) : null}
           </div>
+        </div>
+
+        {/* Event Images Carousel */}
+        <div className="absolute inset-0 z-0">
+          <Carousel className="w-full h-full" opts={{ loop: true }}>
+            <CarouselContent>
+              {eventImages.map((image, index) => (
+                <CarouselItem key={index} className="w-full h-full">
+                  <div className="relative w-full h-full">
+                    <img
+                      src={image.url}
+                      alt={image.alt}
+                      className="w-full h-full object-cover opacity-20"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
         </div>
       </div>
 
