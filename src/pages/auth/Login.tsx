@@ -120,6 +120,12 @@ const Login = () => {
                     </Button>
                   </p>
                 </div>
+                <div className="mt-4 p-4 bg-ceremonial-cream/50 rounded-lg">
+                  <p className="text-sm text-gray-600 text-center">
+                    Note: If you clicked "Register as provider", please sign in first. 
+                    You'll be redirected to complete your provider profile after authentication.
+                  </p>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
