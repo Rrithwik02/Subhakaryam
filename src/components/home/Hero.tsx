@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -46,26 +45,28 @@ const Hero = () => {
   return (
     <div className="min-h-[calc(100vh-4rem)] pt-16 bg-ceremonial-cream">
       {/* Main Hero Banner */}
-      <div className="relative w-full h-[50vh] bg-gradient-to-r from-ceremonial-maroon to-ceremonial-gold overflow-hidden">
+      <div className="relative w-full h-[70vh] bg-gradient-to-r from-ceremonial-maroon to-ceremonial-gold overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
-          <div>
-            <h1 className="text-4xl md:text-6xl font-display font-bold mb-4">
-              Sacred Ceremonies Made Simple
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight">
+              Discover Sacred Traditions
             </h1>
-            <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-              Book all your ceremonial services in one place
+            <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto font-body">
+              Connect with expert ceremonial service providers for your most important occasions
             </p>
             {!session ? (
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
-                  className="bg-white text-ceremonial-maroon hover:bg-gray-100"
-                  onClick={() => navigate("/register")}
+                  size="lg"
+                  className="bg-white text-ceremonial-maroon hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1"
+                  onClick={() => navigate("/search")}
                 >
-                  Join Now
+                  Explore Services
                 </Button>
                 <Button 
+                  size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white/10"
+                  className="border-2 border-white text-white hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1"
                   onClick={() => navigate("/register/service-provider")}
                 >
                   Become a Provider
@@ -76,78 +77,27 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Featured Categories Grid */}
-      <div className="container mx-auto px-4 -mt-20 relative z-10 mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
-            <h3 className="text-xl font-display font-semibold mb-2 text-ceremonial-maroon">
-              Pooja Services
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Traditional poojas performed by experienced priests
-            </p>
-            <Button 
-              variant="outline"
-              className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
-              onClick={() => navigate("/search?service=pooja")}
-            >
-              Explore
-            </Button>
-          </Card>
-
-          <Card className="p-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
-            <h3 className="text-xl font-display font-semibold mb-2 text-ceremonial-maroon">
-              Wedding Services
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Complete wedding planning and ceremonial services
-            </p>
-            <Button 
-              variant="outline"
-              className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
-              onClick={() => navigate("/search?service=wedding")}
-            >
-              Plan Now
-            </Button>
-          </Card>
-
-          <Card className="p-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
-            <h3 className="text-xl font-display font-semibold mb-2 text-ceremonial-maroon">
-              Special Events
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Customized services for all special occasions
-            </p>
-            <Button 
-              variant="outline"
-              className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
-              onClick={() => navigate("/search")}
-            >
-              View All
-            </Button>
-          </Card>
-        </div>
-      </div>
-
       {/* Quick Actions for Logged In Users */}
       {session && (
-        <div className="container mx-auto px-4 mb-12">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-2xl font-display font-bold text-ceremonial-maroon mb-4">
-              Quick Actions
+        <div className="container mx-auto px-4 -mt-20 relative z-10 mb-12">
+          <div className="bg-white/95 backdrop-blur-md p-8 rounded-lg shadow-xl">
+            <h2 className="text-2xl font-display font-bold text-ceremonial-maroon mb-6">
+              Welcome Back
             </h2>
             <div className="flex flex-wrap gap-4">
               {serviceProvider ? (
                 <>
                   <Button 
-                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+                    size="lg"
+                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-all duration-300 transform hover:-translate-y-1"
                     onClick={() => navigate("/dashboard")}
                   >
-                    Go to Dashboard
+                    Provider Dashboard
                   </Button>
                   <Button 
+                    size="lg"
                     variant="outline"
-                    className="border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white"
+                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1"
                     onClick={() => navigate("/provider/profile")}
                   >
                     View Profile
@@ -156,14 +106,16 @@ const Hero = () => {
               ) : (
                 <>
                   <Button 
-                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+                    size="lg"
+                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-all duration-300 transform hover:-translate-y-1"
                     onClick={() => navigate("/search")}
                   >
-                    Book Services
+                    Find Services
                   </Button>
                   <Button 
+                    size="lg"
                     variant="outline"
-                    className="border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white"
+                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1"
                     onClick={() => navigate("/profile")}
                   >
                     My Profile
