@@ -15,13 +15,11 @@ const Login = () => {
   const { session, isLoading } = useSessionContext();
 
   useEffect(() => {
-    // If user is already logged in, redirect to home
     if (session) {
       navigate("/");
     }
   }, [session, navigate]);
 
-  // Show loading state while checking session
   if (isLoading) {
     return (
       <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
@@ -30,7 +28,6 @@ const Login = () => {
     );
   }
 
-  // Only show login form if user is not logged in
   if (!session) {
     return (
       <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">

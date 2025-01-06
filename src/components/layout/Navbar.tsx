@@ -104,24 +104,6 @@ const Navbar = () => {
               >
                 <UserRound className="h-5 w-5" />
               </Button>
-
-              {!session && (
-                <div className="flex items-center gap-3">
-                  <Button
-                    variant="ghost"
-                    className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
-                    onClick={() => navigate("/login")}
-                  >
-                    Sign In
-                  </Button>
-                  <Button
-                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
-                    onClick={() => navigate("/register")}
-                  >
-                    Join Us
-                  </Button>
-                </div>
-              )}
               
               <Sheet>
                 <SheetTrigger asChild>
