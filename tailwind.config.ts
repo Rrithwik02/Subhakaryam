@@ -20,9 +20,9 @@ export default {
     extend: {
       colors: {
         royal: {
-          bg: "#1A1F2C",
+          bg: "#000000",
           accent: "#9b87f5",
-          light: "#D6BCFA",
+          light: "#ffffff",
           button: "#8B5CF6",
           hover: "#7E69AB",
         },

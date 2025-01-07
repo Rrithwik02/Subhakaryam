@@ -54,18 +54,22 @@ const Login = () => {
                     variables: {
                       default: {
                         colors: {
-                          brand: '#B8860B',
-                          brandAccent: '#966F08',
+                          brand: '#8B5CF6',
+                          brandAccent: '#7E69AB',
+                          brandButtonText: "white",
                         }
                       }
                     },
                     className: {
                       container: 'w-full',
-                      button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+                      button: 'w-full bg-royal-button hover:bg-royal-hover text-white',
                       divider: 'my-4',
+                      label: 'text-white',
+                      input: 'bg-black border-royal-accent text-white',
+                      message: 'text-white',
                     }
                   }}
-                  theme="light"
+                  theme="dark"
                   providers={["google"]}
                   redirectTo={`${window.location.origin}/`}
                 />
@@ -93,18 +97,22 @@ const Login = () => {
                     variables: {
                       default: {
                         colors: {
-                          brand: '#B8860B',
-                          brandAccent: '#966F08',
+                          brand: '#8B5CF6',
+                          brandAccent: '#7E69AB',
+                          brandButtonText: "white",
                         }
                       }
                     },
                     className: {
                       container: 'w-full',
-                      button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+                      button: 'w-full bg-royal-button hover:bg-royal-hover text-white',
                       divider: 'my-4',
+                      label: 'text-white',
+                      input: 'bg-black border-royal-accent text-white',
+                      message: 'text-white',
                     }
                   }}
-                  theme="light"
+                  theme="dark"
                   providers={["google"]}
                   redirectTo={`${window.location.origin}/dashboard`}
                 />

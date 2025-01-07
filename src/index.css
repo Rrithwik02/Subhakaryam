@@ -6,59 +6,59 @@
 
 @layer base {
   :root {
-    --background: 230 25% 13%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
     
-    --card: 230 25% 13%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
     
-    --popover: 230 25% 13%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
     
     --primary: 252 88% 66%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 0 0% 100%;
     
-    --secondary: 217 19% 27%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
     
-    --muted: 217 19% 27%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 80%;
     
     --accent: 252 88% 66%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 0 0% 100%;
     
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
     
-    --border: 217 19% 27%;
-    --input: 217 19% 27%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
     --ring: 252 88% 66%;
     
     --radius: 0.75rem;
   }
  
   body {
-    @apply bg-royal-bg text-royal-light font-body;
+    @apply bg-black text-white font-body;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display text-royal-light;
+    @apply font-display text-white;
   }
 }
 
 .service-card {
   @apply relative overflow-hidden rounded-lg border border-royal-accent/20 p-6 transition-all hover:shadow-lg;
-  background: linear-gradient(to right bottom, rgba(26, 31, 44, 0.8), rgba(26, 31, 44, 0.95));
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
 }
 
 .hero-pattern {
-  background-color: #1A1F2C;
+  background-color: #000000;
   background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239b87f5' fill-opacity='0.1'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 .glass-card {
-  @apply bg-royal-bg/80 backdrop-blur-md border border-royal-accent/20;
+  @apply bg-black/80 backdrop-blur-md border border-royal-accent/20;
 }
 
 .button-hover {
