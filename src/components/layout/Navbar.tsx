@@ -45,13 +45,13 @@ const Navbar = () => {
   const NavLinks = () => (
     <>
       <NavigationMenuLink 
-        className="text-divine-text hover:text-sacred-primary transition-colors cursor-pointer py-2 px-6"
+        className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
         onClick={() => navigate("/about")}
       >
         About Us
       </NavigationMenuLink>
       <NavigationMenuLink 
-        className="text-divine-text hover:text-sacred-primary transition-colors cursor-pointer py-2 px-6"
+        className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
         onClick={() => {
           const servicesSection = document.getElementById('services-section');
           if (servicesSection) {
@@ -64,7 +64,7 @@ const Navbar = () => {
         Services
       </NavigationMenuLink>
       <NavigationMenuLink 
-        className="text-divine-text hover:text-sacred-primary transition-colors cursor-pointer py-2 px-6"
+        className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
         onClick={() => navigate("/contact")}
       >
         Contact
@@ -73,12 +73,12 @@ const Navbar = () => {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-divine-primary/95 backdrop-blur-md border-b border-sacred-accent">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-ceremonial-cream border-b border-ceremonial-gold/10">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Button 
             variant="ghost" 
-            className="font-display text-2xl text-sacred-primary hover:text-sacred-dark transition-colors p-0"
+            className="font-display text-2xl text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors p-0"
             onClick={() => navigate("/")}
           >
             Subhakaryam
@@ -99,7 +99,7 @@ const Navbar = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-sacred-primary hover:text-sacred-dark transition-colors"
+                className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
                 onClick={handleProfileClick}
               >
                 <UserRound className="h-5 w-5" />
@@ -110,12 +110,12 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-sacred-primary hover:text-sacred-dark transition-colors"
+                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[250px] sm:w-[300px] bg-divine-primary border-l border-sacred-accent">
+                <SheetContent side="right" className="w-[250px] sm:w-[300px] bg-ceremonial-cream">
                   <nav className="flex flex-col gap-2 mt-8">
                     <NavLinks />
                   </nav>
