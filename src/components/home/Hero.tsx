@@ -8,23 +8,24 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 const eventImages = [
   {
-    url: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622",
-    alt: "Traditional Indian wedding ceremony",
+    url: "https://images.unsplash.com/photo-1604017011826-d3b4c23f8914",
+    alt: "Sacred temple ceremony",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1",
+    alt: "Traditional wedding ritual",
   },
   {
     url: "https://images.unsplash.com/photo-1583939003579-730e3918a45a",
-    alt: "Elegant catering setup",
+    alt: "Elegant ceremonial setup",
   },
   {
-    url: "https://images.unsplash.com/photo-1509264279362-c1b418e7e91d",
-    alt: "Bridal mehendi ceremony",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1519225421980-715cb0215aed",
-    alt: "Professional makeup session",
+    url: "https://images.unsplash.com/photo-1590273466070-40c466b4432d",
+    alt: "Sacred offering ceremony",
   },
 ];
 
@@ -67,22 +68,22 @@ const Hero = () => {
   });
   
   return (
-    <div className="min-h-[calc(100vh-4rem)] pt-16 bg-ceremonial-cream">
+    <div className="min-h-[calc(100vh-4rem)] pt-16 bg-white">
       {/* Main Hero Banner */}
       <div className="relative w-full h-[70vh] overflow-hidden">
         <div className="absolute inset-0 z-10 flex items-center justify-center text-white text-center p-4">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-6 leading-tight drop-shadow-lg">
               Discover Sacred Traditions
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-2xl mx-auto font-body">
+            <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-2xl mx-auto font-body drop-shadow-lg">
               Connect with expert ceremonial service providers for your most important occasions
             </p>
             {!session ? (
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg"
-                  className="bg-white text-ceremonial-maroon hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full"
+                  className="bg-white text-purple-800 hover:bg-purple-50 transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg"
                   onClick={() => navigate("/search")}
                 >
                   Get an Estimate
@@ -90,7 +91,7 @@ const Hero = () => {
                 <Button 
                   size="lg"
                   variant="outline"
-                  className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-ceremonial-maroon transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full"
+                  className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-purple-800 transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg"
                   onClick={() => navigate("/register/service-provider")}
                 >
                   Become a Provider
@@ -102,7 +103,19 @@ const Hero = () => {
 
         {/* Event Images Carousel */}
         <div className="absolute inset-0">
-          <Carousel className="w-full h-full" opts={{ loop: true, duration: 40000 }}>
+          <Carousel 
+            className="w-full h-full" 
+            plugins={[
+              Autoplay({
+                delay: 5000,
+                stopOnInteract: false,
+              }),
+            ]}
+            opts={{
+              loop: true,
+              align: "start",
+            }}
+          >
             <CarouselContent>
               {eventImages.map((image, index) => (
                 <CarouselItem key={index} className="w-full h-full">
@@ -112,7 +125,7 @@ const Hero = () => {
                       alt={image.alt}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/50" />
+                    <div className="absolute inset-0 bg-black/40" />
                   </div>
                 </CarouselItem>
               ))}
@@ -124,8 +137,8 @@ const Hero = () => {
       {/* Quick Actions for Logged In Users */}
       {session && (
         <div className="container mx-auto px-4 -mt-20 relative z-10 mb-12">
-          <div className="bg-white/95 backdrop-blur-md p-8 rounded-lg shadow-xl">
-            <h2 className="text-2xl font-display font-bold text-ceremonial-maroon mb-6">
+          <div className="bg-white/95 backdrop-blur-md p-8 rounded-lg shadow-xl border border-purple-100">
+            <h2 className="text-2xl font-display font-bold text-purple-800 mb-6">
               Welcome Back
             </h2>
             <div className="flex flex-wrap gap-4">
@@ -133,7 +146,7 @@ const Hero = () => {
                 <>
                   <Button 
                     size="lg"
-                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full"
+                    className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
                     onClick={() => navigate("/dashboard")}
                   >
                     Provider Dashboard
@@ -141,7 +154,7 @@ const Hero = () => {
                   <Button 
                     size="lg"
                     variant="outline"
-                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full"
+                    className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
                     onClick={() => navigate("/provider/profile")}
                   >
                     View Profile
@@ -151,7 +164,7 @@ const Hero = () => {
                 <>
                   <Button 
                     size="lg"
-                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full"
+                    className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
                     onClick={() => navigate("/search")}
                   >
                     Find Services
@@ -159,7 +172,7 @@ const Hero = () => {
                   <Button 
                     size="lg"
                     variant="outline"
-                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full"
+                    className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
                     onClick={() => navigate("/profile")}
                   >
                     My Profile
