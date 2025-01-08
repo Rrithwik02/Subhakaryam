@@ -12,20 +12,20 @@ import Autoplay from "embla-carousel-autoplay";
 
 const eventImages = [
   {
-    url: "https://images.unsplash.com/photo-1604017011826-d3b4c23f8914",
-    alt: "Sacred temple ceremony",
+    url: "https://images.unsplash.com/photo-1617307322832-e49e79c58fd4",
+    alt: "Traditional Indian Wedding Ceremony",
   },
   {
-    url: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1",
-    alt: "Traditional wedding ritual",
+    url: "https://images.unsplash.com/photo-1544114664-dbf9c62f1512",
+    alt: "Indian Wedding Mandap Decoration",
   },
   {
-    url: "https://images.unsplash.com/photo-1583939003579-730e3918a45a",
-    alt: "Elegant ceremonial setup",
+    url: "https://images.unsplash.com/photo-1630742623608-19a7c6951e91",
+    alt: "Indian Bridal Ceremony",
   },
   {
-    url: "https://images.unsplash.com/photo-1590273466070-40c466b4432d",
-    alt: "Sacred offering ceremony",
+    url: "https://images.unsplash.com/photo-1591604466107-ec97de577aff",
+    alt: "Traditional Hindu Wedding Rituals",
   },
 ];
 
@@ -66,7 +66,7 @@ const Hero = () => {
     },
     enabled: !!session?.user,
   });
-  
+
   return (
     <div className="min-h-[calc(100vh-4rem)] pt-16 bg-white">
       {/* Main Hero Banner */}
@@ -108,7 +108,7 @@ const Hero = () => {
             plugins={[
               Autoplay({
                 delay: 5000,
-                stopOnInteract: false,
+                stopOnInteraction: true,
               }),
             ]}
             opts={{
