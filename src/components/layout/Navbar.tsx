@@ -45,13 +45,13 @@ const Navbar = () => {
   const NavLinks = () => (
     <>
       <NavigationMenuLink 
-        className="text-royal-light hover:text-royal-accent transition-colors cursor-pointer py-2 px-6"
+        className="text-divine-text hover:text-sacred-primary transition-colors cursor-pointer py-2 px-6"
         onClick={() => navigate("/about")}
       >
         About Us
       </NavigationMenuLink>
       <NavigationMenuLink 
-        className="text-royal-light hover:text-royal-accent transition-colors cursor-pointer py-2 px-6"
+        className="text-divine-text hover:text-sacred-primary transition-colors cursor-pointer py-2 px-6"
         onClick={() => {
           const servicesSection = document.getElementById('services-section');
           if (servicesSection) {
@@ -64,7 +64,7 @@ const Navbar = () => {
         Services
       </NavigationMenuLink>
       <NavigationMenuLink 
-        className="text-royal-light hover:text-royal-accent transition-colors cursor-pointer py-2 px-6"
+        className="text-divine-text hover:text-sacred-primary transition-colors cursor-pointer py-2 px-6"
         onClick={() => navigate("/contact")}
       >
         Contact
@@ -73,12 +73,12 @@ const Navbar = () => {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-royal-bg/95 backdrop-blur-md border-b border-royal-accent/20">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-divine-primary/95 backdrop-blur-md border-b border-sacred-accent">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Button 
             variant="ghost" 
-            className="font-display text-2xl text-royal-accent hover:text-royal-accent/90 transition-colors p-0"
+            className="font-display text-2xl text-sacred-primary hover:text-sacred-dark transition-colors p-0"
             onClick={() => navigate("/")}
           >
             Subhakaryam
@@ -99,7 +99,7 @@ const Navbar = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-royal-accent hover:text-royal-accent/90 transition-colors"
+                className="text-sacred-primary hover:text-sacred-dark transition-colors"
                 onClick={handleProfileClick}
               >
                 <UserRound className="h-5 w-5" />
@@ -110,12 +110,12 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-royal-accent hover:text-royal-accent/90 transition-colors"
+                    className="md:hidden text-sacred-primary hover:text-sacred-dark transition-colors"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[250px] sm:w-[300px] bg-royal-bg border-l border-royal-accent/20">
+                <SheetContent side="right" className="w-[250px] sm:w-[300px] bg-divine-primary border-l border-sacred-accent">
                   <nav className="flex flex-col gap-2 mt-8">
                     <NavLinks />
                   </nav>
