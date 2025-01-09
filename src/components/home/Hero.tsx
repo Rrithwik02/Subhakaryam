@@ -90,7 +90,7 @@ const Hero = () => {
                 <Button 
                   size="lg"
                   variant="outline"
-                  className="bg-transparent border-2 border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold/10 hover:text-ceremonial-gold transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
+                  className="bg-transparent border-2 border-ceremonial-gold text-white hover:bg-ceremonial-gold/10 hover:text-white transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
                   onClick={() => navigate("/register/service-provider")}
                 >
                   Become a Provider
@@ -134,7 +134,6 @@ const Hero = () => {
             </CarouselContent>
           </Carousel>
         </div>
-
       </div>
 
       {session && (
