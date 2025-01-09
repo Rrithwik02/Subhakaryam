@@ -12,22 +12,22 @@ import Autoplay from "embla-carousel-autoplay";
 
 const eventImages = [
   {
-    url: "https://images.unsplash.com/photo-1617307322832-e49e79c58fd4",
+    url: "https://images.unsplash.com/photo-1583225214464-9296029427aa",
     alt: "Traditional Indian Wedding Ceremony",
   },
   {
-    url: "https://images.unsplash.com/photo-1544114664-dbf9c62f1512",
+    url: "https://images.unsplash.com/photo-1620403724063-8013d8b09e23",
     alt: "Indian Wedding Mandap Decoration",
   },
   {
-    url: "https://images.unsplash.com/photo-1630742623608-19a7c6951e91",
+    url: "https://images.unsplash.com/photo-1561731172-9d906d7b13bf",
     alt: "Indian Bridal Ceremony",
   },
   {
-    url: "https://images.unsplash.com/photo-1591604466107-ec97de577aff",
+    url: "https://images.unsplash.com/photo-1594753154778-273013529793",
     alt: "Traditional Hindu Wedding Rituals",
   },
-];
+};
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -124,6 +124,10 @@ const Hero = () => {
                       src={image.url}
                       alt={image.alt}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/placeholder.svg"; // Fallback image
+                      }}
                     />
                     <div className="absolute inset-0 bg-black/40" />
                   </div>
