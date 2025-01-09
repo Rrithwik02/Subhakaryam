@@ -12,22 +12,22 @@ import Autoplay from "embla-carousel-autoplay";
 
 const eventImages = [
   {
-    url: "https://images.unsplash.com/photo-1583225214464-9296029427aa",
+    url: "https://images.unsplash.com/photo-1583225214464-9296029427aa?auto=format&fit=crop&w=1920&q=80",
     alt: "Traditional Indian Wedding Ceremony",
   },
   {
-    url: "https://images.unsplash.com/photo-1620403724063-8013d8b09e23",
+    url: "https://images.unsplash.com/photo-1620403724063-8013d8b09e23?auto=format&fit=crop&w=1920&q=80",
     alt: "Indian Wedding Mandap Decoration",
   },
   {
-    url: "https://images.unsplash.com/photo-1561731172-9d906d7b13bf",
+    url: "https://images.unsplash.com/photo-1561731172-9d906d7b13bf?auto=format&fit=crop&w=1920&q=80",
     alt: "Indian Bridal Ceremony",
   },
   {
-    url: "https://images.unsplash.com/photo-1594753154778-273013529793",
+    url: "https://images.unsplash.com/photo-1594753154778-273013529793?auto=format&fit=crop&w=1920&q=80",
     alt: "Traditional Hindu Wedding Rituals",
-  },
-};
+  }
+];
 
 const Hero = () => {
   const navigate = useNavigate();
