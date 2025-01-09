@@ -12,20 +12,20 @@ import Autoplay from "embla-carousel-autoplay";
 
 const eventImages = [
   {
-    url: "https://images.unsplash.com/photo-1583225214464-9296029427aa?auto=format&fit=crop&w=1920&q=80",
-    alt: "Traditional Indian Wedding Ceremony",
+    url: "/images/indian-wedding-1.jpg",
+    alt: "Traditional Indian Wedding Ceremony with Mandap",
   },
   {
-    url: "https://images.unsplash.com/photo-1620403724063-8013d8b09e23?auto=format&fit=crop&w=1920&q=80",
-    alt: "Indian Wedding Mandap Decoration",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1561731172-9d906d7b13bf?auto=format&fit=crop&w=1920&q=80",
-    alt: "Indian Bridal Ceremony",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1594753154778-273013529793?auto=format&fit=crop&w=1920&q=80",
+    url: "/images/indian-wedding-2.jpg",
     alt: "Traditional Hindu Wedding Rituals",
+  },
+  {
+    url: "/images/indian-wedding-3.jpg",
+    alt: "Indian Wedding Celebration",
+  },
+  {
+    url: "/images/indian-wedding-4.jpg",
+    alt: "Traditional Indian Wedding Decorations",
   }
 ];
 
@@ -69,7 +69,6 @@ const Hero = () => {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] pt-16 bg-white">
-      {/* Main Hero Banner */}
       <div className="relative w-full h-[70vh] overflow-hidden">
         <div className="absolute inset-0 z-10 flex items-center justify-center text-white text-center p-4">
           <div className="max-w-4xl mx-auto">
@@ -83,7 +82,7 @@ const Hero = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg"
-                  className="bg-white text-purple-800 hover:bg-purple-50 transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg"
+                  className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-ceremonial-maroon transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg"
                   onClick={() => navigate("/search")}
                 >
                   Get an Estimate
@@ -91,7 +90,7 @@ const Hero = () => {
                 <Button 
                   size="lg"
                   variant="outline"
-                  className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-purple-800 transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg"
+                  className="border-2 border-ceremonial-gold text-white hover:bg-ceremonial-gold hover:text-ceremonial-maroon transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg"
                   onClick={() => navigate("/register/service-provider")}
                 >
                   Become a Provider
@@ -101,7 +100,6 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Event Images Carousel */}
         <div className="absolute inset-0">
           <Carousel 
             className="w-full h-full" 
@@ -126,10 +124,10 @@ const Hero = () => {
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder.svg"; // Fallback image
+                        target.src = "/placeholder.svg";
                       }}
                     />
-                    <div className="absolute inset-0 bg-black/40" />
+                    <div className="absolute inset-0 bg-ceremonial-maroon/40" />
                   </div>
                 </CarouselItem>
               ))}
@@ -138,11 +136,10 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Quick Actions for Logged In Users */}
       {session && (
         <div className="container mx-auto px-4 -mt-20 relative z-10 mb-12">
-          <div className="bg-white/95 backdrop-blur-md p-8 rounded-lg shadow-xl border border-purple-100">
-            <h2 className="text-2xl font-display font-bold text-purple-800 mb-6">
+          <div className="bg-ceremonial-cream/95 backdrop-blur-md p-8 rounded-lg shadow-xl border border-ceremonial-gold/20">
+            <h2 className="text-2xl font-display font-bold text-ceremonial-maroon mb-6">
               Welcome Back
             </h2>
             <div className="flex flex-wrap gap-4">
@@ -150,7 +147,7 @@ const Hero = () => {
                 <>
                   <Button 
                     size="lg"
-                    className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+                    className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
                     onClick={() => navigate("/dashboard")}
                   >
                     Provider Dashboard
@@ -158,7 +155,7 @@ const Hero = () => {
                   <Button 
                     size="lg"
                     variant="outline"
-                    className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
                     onClick={() => navigate("/provider/profile")}
                   >
                     View Profile
@@ -168,7 +165,7 @@ const Hero = () => {
                 <>
                   <Button 
                     size="lg"
-                    className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+                    className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
                     onClick={() => navigate("/search")}
                   >
                     Find Services
@@ -176,7 +173,7 @@ const Hero = () => {
                   <Button 
                     size="lg"
                     variant="outline"
-                    className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+                    className="border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
                     onClick={() => navigate("/profile")}
                   >
                     My Profile
