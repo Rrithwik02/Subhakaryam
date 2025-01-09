@@ -82,7 +82,7 @@ const Hero = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg"
-                  className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-ceremonial-maroon transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg border-2 border-ceremonial-cream/20 backdrop-blur-sm"
+                  className="bg-ceremonial-cream text-ceremonial-gold border-2 border-ceremonial-gold transition-all duration-300 transform hover:-translate-y-1 hover:bg-ceremonial-gold hover:text-white text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
                   onClick={() => navigate("/search")}
                 >
                   Get an Estimate
@@ -147,7 +147,7 @@ const Hero = () => {
                 <>
                   <Button 
                     size="lg"
-                    className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold/20"
+                    className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
                     onClick={() => navigate("/dashboard")}
                   >
                     Provider Dashboard
@@ -165,7 +165,7 @@ const Hero = () => {
                 <>
                   <Button 
                     size="lg"
-                    className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold/20"
+                    className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
                     onClick={() => navigate("/search")}
                   >
                     Find Services
