@@ -12,20 +12,20 @@ import Autoplay from "embla-carousel-autoplay";
 
 const eventImages = [
   {
-    url: "/images/indian-wedding-1.jpg",
-    alt: "Traditional Indian Wedding Ceremony with Mandap",
+    url: "/lovable-uploads/b7933b51-98b2-45e4-ac01-f2424ed5e781.png",
+    alt: "Traditional Indian Wedding Ceremony Offerings",
   },
   {
-    url: "/images/indian-wedding-2.jpg",
-    alt: "Traditional Hindu Wedding Rituals",
+    url: "/lovable-uploads/4079e9c8-f79f-4bf9-a1f7-1aeeea1f9e30.png",
+    alt: "Professional Wedding Photography Service",
   },
   {
-    url: "/images/indian-wedding-3.jpg",
-    alt: "Indian Wedding Celebration",
+    url: "/lovable-uploads/11ac3cd2-aa50-4a44-8bfd-e951d610fb7b.png",
+    alt: "Traditional Hindu Baby Ceremony",
   },
   {
-    url: "/images/indian-wedding-4.jpg",
-    alt: "Traditional Indian Wedding Decorations",
+    url: "/lovable-uploads/8b5f264e-7ce3-4d42-b1bf-46a28d9b54ca.png",
+    alt: "Traditional Mehndi Ceremony",
   }
 ];
 
@@ -82,7 +82,7 @@ const Hero = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg"
-                  className="bg-ceremonial-gold text-white border-2 border-ceremonial-gold transition-all duration-300 transform hover:-translate-y-1 hover:bg-ceremonial-gold/90 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
+                  className="bg-ceremonial-gold text-white border-2 border-ceremonial-gold transition-all duration-300 transform hover:-translate-y-1 hover:bg-ceremonial-gold/90 hover:border-ceremonial-gold/90 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
                   onClick={() => navigate("/search")}
                 >
                   Get an Estimate
@@ -90,7 +90,7 @@ const Hero = () => {
                 <Button 
                   size="lg"
                   variant="outline"
-                  className="bg-transparent border-2 border-ceremonial-gold text-white hover:bg-ceremonial-gold/10 hover:text-white transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
+                  className="bg-transparent border-2 border-ceremonial-gold text-white hover:bg-ceremonial-gold/10 hover:border-ceremonial-gold hover:text-white transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
                   onClick={() => navigate("/register/service-provider")}
                 >
                   Become a Provider
