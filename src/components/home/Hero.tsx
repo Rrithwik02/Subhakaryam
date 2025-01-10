@@ -127,7 +127,7 @@ const Hero = () => {
                         target.src = "/placeholder.svg";
                       }}
                     />
-                    <div className="absolute inset-0 bg-ceremonial-maroon/40" />
+                    <div className="absolute inset-0 bg-black/60" />
                   </div>
                 </CarouselItem>
               ))}
