@@ -10,16 +10,19 @@ const advertisements = [
     title: "Special Pooja Services",
     description: "Book our premium pooja services for all your ceremonies",
     image: "/lovable-uploads/b7933b51-98b2-45e4-ac01-f2424ed5e781.png",
+    tag: "Featured Service",
   },
   {
     title: "Wedding Photography",
     description: "Capture your special moments with our expert photographers",
     image: "/lovable-uploads/4079e9c8-f79f-4bf9-a1f7-1aeeea1f9e30.png",
+    tag: "Premium Provider",
   },
   {
     title: "Traditional Decorations",
     description: "Transform your venue with authentic traditional decorations",
     image: "/lovable-uploads/11ac3cd2-aa50-4a44-8bfd-e951d610fb7b.png",
+    tag: "Top Rated",
   },
 ];
 
@@ -53,7 +56,10 @@ const AdvertCarousel = () => {
                       alt={ad.title}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
+                    <div className="absolute inset-0 bg-black/60 group-hover:bg-black/70 transition-colors" />
+                    <div className="absolute top-4 right-4 bg-ceremonial-gold px-3 py-1 rounded-full text-xs font-semibold text-white">
+                      {ad.tag}
+                    </div>
                     <div className="absolute inset-0 flex flex-col justify-end p-4 text-white">
                       <h3 className="text-xl font-semibold mb-2">{ad.title}</h3>
                       <p className="text-sm opacity-90">{ad.description}</p>
