@@ -13,6 +13,8 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import SuggestionForm from "@/components/suggestions/SuggestionForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
+import AdvertCarousel from "@/components/home/AdvertCarousel";
+import EssentialsPreview from "@/components/home/EssentialsPreview";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -160,7 +162,9 @@ const Index = () => {
       </div>
 
       <Hero />
+      <AdvertCarousel />
       <Services />
+      <EssentialsPreview />
       <HowItWorks />
       <Testimonials />
       
