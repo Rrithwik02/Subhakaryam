@@ -4,11 +4,14 @@ import { serviceCategories } from "@/data/services";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useRef, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Services = () => {
   const navigate = useNavigate();
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const audioTimeoutRef = useRef<NodeJS.Timeout>();
+  const { toast } = useToast();
 
   const handleFindProviders = (serviceType: string) => {
     navigate(`/search?service=${encodeURIComponent(serviceType.toLowerCase())}`);
@@ -27,21 +30,47 @@ const Services = () => {
         setCurrentAudio(null);
       }
 
+      if (isLoading) return;
+
+      setIsLoading(true);
+
       // Set a small delay before starting new audio to prevent rapid switching
       audioTimeoutRef.current = setTimeout(async () => {
-        const { data, error } = await supabase.functions.invoke('voice-synthesis', {
-          body: { text }
-        });
+        try {
+          const { data, error } = await supabase.functions.invoke('voice-synthesis', {
+            body: { text }
+          });
 
-        if (error) throw error;
+          if (error) {
+            if (error.message.includes('Rate limit exceeded')) {
+              toast({
+                title: "Please wait",
+                description: "Too many requests. Please wait a moment before trying again.",
+                variant: "destructive"
+              });
+              return;
+            }
+            throw error;
+          }
 
-        const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
-        setCurrentAudio(audio);
-        audio.play();
+          const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+          setCurrentAudio(audio);
+          await audio.play();
+        } catch (error) {
+          console.error('Error generating speech:', error);
+          toast({
+            title: "Error",
+            description: "Failed to generate speech. Please try again later.",
+            variant: "destructive"
+          });
+        } finally {
+          setIsLoading(false);
+        }
       }, 300);
 
     } catch (error) {
       console.error('Error generating speech:', error);
+      setIsLoading(false);
     }
   };
 
@@ -65,8 +94,8 @@ const Services = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Large featured card */}
-          <Card className="md:col-span-2 p-6 transform transition-all duration-300 hover:scale-102 hover:shadow-lg bg-gradient-to-br from-ceremonial-cream to-white"
-                onMouseEnter={() => speakDescription(serviceCategories[0].description)}
+          <Card className="md:col-span-2 p-6 transform transition-all duration-300 hover:scale-102 hover:shadow-lg bg-gradient-to-br from-ceremonial-cream to-white shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff]"
+                onMouseEnter={() => !isLoading && speakDescription(serviceCategories[0].description)}
                 onMouseLeave={() => {
                   if (currentAudio) {
                     currentAudio.pause();
@@ -92,7 +121,7 @@ const Services = () => {
                   </p>
                   <Button 
                     variant="outline"
-                    className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-all duration-300"
+                    className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-all duration-300 shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] hover:shadow-[inset_5px_5px_10px_#d9d9d9,inset_-5px_-5px_10px_#ffffff]"
                     onClick={() => handleFindProviders(service.name)}
                   >
                     Find Providers
@@ -108,9 +137,9 @@ const Services = () => {
             return (
               <Card 
                 key={service.id} 
-                className="p-4 transform transition-all duration-300 hover:scale-102 hover:shadow-lg bg-gradient-to-br from-white to-ceremonial-cream"
+                className="p-4 transform transition-all duration-300 hover:scale-102 hover:shadow-lg bg-gradient-to-br from-white to-ceremonial-cream shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff]"
                 style={{ animationDelay: `${index * 100}ms` }}
-                onMouseEnter={() => speakDescription(service.description)}
+                onMouseEnter={() => !isLoading && speakDescription(service.description)}
                 onMouseLeave={() => {
                   if (currentAudio) {
                     currentAudio.pause();
@@ -132,7 +161,7 @@ const Services = () => {
                 </p>
                 <Button 
                   variant="outline"
-                  className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-all duration-300"
+                  className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-all duration-300 shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] hover:shadow-[inset_5px_5px_10px_#d9d9d9,inset_-5px_-5px_10px_#ffffff]"
                   onClick={() => handleFindProviders(service.name)}
                 >
                   Find Providers

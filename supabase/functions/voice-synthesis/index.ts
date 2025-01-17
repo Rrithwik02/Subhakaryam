@@ -15,6 +15,19 @@ serve(async (req) => {
     const ELEVEN_LABS_API_KEY = Deno.env.get('ELEVEN_LABS_API_KEY');
     const { text, voiceId = "21m00Tcm4TlvDq8ikWAM" } = await req.json();
 
+    if (!text) {
+      return new Response(
+        JSON.stringify({ error: "Text is required" }),
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    // Add delay to prevent rate limiting
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     const response = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
       {
@@ -35,7 +48,20 @@ serve(async (req) => {
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to generate speech: ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({ detail: response.statusText }));
+      console.error('ElevenLabs API Error:', errorData);
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Rate limit exceeded. Please try again in a few seconds." }),
+          {
+            status: 429,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
+
+      throw new Error(`Failed to generate speech: ${errorData.detail || response.statusText}`);
     }
 
     const audioBuffer = await response.arrayBuffer();
@@ -52,7 +78,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ error: error.message }),
       {
-        status: 500,
+        status: error.status || 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
