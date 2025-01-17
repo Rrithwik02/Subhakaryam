@@ -15,6 +15,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
 import AdvertCarousel from "@/components/home/AdvertCarousel";
 import EssentialsPreview from "@/components/home/EssentialsPreview";
+import Chatbot from "@/components/chat/Chatbot";
+
+// ... keep existing code (all the existing functionality)
 
 const Index = () => {
   const navigate = useNavigate();
@@ -95,7 +98,7 @@ const Index = () => {
                 <>
                   <Button
                     variant="outline"
-                    className="border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
+                    className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
                     onClick={() => navigate("/dashboard")}
                   >
                     <UserCog className="w-4 h-4" />
@@ -105,7 +108,7 @@ const Index = () => {
                     <DialogTrigger asChild>
                       <Button
                         variant="outline"
-                        className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
+                        className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
                       >
                         <Plus className="w-4 h-4" />
                         Add Extra Service
@@ -126,7 +129,7 @@ const Index = () => {
               {isAdmin && (
                 <Button
                   variant="outline"
-                  className="border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
+                  className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
                   onClick={() => navigate("/admin")}
                 >
                   <Shield className="w-4 h-4" />
@@ -135,7 +138,7 @@ const Index = () => {
               )}
               
               <Button
-                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
+                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
                 onClick={handleSignOut}
               >
                 Sign Out
@@ -145,13 +148,13 @@ const Index = () => {
             <>
               <Button
                 variant="outline"
-                className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
+                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
                 onClick={() => navigate("/login")}
               >
                 Sign In
               </Button>
               <Button
-                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
+                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
                 onClick={() => navigate("/register")}
               >
                 Join Us
@@ -173,7 +176,7 @@ const Index = () => {
           <Dialog>
             <DialogTrigger asChild>
               <Button
-                className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+                className="w-full shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90"
               >
                 Suggest a Service
               </Button>
@@ -188,6 +191,7 @@ const Index = () => {
         </div>
       )}
       
+      <Chatbot />
       <Footer />
     </div>
   );

@@ -58,25 +58,21 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
-        sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))'
-        }
       },
       fontFamily: {
         display: ["Playfair Display", "serif"],
         body: ["Inter", "sans-serif"],
       },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)'
+      fontSize: {
+        'dynamic-base': 'clamp(1rem, 0.95rem + 0.25vw, 1.125rem)',
+        'dynamic-lg': 'clamp(1.125rem, 1rem + 0.5vw, 1.25rem)',
+        'dynamic-xl': 'clamp(1.25rem, 1.125rem + 0.75vw, 1.5rem)',
+        'dynamic-2xl': 'clamp(1.5rem, 1.25rem + 1vw, 2rem)',
+        'dynamic-3xl': 'clamp(1.875rem, 1.5rem + 1.5vw, 2.5rem)',
+      },
+      boxShadow: {
+        'neuro': '5px 5px 10px #b8b8b8, -5px -5px 10px #ffffff',
+        'neuro-inset': 'inset 5px 5px 10px #d9d9d9, inset -5px -5px 10px #ffffff',
       },
       keyframes: {
         'accordion-down': {
