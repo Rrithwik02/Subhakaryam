@@ -42,25 +42,33 @@ const Services = () => {
           });
 
           if (error) {
-            if (error.message.includes('Rate limit exceeded')) {
+            console.error('Voice synthesis error:', error);
+            if (error.message?.includes('Rate limit exceeded')) {
               toast({
                 title: "Please wait",
                 description: "Too many requests. Please wait a moment before trying again.",
                 variant: "destructive"
               });
-              return;
+            } else {
+              toast({
+                title: "Error",
+                description: "Failed to generate speech. Please try again later.",
+                variant: "destructive"
+              });
             }
-            throw error;
+            return;
           }
 
-          const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
-          setCurrentAudio(audio);
-          await audio.play();
+          if (data?.audio) {
+            const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+            setCurrentAudio(audio);
+            await audio.play();
+          }
         } catch (error) {
-          console.error('Error generating speech:', error);
+          console.error('Error playing audio:', error);
           toast({
             title: "Error",
-            description: "Failed to generate speech. Please try again later.",
+            description: "Failed to play audio. Please try again later.",
             variant: "destructive"
           });
         } finally {
@@ -69,8 +77,13 @@ const Services = () => {
       }, 300);
 
     } catch (error) {
-      console.error('Error generating speech:', error);
+      console.error('Error in speech generation:', error);
       setIsLoading(false);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive"
+      });
     }
   };
 
