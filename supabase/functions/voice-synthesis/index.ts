@@ -12,19 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    const ELEVEN_LABS_API_KEY = Deno.env.get('ELEVEN_LABS_API_KEY');
-    
-    if (!ELEVEN_LABS_API_KEY) {
-      console.error('ELEVEN_LABS_API_KEY not found');
-      return new Response(
-        JSON.stringify({ error: 'API key not configured' }),
-        { 
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
     const { text } = await req.json();
     
     if (!text) {
@@ -37,7 +24,6 @@ serve(async (req) => {
       );
     }
 
-    // Using a specific voice ID for consistency
     const VOICE_ID = "21m00Tcm4TlvDq8ikWAM";
     
     const response = await fetch(
@@ -47,7 +33,7 @@ serve(async (req) => {
         headers: {
           'Accept': 'audio/mpeg',
           'Content-Type': 'application/json',
-          'xi-api-key': ELEVEN_LABS_API_KEY,
+          'xi-api-key': Deno.env.get('ELEVEN_LABS_API_KEY') || '',
         },
         body: JSON.stringify({
           text,
@@ -73,7 +59,7 @@ serve(async (req) => {
         );
       }
       
-      throw new Error(`Failed to generate speech: ${response.statusText}`);
+      throw new Error('Failed to generate speech');
     }
 
     const audioBuffer = await response.arrayBuffer();

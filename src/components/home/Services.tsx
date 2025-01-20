@@ -10,7 +10,6 @@ const Services = () => {
   const navigate = useNavigate();
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const audioTimeoutRef = useRef<NodeJS.Timeout>();
   const { toast } = useToast();
 
   const handleFindProviders = (serviceType: string) => {
@@ -19,11 +18,6 @@ const Services = () => {
 
   const speakDescription = async (text: string) => {
     try {
-      // Clear any existing timeout
-      if (audioTimeoutRef.current) {
-        clearTimeout(audioTimeoutRef.current);
-      }
-
       // Stop current audio if playing
       if (currentAudio) {
         currentAudio.pause();
@@ -34,56 +28,42 @@ const Services = () => {
 
       setIsLoading(true);
 
-      // Set a small delay before starting new audio to prevent rapid switching
-      audioTimeoutRef.current = setTimeout(async () => {
-        try {
-          const { data, error } = await supabase.functions.invoke('voice-synthesis', {
-            body: { text }
-          });
+      const { data, error } = await supabase.functions.invoke('voice-synthesis', {
+        body: { text }
+      });
 
-          if (error) {
-            console.error('Voice synthesis error:', error);
-            if (error.message?.includes('Rate limit exceeded')) {
-              toast({
-                title: "Please wait",
-                description: "Too many requests. Please wait a moment before trying again.",
-                variant: "destructive"
-              });
-            } else {
-              toast({
-                title: "Error",
-                description: "Failed to generate speech. Please try again later.",
-                variant: "destructive"
-              });
-            }
-            return;
-          }
-
-          if (data?.audio) {
-            const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
-            setCurrentAudio(audio);
-            await audio.play();
-          }
-        } catch (error) {
-          console.error('Error playing audio:', error);
+      if (error) {
+        console.error('Voice synthesis error:', error);
+        if (error.message?.includes('Rate limit exceeded')) {
           toast({
-            title: "Error",
-            description: "Failed to play audio. Please try again later.",
+            title: "Please wait",
+            description: "Too many requests. Please wait a moment before trying again.",
             variant: "destructive"
           });
-        } finally {
-          setIsLoading(false);
+        } else {
+          toast({
+            title: "Error",
+            description: "Failed to generate speech. Please try again later.",
+            variant: "destructive"
+          });
         }
-      }, 300);
+        return;
+      }
 
+      if (data?.audio) {
+        const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+        setCurrentAudio(audio);
+        await audio.play();
+      }
     } catch (error) {
       console.error('Error in speech generation:', error);
-      setIsLoading(false);
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again later.",
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -92,9 +72,6 @@ const Services = () => {
     return () => {
       if (currentAudio) {
         currentAudio.pause();
-      }
-      if (audioTimeoutRef.current) {
-        clearTimeout(audioTimeoutRef.current);
       }
     };
   }, []);
