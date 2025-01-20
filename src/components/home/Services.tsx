@@ -111,7 +111,7 @@ const Services = () => {
                   </p>
                   <Button 
                     variant="outline"
-                    className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-all duration-300 shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] hover:shadow-[inset_5px_5px_10px_#d9d9d9,inset_-5px_-5px_10px_#ffffff]"
+                    className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-colors"
                     onClick={() => handleFindProviders(service.name)}
                   >
                     Find Providers
@@ -151,7 +151,7 @@ const Services = () => {
                 </p>
                 <Button 
                   variant="outline"
-                  className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-all duration-300 shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] hover:shadow-[inset_5px_5px_10px_#d9d9d9,inset_-5px_-5px_10px_#ffffff]"
+                  className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-colors"
                   onClick={() => handleFindProviders(service.name)}
                 >
                   Find Providers
