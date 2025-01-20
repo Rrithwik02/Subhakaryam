@@ -37,7 +37,7 @@ serve(async (req) => {
       );
     }
 
-    // Using a specific voice ID for consistency (you can change this to any voice ID from ElevenLabs)
+    // Using a specific voice ID for consistency
     const VOICE_ID = "21m00Tcm4TlvDq8ikWAM";
     
     const response = await fetch(
@@ -61,7 +61,7 @@ serve(async (req) => {
     );
 
     if (!response.ok) {
-      console.error('ElevenLabs API error:', response.status, await response.text());
+      console.error('ElevenLabs API error:', await response.text());
       
       if (response.status === 429) {
         return new Response(
@@ -92,7 +92,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in voice synthesis:', error);
     return new Response(
-      JSON.stringify({ error: `Failed to generate speech: ${error.message}` }),
+      JSON.stringify({ error: error.message }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
