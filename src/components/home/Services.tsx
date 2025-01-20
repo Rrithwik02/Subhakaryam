@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { serviceCategories } from "@/data/services";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const Services = () => {
@@ -98,7 +98,7 @@ const Services = () => {
               return (
                 <>
                   <div className="flex justify-between items-start">
-                    <div className="animate-float">
+                    <div className="animate-float filter drop-shadow-[0_4px_8px_rgba(212,175,55,0.3)]">
                       <IconComponent className="w-12 h-12 text-ceremonial-gold" />
                     </div>
                   </div>
@@ -138,7 +138,7 @@ const Services = () => {
                 }}
               >
                 <div className="flex justify-between items-start">
-                  <div className="animate-float">
+                  <div className="animate-float filter drop-shadow-[0_4px_8px_rgba(212,175,55,0.3)]">
                     <IconComponent className="w-8 h-8 text-ceremonial-gold" />
                   </div>
                 </div>
