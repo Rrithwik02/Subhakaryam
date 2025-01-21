@@ -50,12 +50,15 @@ const Chatbot = () => {
 
       if (error) throw error;
 
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: data.choices[0].message.content
-      };
-
-      setMessages(prev => [...prev, assistantMessage]);
+      if (data?.choices?.[0]?.message?.content) {
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: data.choices[0].message.content
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      } else {
+        throw new Error('Invalid response format from chat service');
+      }
     } catch (error) {
       console.error('Chat error:', error);
       toast({
@@ -79,13 +82,16 @@ const Chatbot = () => {
         </Button>
       ) : (
         <div className="w-[350px] h-[500px] rounded-2xl overflow-hidden shadow-neuro bg-ceremonial-cream animate-scale-up">
-          <div className="p-4 bg-ceremonial-maroon text-white flex justify-between items-center">
-            <h3 className="font-display text-lg">Subhakaryam Assistant</h3>
+          <div className="p-4 bg-gradient-to-r from-ceremonial-maroon to-ceremonial-maroon/90 text-white flex justify-between items-center border-b border-ceremonial-gold/20">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5" />
+              <h3 className="font-display text-lg">Subhakaryam Assistant</h3>
+            </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsOpen(false)}
-              className="hover:bg-ceremonial-maroon/90 text-white"
+              className="hover:bg-white/10 text-white rounded-full"
             >
               <X className="w-5 h-5" />
             </Button>
@@ -125,7 +131,7 @@ const Chatbot = () => {
             </div>
           </ScrollArea>
           
-          <div className="p-4 border-t border-gray-200 bg-white/50">
+          <div className="p-4 border-t border-gray-200 bg-white/50 backdrop-blur-sm">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -139,9 +145,9 @@ const Chatbot = () => {
               <Button
                 onClick={handleSend}
                 disabled={isLoading}
-                className="bg-ceremonial-cream hover:bg-ceremonial-cream/90 shadow-neuro hover:shadow-neuro-inset transition-all duration-300"
+                className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white shadow-neuro hover:shadow-neuro-inset transition-all duration-300"
               >
-                <Send className="w-5 h-5 text-ceremonial-maroon" />
+                <Send className="w-5 h-5" />
               </Button>
             </div>
           </div>
