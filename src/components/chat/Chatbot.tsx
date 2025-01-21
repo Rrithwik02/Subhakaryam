@@ -36,34 +36,29 @@ const Chatbot = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('chat-completion', {
-        body: { 
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful assistant for Subhakaryam, a platform for ceremonial services. Keep responses brief, friendly, and focused on helping users with ceremonial service related questions.'
-            },
-            ...messages,
-            newMessage
-          ]
-        }
+        body: { messages: [...messages, newMessage] }
       });
 
-      if (error) throw error;
-
-      if (data?.choices?.[0]?.message?.content) {
-        const assistantMessage: Message = {
-          role: 'assistant',
-          content: data.choices[0].message.content
-        };
-        setMessages(prev => [...prev, assistantMessage]);
-      } else {
-        throw new Error('Invalid response format from chat service');
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error('Failed to connect to chat service');
       }
+
+      if (!data?.choices?.[0]?.message?.content) {
+        console.error('Invalid response format:', data);
+        throw new Error('Invalid response from chat service');
+      }
+
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: data.choices[0].message.content
+      };
+      setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Chat error:', error);
       toast({
         title: "Error",
-        description: "Failed to get response. Please try again.",
+        description: error.message || "Failed to get response. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -102,6 +97,13 @@ const Chatbot = () => {
               {messages.length === 0 && (
                 <div className="text-center text-gray-500 py-4">
                   <p className="text-sm">Welcome! How can I assist you with ceremonial services today?</p>
+                  <p className="text-xs mt-2">Try asking about:</p>
+                  <ul className="text-xs mt-1 space-y-1">
+                    <li>• Our services</li>
+                    <li>• Booking process</li>
+                    <li>• Service locations</li>
+                    <li>• Pricing information</li>
+                  </ul>
                 </div>
               )}
               {messages.map((msg, i) => (
