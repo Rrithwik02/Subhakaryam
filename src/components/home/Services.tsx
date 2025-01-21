@@ -29,7 +29,10 @@ const Services = () => {
       setIsLoading(true);
 
       const { data, error } = await supabase.functions.invoke('voice-synthesis', {
-        body: { text }
+        body: { 
+          text,
+          language: 'en-US'
+        }
       });
 
       if (error) {
