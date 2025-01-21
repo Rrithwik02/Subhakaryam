@@ -71,15 +71,15 @@ const Chatbot = () => {
       {!isOpen ? (
         <Button
           onClick={() => setIsOpen(true)}
-          className="rounded-full w-14 h-14 bg-ceremonial-cream hover:bg-ceremonial-cream/90 shadow-neuro transition-all duration-300 hover:scale-105"
+          className="rounded-full w-14 h-14 bg-ceremonial-gold hover:bg-ceremonial-gold/90 shadow-neuro transition-all duration-300 hover:scale-105"
         >
-          <MessageSquare className="w-6 h-6 text-ceremonial-maroon" />
+          <MessageSquare className="w-6 h-6 text-white" />
         </Button>
       ) : (
         <div className="w-[350px] h-[500px] rounded-2xl overflow-hidden shadow-neuro bg-ceremonial-cream animate-scale-up">
-          <div className="p-4 bg-gradient-to-r from-ceremonial-maroon to-ceremonial-maroon/90 text-white flex justify-between items-center border-b border-ceremonial-gold/20">
-            <div className="flex items-center gap-2">
-              <MessageSquare className="w-5 h-5" />
+          <div className="px-6 py-4 bg-ceremonial-gold text-white flex justify-between items-center border-b border-ceremonial-gold/20">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-6 h-6" />
               <h3 className="font-display text-lg">Subhakaryam Assistant</h3>
             </div>
             <Button
@@ -99,7 +99,7 @@ const Chatbot = () => {
                   <p className="text-sm">Welcome! How can I assist you with ceremonial services today?</p>
                   <p className="text-xs mt-2">Try asking about:</p>
                   <ul className="text-xs mt-1 space-y-1">
-                    <li>• Our services</li>
+                    <li>• Poojari services</li>
                     <li>• Booking process</li>
                     <li>• Service locations</li>
                     <li>• Pricing information</li>
@@ -114,7 +114,7 @@ const Chatbot = () => {
                   <div
                     className={`max-w-[80%] p-3 rounded-2xl ${
                       msg.role === 'user'
-                        ? 'bg-ceremonial-maroon text-white ml-4'
+                        ? 'bg-ceremonial-gold text-white ml-4'
                         : 'bg-white shadow-neuro-inset mr-4'
                     }`}
                   >
@@ -125,7 +125,7 @@ const Chatbot = () => {
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-white shadow-neuro-inset max-w-[80%] p-3 rounded-2xl mr-4">
-                    <Loader2 className="w-5 h-5 animate-spin text-ceremonial-maroon" />
+                    <Loader2 className="w-5 h-5 animate-spin text-ceremonial-gold" />
                   </div>
                 </div>
               )}
@@ -147,7 +147,7 @@ const Chatbot = () => {
               <Button
                 onClick={handleSend}
                 disabled={isLoading}
-                className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white shadow-neuro hover:shadow-neuro-inset transition-all duration-300"
+                className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white shadow-neuro hover:shadow-neuro-inset transition-all duration-300"
               >
                 <Send className="w-5 h-5" />
               </Button>
