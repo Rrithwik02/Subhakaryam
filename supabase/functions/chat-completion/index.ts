@@ -52,49 +52,70 @@ serve(async (req) => {
       }
     }
 
-    // If no pre-defined answer found, use OpenAI
+    // If no pre-defined answer found, use OpenAI with a retry mechanism
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: `You are a helpful assistant for Subhakaryam, a platform for ceremonial services. 
-            Focus on providing information about our services which include:
-            - Pooja services
-            - Wedding ceremonies
-            - Naming ceremonies
-            - House warming ceremonies
-            - Other traditional Hindu ceremonies
-            
-            Keep responses brief, friendly, and focused on helping users understand and book our services.
-            If users ask about topics unrelated to our services, politely redirect them to our ceremonial offerings.`
+    const maxRetries = 3;
+    let retries = 0;
+    let lastError = null;
+
+    while (retries < maxRetries) {
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openAIApiKey}`,
+            'Content-Type': 'application/json',
           },
-          ...messages
-        ],
-      }),
-    });
+          body: JSON.stringify({
+            model: 'gpt-3.5-turbo',
+            messages: [
+              {
+                role: 'system',
+                content: `You are a helpful assistant for Subhakaryam, a platform for ceremonial services. 
+                Focus on providing information about our services which include:
+                - Pooja services
+                - Wedding ceremonies
+                - Naming ceremonies
+                - House warming ceremonies
+                - Other traditional Hindu ceremonies
+                
+                Keep responses brief, friendly, and focused on helping users understand and book our services.
+                If users ask about topics unrelated to our services, politely redirect them to our ceremonial offerings.
+                
+                Always maintain a professional and respectful tone, acknowledging the sacred nature of these ceremonies.`
+              },
+              ...messages
+            ],
+            temperature: 0.7,
+            max_tokens: 150,
+          }),
+        });
 
-    const data = await response.json();
-    console.log('Received response:', data);
+        const data = await response.json();
+        console.log('Received response:', data);
 
-    if (!data.choices?.[0]?.message?.content) {
-      throw new Error('Invalid response format from OpenAI');
+        if (!data.choices?.[0]?.message?.content) {
+          throw new Error('Invalid response format from OpenAI');
+        }
+
+        return new Response(JSON.stringify(data), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      } catch (error) {
+        console.error(`Attempt ${retries + 1} failed:`, error);
+        lastError = error;
+        retries++;
+        if (retries < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * retries)); // Exponential backoff
+        }
+      }
     }
 
-    return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    throw lastError || new Error('Failed to get response after retries');
   } catch (error) {
     console.error('Error in chat completion:', error);
     return new Response(

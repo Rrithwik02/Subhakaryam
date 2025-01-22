@@ -15,6 +15,26 @@ const Login = () => {
   const { session, isLoading } = useSessionContext();
 
   useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully signed in.",
+        });
+        navigate("/");
+      }
+      if (event === 'SIGNED_OUT') {
+        toast({
+          title: "Signed out",
+          description: "You have been signed out successfully.",
+        });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate, toast]);
+
+  useEffect(() => {
     if (session) {
       navigate("/");
     }
@@ -63,11 +83,15 @@ const Login = () => {
                       container: 'w-full',
                       button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
                       divider: 'my-4',
+                      label: 'text-sm font-medium text-gray-700',
+                      input: 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-ceremonial-gold/50 focus:border-ceremonial-gold',
+                      message: 'text-sm text-red-500',
                     }
                   }}
                   theme="light"
                   providers={["google"]}
                   redirectTo={`${window.location.origin}/`}
+                  onlyThirdPartyProviders={false}
                 />
                 <div className="text-center mt-4">
                   <p className="text-sm text-gray-600">
@@ -102,11 +126,15 @@ const Login = () => {
                       container: 'w-full',
                       button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
                       divider: 'my-4',
+                      label: 'text-sm font-medium text-gray-700',
+                      input: 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-ceremonial-gold/50 focus:border-ceremonial-gold',
+                      message: 'text-sm text-red-500',
                     }
                   }}
                   theme="light"
                   providers={["google"]}
                   redirectTo={`${window.location.origin}/dashboard`}
+                  onlyThirdPartyProviders={false}
                 />
                 <div className="text-center mt-4">
                   <p className="text-sm text-gray-600">

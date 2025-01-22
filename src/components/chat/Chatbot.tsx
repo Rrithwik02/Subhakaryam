@@ -15,6 +15,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -28,6 +29,7 @@ const Chatbot = () => {
 
   const handleSend = async () => {
     if (!input.trim()) return;
+    setError(null);
 
     const newMessage: Message = { role: 'user', content: input };
     setMessages(prev => [...prev, newMessage]);
@@ -39,14 +41,10 @@ const Chatbot = () => {
         body: { messages: [...messages, newMessage] }
       });
 
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw new Error('Failed to connect to chat service');
-      }
+      if (error) throw error;
 
       if (!data?.choices?.[0]?.message?.content) {
-        console.error('Invalid response format:', data);
-        throw new Error('Invalid response from chat service');
+        throw new Error('Invalid response format');
       }
 
       const assistantMessage: Message = {
@@ -56,6 +54,7 @@ const Chatbot = () => {
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Chat error:', error);
+      setError('Failed to get response. Please try again.');
       toast({
         title: "Error",
         description: error.message || "Failed to get response. Please try again.",
@@ -76,8 +75,8 @@ const Chatbot = () => {
           <MessageSquare className="w-6 h-6 text-white" />
         </Button>
       ) : (
-        <div className="w-[350px] h-[500px] rounded-2xl overflow-hidden shadow-neuro bg-ceremonial-cream animate-scale-up">
-          <div className="px-8 py-4 bg-gradient-to-r from-ceremonial-gold to-ceremonial-gold/90 text-white flex justify-between items-center border-b border-ceremonial-gold/20">
+        <div className="w-[90vw] sm:w-[350px] h-[500px] rounded-2xl overflow-hidden shadow-neuro bg-ceremonial-cream animate-scale-up">
+          <div className="px-4 sm:px-8 py-4 bg-gradient-to-r from-ceremonial-gold to-ceremonial-gold/90 text-white flex justify-between items-center border-b border-ceremonial-gold/20">
             <div className="flex items-center gap-3">
               <MessageSquare className="w-6 h-6" />
               <h3 className="font-display text-lg">Subhakaryam Assistant</h3>
@@ -118,10 +117,15 @@ const Chatbot = () => {
                         : 'bg-white shadow-neuro-inset mr-4'
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                    <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
                   </div>
                 </div>
               ))}
+              {error && (
+                <div className="text-center p-2 text-sm text-red-500 bg-red-50 rounded-lg">
+                  {error}
+                </div>
+              )}
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-white shadow-neuro-inset max-w-[80%] p-3 rounded-2xl mr-4">
