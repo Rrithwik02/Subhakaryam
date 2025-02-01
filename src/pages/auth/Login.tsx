@@ -29,6 +29,18 @@ const Login = () => {
           description: "You have been signed out successfully.",
         });
       }
+      if (event === 'USER_UPDATED') {
+        toast({
+          title: "Profile updated",
+          description: "Your profile has been updated successfully.",
+        });
+      }
+      if (event === 'PASSWORD_RECOVERY') {
+        toast({
+          title: "Password recovery",
+          description: "Check your email for password reset instructions.",
+        });
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -91,7 +103,13 @@ const Login = () => {
                   theme="light"
                   providers={["google"]}
                   redirectTo={`${window.location.origin}/`}
-                  onlyThirdPartyProviders={false}
+                  onError={(error) => {
+                    toast({
+                      variant: "destructive",
+                      title: "Authentication Error",
+                      description: error.message,
+                    });
+                  }}
                 />
                 <div className="text-center mt-4">
                   <p className="text-sm text-gray-600">

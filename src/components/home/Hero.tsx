@@ -9,6 +9,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { useToast } from "@/hooks/use-toast";
 
 const eventImages = [
   {
@@ -32,6 +33,7 @@ const eventImages = [
 const Hero = () => {
   const navigate = useNavigate();
   const { session } = useSessionContext();
+  const { toast } = useToast();
 
   const { data: userProfile } = useQuery({
     queryKey: ["user-profile"],
@@ -42,9 +44,16 @@ const Hero = () => {
         .from("profiles")
         .select("user_type")
         .eq("id", session.user.id)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch user profile",
+        });
+        return null;
+      }
       return profile;
     },
     enabled: !!session?.user,
@@ -59,9 +68,16 @@ const Hero = () => {
         .from("service_providers")
         .select("id")
         .eq("profile_id", session.user.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error && error.code !== 'PGRST116') {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch service provider details",
+        });
+        return null;
+      }
       return data;
     },
     enabled: !!session?.user,
