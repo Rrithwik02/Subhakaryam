@@ -10,6 +10,9 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Shield, UserCog, Plus } from "lucide-react";
+import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
 
 const eventImages = [
   {
@@ -84,7 +87,94 @@ const Hero = () => {
   });
 
   const isAdmin = userProfile?.user_type === 'admin';
+  const isServiceProvider = !!serviceProvider;
   const isVerifiedProvider = serviceProvider?.status === 'verified';
+
+  const renderDashboardButtons = () => {
+    if (isAdmin) {
+      return (
+        <Button 
+          size="lg"
+          className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
+          onClick={() => navigate("/admin")}
+        >
+          <Shield className="w-4 h-4 mr-2" />
+          Admin Dashboard
+        </Button>
+      );
+    }
+
+    if (isServiceProvider) {
+      if (isVerifiedProvider) {
+        return (
+          <>
+            <Button 
+              size="lg"
+              className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
+              onClick={() => navigate("/dashboard")}
+            >
+              <UserCog className="w-4 h-4 mr-2" />
+              Provider Dashboard
+            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto border-2 border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Extra Service
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add Additional Service</DialogTitle>
+                </DialogHeader>
+                {serviceProvider?.id && (
+                  <AdditionalServiceForm providerId={serviceProvider.id} />
+                )}
+              </DialogContent>
+            </Dialog>
+            <Button 
+              size="lg"
+              variant="outline"
+              className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+              onClick={() => navigate("/provider/profile")}
+            >
+              View Profile
+            </Button>
+          </>
+        );
+      } else {
+        return (
+          <div className="w-full p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+            Your service provider account is pending verification. You'll be able to access your dashboard once verified.
+          </div>
+        );
+      }
+    }
+
+    return (
+      <>
+        <Button 
+          size="lg"
+          className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
+          onClick={() => navigate("/search")}
+        >
+          Find Services
+        </Button>
+        <Button 
+          size="lg"
+          variant="outline"
+          className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+          onClick={() => navigate("/profile")}
+        >
+          My Profile
+        </Button>
+      </>
+    );
+  };
 
   return (
     <div className="min-h-[calc(100vh-4rem)] pt-16 bg-white">
@@ -162,55 +252,7 @@ const Hero = () => {
               Welcome Back
             </h2>
             <div className="flex flex-wrap gap-4">
-              {isAdmin ? (
-                <Button 
-                  size="lg"
-                  className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
-                  onClick={() => navigate("/admin")}
-                >
-                  Admin Dashboard
-                </Button>
-              ) : isVerifiedProvider ? (
-                <>
-                  <Button 
-                    size="lg"
-                    className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    Provider Dashboard
-                  </Button>
-                  <Button 
-                    size="lg"
-                    variant="outline"
-                    className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
-                    onClick={() => navigate("/provider/profile")}
-                  >
-                    View Profile
-                  </Button>
-                </>
-              ) : serviceProvider ? (
-                <div className="w-full p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
-                  Your service provider account is pending verification. You'll be able to access your dashboard once verified.
-                </div>
-              ) : (
-                <>
-                  <Button 
-                    size="lg"
-                    className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
-                    onClick={() => navigate("/search")}
-                  >
-                    Find Services
-                  </Button>
-                  <Button 
-                    size="lg"
-                    variant="outline"
-                    className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
-                    onClick={() => navigate("/profile")}
-                  >
-                    My Profile
-                  </Button>
-                </>
-              )}
+              {renderDashboardButtons()}
             </div>
           </div>
         </div>
