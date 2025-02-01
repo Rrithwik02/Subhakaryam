@@ -13,8 +13,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Inbox } from "lucide-react";
+import { Calendar, Inbox, Clock } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
@@ -25,7 +27,7 @@ const ServiceDashboard = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("service_providers")
-        .select("id")
+        .select("*, profiles(*)")
         .eq("profile_id", session?.user?.id)
         .single();
 
@@ -95,72 +97,140 @@ const ServiceDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
-            <h2 className="text-3xl font-display font-bold text-ceremonial-maroon mb-6">
-              Service Requests
-            </h2>
-            
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              {requests && requests.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Client Name</TableHead>
-                      <TableHead>Contact</TableHead>
-                      <TableHead>Service Type</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Requested On</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {requests.map((request) => (
-                      <TableRow key={request.id}>
-                        <TableCell>{request.profiles?.full_name}</TableCell>
-                        <TableCell>{request.profiles?.email}</TableCell>
-                        <TableCell className="capitalize">{request.service_type}</TableCell>
-                        <TableCell>{request.description}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              request.status === "pending"
-                                ? "default"
-                                : request.status === "accepted"
-                                ? "secondary"
-                                : "destructive"
-                            }
-                          >
-                            {request.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {format(new Date(request.created_at), "PPp")}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                          >
-                            View Details
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+        {/* Provider Info Card */}
+        <Card className="bg-white shadow-lg">
+          <CardHeader className="border-b">
+            <div className="flex items-center gap-4">
+              {provider?.profile_image ? (
+                <img 
+                  src={provider.profile_image} 
+                  alt={provider.business_name}
+                  className="h-16 w-16 rounded-full object-cover"
+                />
               ) : (
-                <EmptyState />
+                <div className="h-16 w-16 rounded-full bg-ceremonial-gold/20 flex items-center justify-center">
+                  <span className="text-2xl font-display text-ceremonial-gold">
+                    {provider?.business_name?.[0]}
+                  </span>
+                </div>
               )}
+              <div>
+                <CardTitle className="text-2xl font-display text-ceremonial-maroon">
+                  {provider?.business_name}
+                </CardTitle>
+                <p className="text-sm text-gray-500">
+                  {provider?.profiles?.email} • {provider?.city}
+                </p>
+              </div>
+              <Badge 
+                variant="outline" 
+                className={`ml-auto ${
+                  provider?.status === 'verified' 
+                    ? 'border-green-500 text-green-500' 
+                    : 'border-yellow-500 text-yellow-500'
+                }`}
+              >
+                {provider?.status || 'Pending Verification'}
+              </Badge>
             </div>
-          </div>
-          
-          <div>
-            {provider && <AvailabilityCalendar providerId={provider.id} />}
-          </div>
-        </div>
+          </CardHeader>
+        </Card>
+
+        <Tabs defaultValue="requests" className="w-full">
+          <TabsList className="mb-6 bg-white/50 backdrop-blur-sm p-1 rounded-lg border">
+            <TabsTrigger 
+              value="requests"
+              className="data-[state=active]:bg-ceremonial-gold data-[state=active]:text-white"
+            >
+              Service Requests
+            </TabsTrigger>
+            <TabsTrigger 
+              value="availability"
+              className="data-[state=active]:bg-ceremonial-gold data-[state=active]:text-white"
+            >
+              Availability
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="requests">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-display text-ceremonial-maroon flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Recent Requests
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {requests && requests.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Client Name</TableHead>
+                          <TableHead>Contact</TableHead>
+                          <TableHead>Description</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Requested On</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {requests.map((request) => (
+                          <TableRow key={request.id}>
+                            <TableCell>{request.profiles?.full_name}</TableCell>
+                            <TableCell>{request.profiles?.email}</TableCell>
+                            <TableCell>{request.description}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  request.status === "pending"
+                                    ? "outline"
+                                    : request.status === "accepted"
+                                    ? "default"
+                                    : "destructive"
+                                }
+                              >
+                                {request.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {format(new Date(request.created_at), "PPp")}
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="hover:bg-ceremonial-gold hover:text-white transition-colors"
+                              >
+                                View Details
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <EmptyState />
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="availability">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-display text-ceremonial-maroon flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  Manage Availability
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {provider && <AvailabilityCalendar providerId={provider.id} />}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
