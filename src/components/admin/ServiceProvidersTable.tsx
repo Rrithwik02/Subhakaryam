@@ -14,6 +14,7 @@ import { Check, Plus, X, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { ServiceProviderStatus } from "@/integrations/supabase/types/services";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
@@ -46,7 +47,7 @@ const ServiceProvidersTable = () => {
     mutationFn: async (id: string) => {
       const { error } = await supabase
         .from("service_providers")
-        .update({ status: 'verified' })
+        .update({ status: 'verified' as ServiceProviderStatus })
         .eq("id", id);
 
       if (error) throw error;
@@ -143,7 +144,13 @@ const ServiceProvidersTable = () => {
                 <TableCell>
                   <Badge
                     variant={service.status === 'verified' ? 'default' : 'secondary'}
-                    className={service.status === 'verified' ? 'bg-green-500' : 'bg-yellow-500'}
+                    className={
+                      service.status === 'verified' 
+                        ? 'bg-green-500' 
+                        : service.status === 'rejected'
+                        ? 'bg-red-500'
+                        : 'bg-yellow-500'
+                    }
                   >
                     {service.status || 'pending'}
                   </Badge>

@@ -455,6 +455,7 @@ export type Database = {
           secondary_city: string | null
           service_type: string
           specializations: string[] | null
+          status: string | null
         }
         Insert: {
           base_price: number
@@ -472,6 +473,7 @@ export type Database = {
           secondary_city?: string | null
           service_type: string
           specializations?: string[] | null
+          status?: string | null
         }
         Update: {
           base_price?: number
@@ -489,6 +491,7 @@ export type Database = {
           secondary_city?: string | null
           service_type?: string
           specializations?: string[] | null
+          status?: string | null
         }
         Relationships: [
           {
