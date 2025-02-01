@@ -103,12 +103,15 @@ const Login = () => {
                   theme="light"
                   providers={["google"]}
                   redirectTo={`${window.location.origin}/`}
-                  onError={(error) => {
-                    toast({
-                      variant: "destructive",
-                      title: "Authentication Error",
-                      description: error.message,
-                    });
+                  view="sign_in"
+                  showLinks={true}
+                  localization={{
+                    variables: {
+                      sign_in: {
+                        email_label: 'Email',
+                        password_label: 'Password',
+                      }
+                    }
                   }}
                 />
                 <div className="text-center mt-4">
@@ -152,7 +155,16 @@ const Login = () => {
                   theme="light"
                   providers={["google"]}
                   redirectTo={`${window.location.origin}/dashboard`}
-                  onlyThirdPartyProviders={false}
+                  view="sign_in"
+                  showLinks={true}
+                  localization={{
+                    variables: {
+                      sign_in: {
+                        email_label: 'Email',
+                        password_label: 'Password',
+                      }
+                    }
+                  }}
                 />
                 <div className="text-center mt-4">
                   <p className="text-sm text-gray-600">
