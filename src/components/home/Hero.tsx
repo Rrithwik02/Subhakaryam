@@ -11,7 +11,7 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Shield, UserCog, Plus, Users, DollarSign, CheckSquare, AlertOctagon, Calendar } from "lucide-react";
+import { Shield, UserCog, Plus, Users, DollarSign, CheckSquare, AlertOctagon } from "lucide-react";
 import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -66,7 +66,7 @@ const Hero = () => {
   const { data: serviceProvider } = useQuery({
     queryKey: ["service-provider"],
     queryFn: async () => {
-      if (!session?.user) return null;
+      if (!session?.user || userProfile?.user_type !== 'service_provider') return null;
       
       const { data, error } = await supabase
         .from("service_providers")
@@ -84,11 +84,11 @@ const Hero = () => {
       }
       return data;
     },
-    enabled: !!session?.user,
+    enabled: !!session?.user && userProfile?.user_type === 'service_provider',
   });
 
   const isAdmin = userProfile?.user_type === 'admin';
-  const isServiceProvider = !!serviceProvider;
+  const isServiceProvider = userProfile?.user_type === 'service_provider';
   const isVerifiedProvider = serviceProvider?.status === 'verified';
 
   const renderAdminDashboard = () => {
