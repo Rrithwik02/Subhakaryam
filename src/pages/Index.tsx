@@ -8,7 +8,7 @@ import Footer from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, UserCog, Plus } from "lucide-react";
+import { Shield, UserCog, Plus, LogOut } from "lucide-react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import SuggestionForm from "@/components/suggestions/SuggestionForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -16,8 +16,6 @@ import AdditionalServiceForm from "@/components/service-provider/AdditionalServi
 import AdvertCarousel from "@/components/home/AdvertCarousel";
 import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
-
-// ... keep existing code (all the existing functionality)
 
 const Index = () => {
   const navigate = useNavigate();
@@ -30,7 +28,6 @@ const Index = () => {
   useEffect(() => {
     const checkUserStatus = async () => {
       if (session?.user) {
-        // Check admin status
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('user_type')
@@ -44,7 +41,6 @@ const Index = () => {
         
         setIsAdmin(profileData?.user_type === 'admin');
 
-        // Check service provider status
         const { data: providerData, error: providerError } = await supabase
           .from('service_providers')
           .select('id')
@@ -72,12 +68,12 @@ const Index = () => {
       if (error) throw error;
       
       toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
+        title: "Signed out successfully",
+        description: "You have been signed out of your account.",
       });
       
-      navigate("/");
-      window.location.reload();
+      // Force a page reload to clear all states
+      window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
@@ -138,9 +134,10 @@ const Index = () => {
               )}
               
               <Button
-                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
+                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md flex items-center gap-2"
                 onClick={handleSignOut}
               >
+                <LogOut className="w-4 h-4" />
                 Sign Out
               </Button>
             </>
