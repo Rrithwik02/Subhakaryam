@@ -74,7 +74,7 @@ const Hero = () => {
         .eq("profile_id", session.user.id)
         .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         toast({
           variant: "destructive",
           title: "Error",
