@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -10,20 +10,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Check, Plus, X, Shield } from "lucide-react";
+import { Check, Plus, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { ServiceProviderStatus } from "@/integrations/supabase/types/services";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const { 
     data: services, 
-    isLoading: isLoadingServices,
+    isLoading: isLoadingServices, 
+    refetch: refetchServices 
   } = useQuery({
     queryKey: ["admin-services"],
     queryFn: async () => {
@@ -43,81 +40,45 @@ const ServiceProvidersTable = () => {
     },
   });
 
-  const verifyProvider = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("service_providers")
-        .update({ status: 'verified' as ServiceProviderStatus })
-        .eq("id", id);
+  const togglePremium = async (id: string, currentStatus: boolean) => {
+    const { error } = await supabase
+      .from("service_providers")
+      .update({ is_premium: !currentStatus })
+      .eq("id", id);
 
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-services"] });
-      toast({
-        title: "Success",
-        description: "Service provider verified successfully",
-      });
-    },
-    onError: () => {
+    if (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to verify service provider",
+        description: "Failed to update service status",
       });
-    },
-  });
+      return;
+    }
 
-  const togglePremium = useMutation({
-    mutationFn: async ({ id, currentStatus }: { id: string; currentStatus: boolean }) => {
-      const { error } = await supabase
-        .from("service_providers")
-        .update({ is_premium: !currentStatus })
-        .eq("id", id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-services"] });
-      toast({
-        title: "Success",
-        description: "Premium status updated successfully",
-      });
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update premium status",
-      });
-    },
-  });
+    toast({
+      title: "Success",
+      description: "Service status updated successfully",
+    });
+    refetchServices();
+  };
 
   if (isLoadingServices) {
-    return (
-      <div className="space-y-3">
-        <div className="h-8 bg-gray-200 rounded animate-pulse" />
-        <div className="h-64 bg-gray-100 rounded animate-pulse" />
-      </div>
-    );
+    return <div className="animate-pulse h-32 bg-gray-100 rounded-lg" />;
   }
 
   return (
-    <Card className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-2xl font-display font-bold text-ceremonial-maroon">
-          Service Providers
-        </h3>
+    <div className="space-y-4">
+      <div className="flex justify-end">
         <Button
           onClick={() => navigate("/register/service-provider")}
           className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
         >
           <Plus className="mr-2 h-4 w-4" />
-          Add Provider
+          Add Service Provider
         </Button>
       </div>
       
-      <div className="overflow-x-auto rounded-lg border bg-white">
+      <div className="overflow-x-auto rounded-lg border bg-white shadow">
         <Table>
           <TableHeader>
             <TableRow>
@@ -127,8 +88,7 @@ const ServiceProvidersTable = () => {
               <TableHead>City</TableHead>
               <TableHead>Base Price</TableHead>
               <TableHead>Rating</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Premium</TableHead>
+              <TableHead>Premium Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -142,20 +102,6 @@ const ServiceProvidersTable = () => {
                 <TableCell>₹{service.base_price}</TableCell>
                 <TableCell>{service.rating || "N/A"}</TableCell>
                 <TableCell>
-                  <Badge
-                    variant={service.status === 'verified' ? 'default' : 'secondary'}
-                    className={
-                      service.status === 'verified' 
-                        ? 'bg-green-500' 
-                        : service.status === 'rejected'
-                        ? 'bg-red-500'
-                        : 'bg-yellow-500'
-                    }
-                  >
-                    {service.status || 'pending'}
-                  </Badge>
-                </TableCell>
-                <TableCell>
                   {service.is_premium ? (
                     <Check className="h-5 w-5 text-green-500" />
                   ) : (
@@ -163,37 +109,21 @@ const ServiceProvidersTable = () => {
                   )}
                 </TableCell>
                 <TableCell>
-                  <div className="flex gap-2">
-                    {service.status !== 'verified' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => verifyProvider.mutate(service.id)}
-                        className="hover:bg-green-500 hover:text-white transition-colors"
-                      >
-                        <Shield className="h-4 w-4 mr-1" />
-                        Verify
-                      </Button>
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => togglePremium.mutate({ 
-                        id: service.id, 
-                        currentStatus: !!service.is_premium 
-                      })}
-                      className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                    >
-                      Toggle Premium
-                    </Button>
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => togglePremium(service.id, !!service.is_premium)}
+                    className="hover:bg-ceremonial-gold hover:text-white transition-colors"
+                  >
+                    Toggle Premium
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-    </Card>
+    </div>
   );
 };
 

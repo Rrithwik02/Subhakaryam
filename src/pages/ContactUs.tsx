@@ -5,11 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 const ContactUs = () => {
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,42 +15,15 @@ const ContactUs = () => {
     message: ""
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/handle-contact`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to submit contact form');
-      }
-
-      toast({
-        title: "Message Sent",
-        description: "We'll get back to you as soon as possible.",
-      });
-      setFormData({ name: "", email: "", phone: "", message: "" });
-    } catch (error) {
-      console.error('Error submitting contact form:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Here you would typically send the data to your backend
+    console.log("Form submitted:", formData);
+    toast({
+      title: "Message Sent",
+      description: "We'll get back to you as soon as possible.",
+    });
+    setFormData({ name: "", email: "", phone: "", message: "" });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -80,7 +51,7 @@ const ContactUs = () => {
                 <Mail className="w-6 h-6 text-ceremonial-gold mt-1" />
                 <div>
                   <h3 className="font-semibold text-ceremonial-maroon">Email</h3>
-                  <p className="text-gray-600">subhakaryam.official@gmail.com</p>
+                  <p className="text-gray-600">support@subhakaryam.com</p>
                 </div>
               </Card>
 
@@ -169,10 +140,9 @@ const ContactUs = () => {
 
                 <Button 
                   type="submit"
-                  disabled={isSubmitting}
                   className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  Send Message
                 </Button>
               </form>
             </Card>

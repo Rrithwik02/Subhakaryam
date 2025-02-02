@@ -57,7 +57,6 @@ const ServiceProviderRegister = () => {
         city: primaryLocation,
         secondary_city: secondaryLocation || null,
         base_price: parseFloat(formData.get('base_price') as string),
-        status: 'pending'
       };
 
       const { error: providerError } = await supabase
@@ -70,22 +69,10 @@ const ServiceProviderRegister = () => {
 
       toast({
         title: "Success",
-        description: "Your service provider profile has been created and is pending verification.",
+        description: "Your service provider profile has been created successfully.",
       });
       
-      // Check if the user is an admin
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('user_type')
-        .eq('id', user.id)
-        .single();
-
-      // Redirect based on user type
-      if (profileData?.user_type === 'admin') {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate("/dashboard");
     } catch (error) {
       console.error('Error registering service provider:', error);
       toast({
