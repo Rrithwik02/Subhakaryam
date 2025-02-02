@@ -11,8 +11,9 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Shield, UserCog, Plus } from "lucide-react";
+import { Shield, UserCog, Plus, Users, DollarSign, CheckSquare, AlertOctagon, Calendar } from "lucide-react";
 import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const eventImages = [
   {
@@ -90,138 +91,76 @@ const Hero = () => {
   const isServiceProvider = !!serviceProvider;
   const isVerifiedProvider = serviceProvider?.status === 'verified';
 
-  const renderDashboardButtons = () => {
-    if (isAdmin) {
-      return (
+  const renderAdminDashboard = () => {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Services</CardTitle>
+            <CheckSquare className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">25</div>
+            <p className="text-xs text-muted-foreground">Active services</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Service Providers</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">12</div>
+            <p className="text-xs text-muted-foreground">Verified providers</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">₹45,231</div>
+            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
+            <AlertOctagon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">6</div>
+            <p className="text-xs text-muted-foreground">Awaiting review</p>
+          </CardContent>
+        </Card>
         <Button 
           size="lg"
-          className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
+          className="col-span-full w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
           onClick={() => navigate("/admin")}
         >
           <Shield className="w-4 h-4 mr-2" />
-          Admin Dashboard
+          Go to Admin Dashboard
         </Button>
-      );
-    }
-
-    if (isServiceProvider) {
-      if (isVerifiedProvider) {
-        return (
-          <>
-            <Button 
-              size="lg"
-              className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
-              onClick={() => navigate("/dashboard")}
-            >
-              <UserCog className="w-4 h-4 mr-2" />
-              Provider Dashboard
-            </Button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full sm:w-auto border-2 border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Extra Service
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add Additional Service</DialogTitle>
-                </DialogHeader>
-                {serviceProvider?.id && (
-                  <AdditionalServiceForm providerId={serviceProvider.id} />
-                )}
-              </DialogContent>
-            </Dialog>
-            <Button 
-              size="lg"
-              variant="outline"
-              className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
-              onClick={() => navigate("/provider/profile")}
-            >
-              View Profile
-            </Button>
-          </>
-        );
-      } else {
-        return (
-          <div className="w-full p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
-            Your service provider account is pending verification. You'll be able to access your dashboard once verified.
-          </div>
-        );
-      }
-    }
-
-    return (
-      <>
-        <Button 
-          size="lg"
-          className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
-          onClick={() => navigate("/search")}
-        >
-          Find Services
-        </Button>
-        <Button 
-          size="lg"
-          variant="outline"
-          className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
-          onClick={() => navigate("/profile")}
-        >
-          My Profile
-        </Button>
-      </>
+      </div>
     );
   };
 
-  return (
-    <div className="min-h-[calc(100vh-4rem)] pt-16 bg-white">
-      <div className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden">
-        <div className="absolute inset-0 z-10 flex items-center justify-center text-white text-center p-4">
-          <div className="max-w-4xl mx-auto px-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-display font-bold mb-6 leading-tight drop-shadow-lg">
-              Discover Sacred Traditions
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 max-w-2xl mx-auto font-body drop-shadow-lg">
-              Connect with expert ceremonial service providers for your most important occasions
-            </p>
-            {!session ? (
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg"
-                  className="w-full sm:w-auto bg-ceremonial-gold text-white border-2 border-ceremonial-gold transition-all duration-300 transform hover:-translate-y-1 hover:bg-ceremonial-gold/90 hover:border-ceremonial-gold/90 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
-                  onClick={() => navigate("/search")}
-                >
-                  Get an Estimate
-                </Button>
-                <Button 
-                  size="lg"
-                  variant="outline"
-                  className="w-full sm:w-auto bg-transparent border-2 border-ceremonial-gold text-white hover:bg-ceremonial-gold/10 hover:border-ceremonial-gold hover:text-white transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
-                  onClick={() => navigate("/register/service-provider")}
-                >
-                  Become a Provider
-                </Button>
-              </div>
-            ) : null}
-          </div>
+  const renderServiceProviderDashboard = () => {
+    if (!isVerifiedProvider) {
+      return (
+        <div className="w-full p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+          Your service provider account is pending verification. You'll be able to access your dashboard once verified.
         </div>
+      );
+    }
 
-        <div className="absolute inset-0">
+    return (
+      <div className="space-y-6 w-full">
+        <div className="relative w-full h-[40vh] overflow-hidden rounded-lg">
           <Carousel 
-            className="w-full h-full" 
-            plugins={[
-              Autoplay({
-                delay: 5000,
-                stopOnInteraction: true,
-              }),
-            ]}
-            opts={{
-              loop: true,
-              align: "start",
-            }}
+            plugins={[Autoplay({ delay: 5000 })]}
+            className="w-full h-full"
           >
             <CarouselContent>
               {eventImages.map((image, index) => (
@@ -231,18 +170,132 @@ const Hero = () => {
                       src={image.url}
                       alt={image.alt}
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder.svg";
-                      }}
                     />
-                    <div className="absolute inset-0 bg-black/60" />
+                    <div className="absolute inset-0 bg-black/40" />
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
           </Carousel>
         </div>
+
+        <div className="flex flex-wrap gap-4">
+          <Button 
+            size="lg"
+            className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
+            onClick={() => navigate("/dashboard")}
+          >
+            <UserCog className="w-4 h-4 mr-2" />
+            Provider Dashboard
+          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto border-2 border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Extra Service
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Additional Service</DialogTitle>
+              </DialogHeader>
+              {serviceProvider?.id && (
+                <AdditionalServiceForm providerId={serviceProvider.id} />
+              )}
+            </DialogContent>
+          </Dialog>
+          <Button 
+            size="lg"
+            variant="outline"
+            className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+            onClick={() => navigate("/provider/profile")}
+          >
+            View Profile
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderRegularUserButtons = () => (
+    <>
+      <Button 
+        size="lg"
+        className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg border-2 border-ceremonial-gold"
+        onClick={() => navigate("/search")}
+      >
+        Find Services
+      </Button>
+      <Button 
+        size="lg"
+        variant="outline"
+        className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
+        onClick={() => navigate("/profile")}
+      >
+        My Profile
+      </Button>
+    </>
+  );
+
+  return (
+    <div className="min-h-[calc(100vh-4rem)] pt-16 bg-white">
+      <div className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden">
+        {!session && (
+          <>
+            <div className="absolute inset-0 z-10 flex items-center justify-center text-white text-center p-4">
+              <div className="max-w-4xl mx-auto px-4">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-display font-bold mb-6 leading-tight drop-shadow-lg">
+                  Discover Sacred Traditions
+                </h1>
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 max-w-2xl mx-auto font-body drop-shadow-lg">
+                  Connect with expert ceremonial service providers for your most important occasions
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button 
+                    size="lg"
+                    className="w-full sm:w-auto bg-ceremonial-gold text-white border-2 border-ceremonial-gold transition-all duration-300 transform hover:-translate-y-1 hover:bg-ceremonial-gold/90 hover:border-ceremonial-gold/90 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
+                    onClick={() => navigate("/search")}
+                  >
+                    Get an Estimate
+                  </Button>
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    className="w-full sm:w-auto bg-transparent border-2 border-ceremonial-gold text-white hover:bg-ceremonial-gold/10 hover:border-ceremonial-gold hover:text-white transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg backdrop-blur-sm"
+                    onClick={() => navigate("/register/service-provider")}
+                  >
+                    Become a Provider
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="absolute inset-0">
+              <Carousel 
+                plugins={[Autoplay({ delay: 5000 })]}
+                className="w-full h-full"
+              >
+                <CarouselContent>
+                  {eventImages.map((image, index) => (
+                    <CarouselItem key={index} className="w-full h-full">
+                      <div className="relative w-full h-full">
+                        <img
+                          src={image.url}
+                          alt={image.alt}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/60" />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
+            </div>
+          </>
+        )}
       </div>
 
       {session && (
@@ -252,7 +305,9 @@ const Hero = () => {
               Welcome Back
             </h2>
             <div className="flex flex-wrap gap-4">
-              {renderDashboardButtons()}
+              {isAdmin && renderAdminDashboard()}
+              {isServiceProvider && renderServiceProviderDashboard()}
+              {!isAdmin && !isServiceProvider && renderRegularUserButtons()}
             </div>
           </div>
         </div>
