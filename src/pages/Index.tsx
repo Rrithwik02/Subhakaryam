@@ -17,19 +17,23 @@ import AdvertCarousel from "@/components/home/AdvertCarousel";
 import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
 
-// ... keep existing code (all the existing functionality)
-
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { session } = useSessionContext();
+  const { session, isLoading } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isServiceProvider, setIsServiceProvider] = useState(false);
   const [serviceProviderId, setServiceProviderId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkUserStatus = async () => {
-      if (session?.user) {
+      try {
+        if (!session?.user) {
+          setIsAdmin(false);
+          setIsServiceProvider(false);
+          return;
+        }
+
         // Check admin status
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
@@ -60,6 +64,8 @@ const Index = () => {
         if (providerData) {
           setServiceProviderId(providerData.id);
         }
+      } catch (error) {
+        console.error('Error in checkUserStatus:', error);
       }
     };
 
@@ -77,7 +83,6 @@ const Index = () => {
       });
       
       navigate("/");
-      window.location.reload();
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
@@ -87,6 +92,14 @@ const Index = () => {
       });
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-16">
@@ -165,7 +178,7 @@ const Index = () => {
       </div>
 
       <Hero />
-      <AdvertCarousel />
+      {!isAdmin && <AdvertCarousel />}
       <Services />
       <EssentialsPreview />
       <HowItWorks />
