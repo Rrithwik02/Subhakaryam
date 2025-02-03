@@ -1,10 +1,12 @@
-import { Settings } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Settings, Users, Calendar, IndianRupee, BellDot } from "lucide-react";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ServiceProvidersTable from "./ServiceProvidersTable";
 import UsersTable from "./UsersTable";
 import ReviewsTable from "./ReviewsTable";
@@ -19,6 +21,37 @@ const AdminDashboard = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch dashboard statistics
+  const { data: stats } = useQuery({
+    queryKey: ["admin-dashboard-stats"],
+    queryFn: async () => {
+      const [
+        { count: totalServices },
+        { count: serviceProviders },
+        { count: activeBookings },
+        { data: payments },
+        { count: pendingApprovals }
+      ] = await Promise.all([
+        supabase.from('service_providers').count(),
+        supabase.from('service_providers').count().eq('status', 'approved'),
+        supabase.from('bookings').count().eq('status', 'confirmed'),
+        supabase.from('payments').select('amount'),
+        supabase.from('service_providers').count().eq('status', 'pending')
+      ]);
+
+      const totalRevenue = payments?.reduce((sum, payment) => 
+        sum + (payment.amount || 0), 0) || 0;
+
+      return {
+        totalServices: totalServices || 0,
+        serviceProviders: serviceProviders || 0,
+        activeBookings: activeBookings || 0,
+        totalRevenue,
+        pendingApprovals: pendingApprovals || 0
+      };
+    },
+  });
 
   useEffect(() => {
     const checkAdminAccess = async () => {
@@ -72,6 +105,64 @@ const AdminDashboard = () => {
             Admin Dashboard
           </h2>
         </div>
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Services</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalServices || 0}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Service Providers</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.serviceProviders || 0}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Bookings</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.activeBookings || 0}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <IndianRupee className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">₹{stats?.totalRevenue || 0}</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Pending Approvals Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">Pending Service Approvals</CardTitle>
+            <BellDot className="h-4 w-4 text-ceremonial-gold" />
+          </CardHeader>
+          <CardContent>
+            {stats?.pendingApprovals ? (
+              <div className="text-lg">{stats.pendingApprovals} pending approval(s)</div>
+            ) : (
+              <div className="text-lg text-muted-foreground">No pending approvals</div>
+            )}
+          </CardContent>
+        </Card>
         
         <Tabs defaultValue="services" className="w-full">
           <TabsList className="mb-6 bg-white/50 backdrop-blur-sm p-1 rounded-lg border">
