@@ -26,16 +26,17 @@ const AdminDashboard = () => {
   const { data: stats } = useQuery({
     queryKey: ["admin-dashboard-stats"],
     queryFn: async () => {
-      type CountResponse = {
-        count: number | null;
+      type PostgrestCountResponse = {
+        data: unknown[];
+        count: number;
       };
 
       const [
-        { data: totalServicesData },
-        { data: serviceProvidersData },
-        { data: activeBookingsData },
+        totalServicesResponse,
+        serviceProvidersResponse,
+        activeBookingsResponse,
         { data: payments },
-        { data: pendingApprovalsData }
+        pendingApprovalsResponse
       ] = await Promise.all([
         supabase.from('service_providers').select('*', { count: 'exact', head: true }),
         supabase.from('service_providers').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
@@ -48,11 +49,11 @@ const AdminDashboard = () => {
         sum + (payment.amount || 0), 0) || 0;
 
       return {
-        totalServices: (totalServicesData as CountResponse)?.count || 0,
-        serviceProviders: (serviceProvidersData as CountResponse)?.count || 0,
-        activeBookings: (activeBookingsData as CountResponse)?.count || 0,
+        totalServices: (totalServicesResponse as PostgrestCountResponse).count || 0,
+        serviceProviders: (serviceProvidersResponse as PostgrestCountResponse).count || 0,
+        activeBookings: (activeBookingsResponse as PostgrestCountResponse).count || 0,
         totalRevenue,
-        pendingApprovals: (pendingApprovalsData as CountResponse)?.count || 0
+        pendingApprovals: (pendingApprovalsResponse as PostgrestCountResponse).count || 0
       };
     },
   });
