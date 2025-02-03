@@ -26,6 +26,10 @@ const AdminDashboard = () => {
   const { data: stats } = useQuery({
     queryKey: ["admin-dashboard-stats"],
     queryFn: async () => {
+      type CountResponse = {
+        count: number | null;
+      };
+
       const [
         { data: totalServicesData },
         { data: serviceProvidersData },
@@ -33,22 +37,22 @@ const AdminDashboard = () => {
         { data: payments },
         { data: pendingApprovalsData }
       ] = await Promise.all([
-        supabase.from('service_providers').select('id', { count: 'exact', head: true }),
-        supabase.from('service_providers').select('id', { count: 'exact', head: true }).eq('status', 'approved'),
-        supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'confirmed'),
+        supabase.from('service_providers').select('*', { count: 'exact', head: true }),
+        supabase.from('service_providers').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
+        supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'confirmed'),
         supabase.from('payments').select('amount'),
-        supabase.from('service_providers').select('id', { count: 'exact', head: true }).eq('status', 'pending')
+        supabase.from('service_providers').select('*', { count: 'exact', head: true }).eq('status', 'pending')
       ]);
 
       const totalRevenue = payments?.reduce((sum, payment) => 
         sum + (payment.amount || 0), 0) || 0;
 
       return {
-        totalServices: totalServicesData?.count || 0,
-        serviceProviders: serviceProvidersData?.count || 0,
-        activeBookings: activeBookingsData?.count || 0,
+        totalServices: (totalServicesData as CountResponse)?.count || 0,
+        serviceProviders: (serviceProvidersData as CountResponse)?.count || 0,
+        activeBookings: (activeBookingsData as CountResponse)?.count || 0,
         totalRevenue,
-        pendingApprovals: pendingApprovalsData?.count || 0
+        pendingApprovals: (pendingApprovalsData as CountResponse)?.count || 0
       };
     },
   });
