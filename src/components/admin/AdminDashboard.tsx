@@ -27,28 +27,28 @@ const AdminDashboard = () => {
     queryKey: ["admin-dashboard-stats"],
     queryFn: async () => {
       const [
-        { count: totalServices },
-        { count: serviceProviders },
-        { count: activeBookings },
+        { data: totalServicesData },
+        { data: serviceProvidersData },
+        { data: activeBookingsData },
         { data: payments },
-        { count: pendingApprovals }
+        { data: pendingApprovalsData }
       ] = await Promise.all([
-        supabase.from('service_providers').count(),
-        supabase.from('service_providers').count().eq('status', 'approved'),
-        supabase.from('bookings').count().eq('status', 'confirmed'),
+        supabase.from('service_providers').select('id', { count: 'exact', head: true }),
+        supabase.from('service_providers').select('id', { count: 'exact', head: true }).eq('status', 'approved'),
+        supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'confirmed'),
         supabase.from('payments').select('amount'),
-        supabase.from('service_providers').count().eq('status', 'pending')
+        supabase.from('service_providers').select('id', { count: 'exact', head: true }).eq('status', 'pending')
       ]);
 
       const totalRevenue = payments?.reduce((sum, payment) => 
         sum + (payment.amount || 0), 0) || 0;
 
       return {
-        totalServices: totalServices || 0,
-        serviceProviders: serviceProviders || 0,
-        activeBookings: activeBookings || 0,
+        totalServices: totalServicesData?.count || 0,
+        serviceProviders: serviceProvidersData?.count || 0,
+        activeBookings: activeBookingsData?.count || 0,
         totalRevenue,
-        pendingApprovals: pendingApprovals || 0
+        pendingApprovals: pendingApprovalsData?.count || 0
       };
     },
   });
