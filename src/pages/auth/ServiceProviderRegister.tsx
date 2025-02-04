@@ -93,17 +93,17 @@ const ServiceProviderRegister = () => {
   });
 
   return (
-    <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4 py-8">
-      <Card className="w-full max-w-2xl p-6 space-y-6 bg-white">
+    <div className="min-h-screen bg-ceremonial-cream py-16 px-4">
+      <Card className="max-w-2xl mx-auto p-8 space-y-8 bg-white shadow-lg">
         <div className="text-center">
-          <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-2">
+          <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-4">
             Register as Service Provider
           </h1>
-          <p className="text-gray-600">Join our network of trusted professionals</p>
+          <p className="text-gray-600 text-lg">Join our network of trusted professionals</p>
         </div>
         
         {showAuthForm ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <Auth
               supabaseClient={supabase}
               appearance={{
@@ -115,47 +115,58 @@ const ServiceProviderRegister = () => {
                       brandAccent: '#966F08',
                     }
                   }
+                },
+                className: {
+                  container: 'w-full',
+                  button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+                  divider: 'my-6',
                 }
               }}
               theme="light"
-              providers={[]}
+              providers={["google"]}
               view="sign_up"
             />
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <BasicInformation className="space-y-4" />
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <BasicInformation className="space-y-6" />
             
             <ServiceSelection 
-              className="space-y-4" 
+              className="space-y-6" 
               onServiceChange={setSelectedService} 
             />
 
             {selectedService && (
               <ServiceDetails 
                 selectedService={selectedService}
-                className="space-y-4 pt-4 border-t"
+                className="space-y-6 pt-6 border-t"
               />
             )}
 
-            <div className="space-y-4 pt-4 border-t">
-              <h2 className="text-xl font-display font-semibold text-ceremonial-maroon">
+            <div className="space-y-6 pt-6 border-t">
+              <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon">
                 Additional Information
               </h2>
               
               <ServiceAreas 
-                className="space-y-4" 
+                className="space-y-6" 
                 onPrimaryLocationChange={setPrimaryLocation}
                 onSecondaryLocationChange={setSecondaryLocation}
               />
               
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <label className="text-sm font-medium text-gray-700">
                   Base Price (₹)
                 </label>
-                <Input type="number" name="base_price" min="0" required />
+                <Input 
+                  type="number" 
+                  name="base_price" 
+                  min="0" 
+                  required 
+                  className="w-full"
+                />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <label className="text-sm font-medium text-gray-700">
                   About Your Services
                 </label>
@@ -163,13 +174,14 @@ const ServiceProviderRegister = () => {
                   name="description"
                   placeholder="Tell us more about your services and experience"
                   required
+                  className="w-full min-h-[120px]"
                 />
               </div>
             </div>
 
             <Button
               type="submit"
-              className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+              className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-xl py-6"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Registering..." : "Register as Service Provider"}

@@ -8,7 +8,7 @@ import Footer from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, UserCog, Plus, LogOut } from "lucide-react";
+import { Shield, UserCog, Plus, LogOut, Briefcase } from "lucide-react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import SuggestionForm from "@/components/suggestions/SuggestionForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -72,7 +72,6 @@ const Index = () => {
         description: "You have been signed out of your account.",
       });
       
-      // Force a page reload to clear all states
       window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
@@ -90,7 +89,7 @@ const Index = () => {
         <div className="flex gap-2">
           {session ? (
             <>
-              {isServiceProvider && (
+              {isServiceProvider ? (
                 <>
                   <Button
                     variant="outline"
@@ -120,6 +119,15 @@ const Index = () => {
                     </DialogContent>
                   </Dialog>
                 </>
+              ) : (
+                <Button
+                  variant="outline"
+                  className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
+                  onClick={() => navigate("/register/service-provider")}
+                >
+                  <Briefcase className="w-4 h-4" />
+                  Become a Service Provider
+                </Button>
               )}
               
               {isAdmin && (
