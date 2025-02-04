@@ -115,91 +115,112 @@ const ServiceDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white pt-24">
+      <div className="max-w-7xl mx-auto px-4 space-y-8">
+        <div className="mb-8">
+          <h1 className="text-4xl font-display font-bold text-ceremonial-maroon">
+            Service Provider Dashboard
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Manage your bookings and availability
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
-            <h2 className="text-3xl font-display font-bold text-ceremonial-maroon mb-6">
-              Service Requests
-            </h2>
-            
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              {requests && requests.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Client Name</TableHead>
-                      <TableHead>Contact</TableHead>
-                      <TableHead>Service Type</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Requested On</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {requests.map((request) => (
-                      <TableRow key={request.id}>
-                        <TableCell>{request.profiles?.full_name}</TableCell>
-                        <TableCell>{request.profiles?.email}</TableCell>
-                        <TableCell className="capitalize">{request.service_type}</TableCell>
-                        <TableCell>{request.description}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              request.status === "pending"
-                                ? "default"
-                                : request.status === "accepted"
-                                ? "secondary"
-                                : "destructive"
-                            }
-                          >
-                            {request.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {format(new Date(request.created_at), "PPp")}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                            onClick={() =>
-                              updateBookingStatus.mutate({
-                                bookingId: request.id,
-                                status: "accepted",
-                              })
-                            }
-                          >
-                            Accept
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            className="hover:bg-red-600 hover:text-white transition-colors"
-                            onClick={() =>
-                              updateBookingStatus.mutate({
-                                bookingId: request.id,
-                                status: "rejected",
-                              })
-                            }
-                          >
-                            Decline
-                          </Button>
-                        </TableCell>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl font-display text-ceremonial-maroon">
+                  Service Requests
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {requests && requests.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Client Name</TableHead>
+                        <TableHead>Contact</TableHead>
+                        <TableHead>Service Type</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Requested On</TableHead>
+                        <TableHead>Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              ) : (
-                <EmptyState />
-              )}
-            </div>
+                    </TableHeader>
+                    <TableBody>
+                      {requests.map((request) => (
+                        <TableRow key={request.id}>
+                          <TableCell>{request.profiles?.full_name}</TableCell>
+                          <TableCell>{request.profiles?.email}</TableCell>
+                          <TableCell className="capitalize">{request.service_type}</TableCell>
+                          <TableCell>{request.description}</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                request.status === "pending"
+                                  ? "default"
+                                  : request.status === "accepted"
+                                  ? "secondary"
+                                  : "destructive"
+                              }
+                            >
+                              {request.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {format(new Date(request.created_at), "PPp")}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="hover:bg-ceremonial-gold hover:text-white transition-colors"
+                              onClick={() =>
+                                updateBookingStatus.mutate({
+                                  bookingId: request.id,
+                                  status: "accepted",
+                                })
+                              }
+                            >
+                              Accept
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="hover:bg-red-600 hover:text-white transition-colors"
+                              onClick={() =>
+                                updateBookingStatus.mutate({
+                                  bookingId: request.id,
+                                  status: "rejected",
+                                })
+                              }
+                            >
+                              Decline
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <EmptyState />
+                )}
+              </CardContent>
+            </Card>
           </div>
           
           <div>
-            {provider && <AvailabilityCalendar providerId={provider.id} />}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl font-display text-ceremonial-maroon">
+                  Availability
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {provider && <AvailabilityCalendar providerId={provider.id} />}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

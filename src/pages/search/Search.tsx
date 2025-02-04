@@ -11,20 +11,25 @@ import ServiceCard from "@/components/search/ServiceCard";
 const Search = () => {
   const [searchParams] = useSearchParams();
   const initialServiceType = searchParams.get("service");
+  const [searchTerm, setSearchTerm] = useState("");
   const [city, setCity] = useState("");
   const [serviceType, setServiceType] = useState(initialServiceType?.toLowerCase() || "all");
   const [sortBy, setSortBy] = useState<"price_asc" | "price_desc" | "rating_desc">("rating_desc");
 
   const { data: services, isLoading, error, refetch } = useQuery({
-    queryKey: ["services", city, sortBy, serviceType],
+    queryKey: ["services", searchTerm, city, sortBy, serviceType],
     queryFn: async () => {
       try {
         let query = supabase
           .from("service_providers")
           .select("*, profiles(full_name)");
 
-        if (city) {
-          query = query.ilike("city", `%${city}%`);
+        if (searchTerm) {
+          query = query.ilike("business_name", `%${searchTerm}%`);
+        }
+
+        if (city && city !== "all") {
+          query = query.or(`city.ilike.%${city}%,secondary_city.ilike.%${city}%`);
         }
 
         if (serviceType && serviceType !== "all") {
@@ -55,12 +60,11 @@ const Search = () => {
         throw err;
       }
     },
-    retry: 1,
   });
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-16">
+      <div className="min-h-screen bg-gray-50 pt-24">
         <div className="container mx-auto px-4 py-8">
           <Alert variant="destructive" className="mb-6">
             <AlertCircle className="h-4 w-4" />
@@ -83,7 +87,7 @@ const Search = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto py-8 px-4 pt-16">
+      <div className="container mx-auto py-8 px-4 pt-24">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl font-display font-bold text-ceremonial-maroon mb-2">
             Find Services
@@ -93,6 +97,8 @@ const Search = () => {
           </p>
 
           <SearchFilters
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
             city={city}
             setCity={setCity}
             serviceType={serviceType}

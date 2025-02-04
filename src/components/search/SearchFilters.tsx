@@ -1,9 +1,16 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Search as SearchIcon } from "lucide-react";
-import { serviceCategories } from "@/data/services";
+
+const cities = [
+  { id: "vizag", name: "Visakhapatnam" },
+  { id: "vijayawada", name: "Vijayawada" },
+  { id: "hyderabad", name: "Hyderabad" },
+];
 
 interface SearchFiltersProps {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
   city: string;
   setCity: (city: string) => void;
   serviceType: string;
@@ -13,6 +20,8 @@ interface SearchFiltersProps {
 }
 
 const SearchFilters = ({
+  searchTerm,
+  setSearchTerm,
   city,
   setCity,
   serviceType,
@@ -27,12 +36,27 @@ const SearchFilters = ({
           <div className="relative">
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
-              placeholder="Search by city..."
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
+              placeholder="Search service providers..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
+        </div>
+        <div className="md:w-64">
+          <Select value={city} onValueChange={setCity}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select city" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Cities</SelectItem>
+              {cities.map((city) => (
+                <SelectItem key={city.id} value={city.id}>
+                  {city.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="md:w-64">
           <Select value={serviceType} onValueChange={setServiceType}>
