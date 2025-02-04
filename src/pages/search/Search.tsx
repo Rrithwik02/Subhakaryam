@@ -48,7 +48,7 @@ const Search = () => {
             query = query.order("base_price", { ascending: false });
             break;
           case "rating_desc":
-            query = query.order("rating", { ascending: false, nullsLast: true });
+            query = query.order("rating", { ascending: false, nullsFirst: false });
             break;
         }
 
