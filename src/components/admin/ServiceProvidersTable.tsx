@@ -103,7 +103,7 @@ const ServiceProvidersTable = () => {
                 <Badge
                   variant={
                     provider.status === "approved"
-                      ? "success"
+                      ? "secondary"
                       : provider.status === "rejected"
                       ? "destructive"
                       : "default"
