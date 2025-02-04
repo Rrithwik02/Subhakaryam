@@ -73,7 +73,6 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
     try {
       const advanceAmount = provider.base_price * 0.3; // 30% advance payment
       
-      // Fixed: Removed the extra colon from the URL by using the correct invoke method
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           bookingId,
@@ -215,9 +214,9 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
             />
 
             <div className="text-sm text-gray-500">
-              <p>Advance Payment (30%): ${(provider.base_price * 0.3).toFixed(2)}</p>
-              <p>Final Payment (70%): ${(provider.base_price * 0.7).toFixed(2)}</p>
-              <p className="font-semibold">Total: ${provider.base_price.toFixed(2)}</p>
+              <p>Advance Payment (30%): ₹{(provider.base_price * 0.3).toFixed(2)}</p>
+              <p>Final Payment (70%): ₹{(provider.base_price * 0.7).toFixed(2)}</p>
+              <p className="font-semibold">Total: ₹{provider.base_price.toFixed(2)}</p>
             </div>
 
             <DialogFooter>

@@ -15,10 +15,13 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { Inbox } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: provider } = useQuery({
     queryKey: ["service-provider"],
@@ -54,7 +57,8 @@ const ServiceDashboard = () => {
           *,
           profiles:user_id (
             full_name,
-            email
+            email,
+            phone
           )
         `)
         .eq("provider_id", provider.id)
@@ -72,6 +76,24 @@ const ServiceDashboard = () => {
       return data;
     },
     enabled: !!provider,
+  });
+
+  const updateBookingStatus = useMutation({
+    mutationFn: async ({ bookingId, status }: { bookingId: string; status: string }) => {
+      const { error } = await supabase
+        .from("bookings")
+        .update({ status })
+        .eq("id", bookingId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["service-requests"] });
+      toast({
+        title: "Success",
+        description: "Booking status updated successfully",
+      });
+    },
   });
 
   if (isLoading) {
@@ -143,8 +165,27 @@ const ServiceDashboard = () => {
                             variant="outline"
                             size="sm"
                             className="hover:bg-ceremonial-gold hover:text-white transition-colors"
+                            onClick={() =>
+                              updateBookingStatus.mutate({
+                                bookingId: request.id,
+                                status: "accepted",
+                              })
+                            }
                           >
-                            View Details
+                            Accept
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="hover:bg-red-600 hover:text-white transition-colors"
+                            onClick={() =>
+                              updateBookingStatus.mutate({
+                                bookingId: request.id,
+                                status: "rejected",
+                              })
+                            }
+                          >
+                            Decline
                           </Button>
                         </TableCell>
                       </TableRow>

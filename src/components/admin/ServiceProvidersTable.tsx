@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -10,119 +11,168 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Check, Plus, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [selectedProvider, setSelectedProvider] = useState<any>(null);
 
-  const { 
-    data: services, 
-    isLoading: isLoadingServices, 
-    refetch: refetchServices 
-  } = useQuery({
-    queryKey: ["admin-services"],
+  const { data: providers, isLoading } = useQuery({
+    queryKey: ["service-providers"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("service_providers")
-        .select("*, profiles(full_name, email)");
+        .select(`
+          *,
+          profiles:profile_id (
+            full_name,
+            email,
+            phone
+          )
+        `)
+        .order("created_at", { ascending: false });
 
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to fetch services",
-        });
-        return [];
-      }
+      if (error) throw error;
       return data;
     },
   });
 
-  const togglePremium = async (id: string, currentStatus: boolean) => {
-    const { error } = await supabase
-      .from("service_providers")
-      .update({ is_premium: !currentStatus })
-      .eq("id", id);
+  const updateStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase
+        .from("service_providers")
+        .update({ status })
+        .eq("id", id);
 
-    if (error) {
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["service-providers"] });
+      toast({
+        title: "Success",
+        description: "Provider status updated successfully",
+      });
+      setSelectedProvider(null);
+    },
+    onError: (error) => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update service status",
+        description: "Failed to update provider status",
       });
-      return;
-    }
+    },
+  });
 
-    toast({
-      title: "Success",
-      description: "Service status updated successfully",
-    });
-    refetchServices();
-  };
-
-  if (isLoadingServices) {
-    return <div className="animate-pulse h-32 bg-gray-100 rounded-lg" />;
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button
-          onClick={() => navigate("/register/service-provider")}
-          className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Service Provider
-        </Button>
-      </div>
-      
-      <div className="overflow-x-auto rounded-lg border bg-white shadow">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Business Name</TableHead>
-              <TableHead>Provider Name</TableHead>
-              <TableHead>Service Type</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>Base Price</TableHead>
-              <TableHead>Rating</TableHead>
-              <TableHead>Premium Status</TableHead>
-              <TableHead>Actions</TableHead>
+    <div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Business Name</TableHead>
+            <TableHead>Service Type</TableHead>
+            <TableHead>Contact Details</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {providers?.map((provider) => (
+            <TableRow key={provider.id}>
+              <TableCell>{provider.business_name}</TableCell>
+              <TableCell className="capitalize">{provider.service_type}</TableCell>
+              <TableCell>
+                <div className="space-y-1">
+                  <p>{provider.profiles?.full_name}</p>
+                  <p className="text-sm text-gray-500">{provider.profiles?.email}</p>
+                  <p className="text-sm text-gray-500">{provider.profiles?.phone}</p>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge
+                  variant={
+                    provider.status === "approved"
+                      ? "success"
+                      : provider.status === "rejected"
+                      ? "destructive"
+                      : "default"
+                  }
+                >
+                  {provider.status}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                {provider.status === "pending" && (
+                  <div className="space-x-2">
+                    <Button
+                      size="sm"
+                      onClick={() => setSelectedProvider(provider)}
+                    >
+                      Review
+                    </Button>
+                  </div>
+                )}
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {services?.map((service) => (
-              <TableRow key={service.id} className="hover:bg-gray-50">
-                <TableCell className="font-medium">{service.business_name}</TableCell>
-                <TableCell>{service.profiles?.full_name}</TableCell>
-                <TableCell className="capitalize">{service.service_type}</TableCell>
-                <TableCell>{service.city}</TableCell>
-                <TableCell>₹{service.base_price}</TableCell>
-                <TableCell>{service.rating || "N/A"}</TableCell>
-                <TableCell>
-                  {service.is_premium ? (
-                    <Check className="h-5 w-5 text-green-500" />
-                  ) : (
-                    <X className="h-5 w-5 text-red-500" />
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => togglePremium(service.id, !!service.is_premium)}
-                    className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                  >
-                    Toggle Premium
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+          ))}
+        </TableBody>
+      </Table>
+
+      <Dialog open={!!selectedProvider} onOpenChange={() => setSelectedProvider(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Review Service Provider Application</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-semibold">Business Details</h3>
+              <p>Name: {selectedProvider?.business_name}</p>
+              <p>Service: {selectedProvider?.service_type}</p>
+              <p>City: {selectedProvider?.city}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">Contact Information</h3>
+              <p>Name: {selectedProvider?.profiles?.full_name}</p>
+              <p>Email: {selectedProvider?.profiles?.email}</p>
+              <p>Phone: {selectedProvider?.profiles?.phone}</p>
+            </div>
+          </div>
+          <DialogFooter className="space-x-2">
+            <Button
+              variant="destructive"
+              onClick={() =>
+                updateStatus.mutate({
+                  id: selectedProvider?.id,
+                  status: "rejected",
+                })
+              }
+            >
+              Reject
+            </Button>
+            <Button
+              onClick={() =>
+                updateStatus.mutate({
+                  id: selectedProvider?.id,
+                  status: "approved",
+                })
+              }
+            >
+              Approve
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
