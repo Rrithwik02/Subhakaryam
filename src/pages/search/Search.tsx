@@ -24,18 +24,22 @@ const Search = () => {
           .from("service_providers")
           .select("*, profiles(full_name)");
 
+        // Search by business name
         if (searchTerm) {
           query = query.ilike("business_name", `%${searchTerm}%`);
         }
 
+        // Filter by city (including secondary city)
         if (city && city !== "all") {
           query = query.or(`city.ilike.%${city}%,secondary_city.ilike.%${city}%`);
         }
 
+        // Filter by service type
         if (serviceType && serviceType !== "all") {
-          query = query.ilike("service_type", `%${serviceType}%`);
+          query = query.eq("service_type", serviceType.toLowerCase());
         }
 
+        // Apply sorting
         switch (sortBy) {
           case "price_asc":
             query = query.order("base_price", { ascending: true });
@@ -44,7 +48,7 @@ const Search = () => {
             query = query.order("base_price", { ascending: false });
             break;
           case "rating_desc":
-            query = query.order("rating", { ascending: false });
+            query = query.order("rating", { ascending: false, nullsLast: true });
             break;
         }
 
