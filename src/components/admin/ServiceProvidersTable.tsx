@@ -76,7 +76,7 @@ const ServiceProvidersTable = () => {
   }
 
   return (
-    <div>
+    <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
@@ -90,11 +90,11 @@ const ServiceProvidersTable = () => {
         <TableBody>
           {providers?.map((provider) => (
             <TableRow key={provider.id}>
-              <TableCell>{provider.business_name}</TableCell>
+              <TableCell className="font-medium">{provider.business_name}</TableCell>
               <TableCell className="capitalize">{provider.service_type}</TableCell>
               <TableCell>
                 <div className="space-y-1">
-                  <p>{provider.profiles?.full_name}</p>
+                  <p className="font-medium">{provider.profiles?.full_name}</p>
                   <p className="text-sm text-gray-500">{provider.profiles?.email}</p>
                   <p className="text-sm text-gray-500">{provider.profiles?.phone}</p>
                 </div>
@@ -118,6 +118,7 @@ const ServiceProvidersTable = () => {
                     <Button
                       size="sm"
                       onClick={() => setSelectedProvider(provider)}
+                      className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
                     >
                       Review
                     </Button>
@@ -130,25 +131,25 @@ const ServiceProvidersTable = () => {
       </Table>
 
       <Dialog open={!!selectedProvider} onOpenChange={() => setSelectedProvider(null)}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Review Service Provider Application</DialogTitle>
+            <DialogTitle className="text-ceremonial-maroon">Review Service Provider Application</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold">Business Details</h3>
+              <h3 className="font-semibold text-ceremonial-maroon">Business Details</h3>
               <p>Name: {selectedProvider?.business_name}</p>
               <p>Service: {selectedProvider?.service_type}</p>
               <p>City: {selectedProvider?.city}</p>
             </div>
             <div>
-              <h3 className="font-semibold">Contact Information</h3>
+              <h3 className="font-semibold text-ceremonial-maroon">Contact Information</h3>
               <p>Name: {selectedProvider?.profiles?.full_name}</p>
               <p>Email: {selectedProvider?.profiles?.email}</p>
               <p>Phone: {selectedProvider?.profiles?.phone}</p>
             </div>
           </div>
-          <DialogFooter className="space-x-2">
+          <DialogFooter className="flex justify-end space-x-2">
             <Button
               variant="destructive"
               onClick={() =>
@@ -161,6 +162,7 @@ const ServiceProvidersTable = () => {
               Reject
             </Button>
             <Button
+              className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
               onClick={() =>
                 updateStatus.mutate({
                   id: selectedProvider?.id,

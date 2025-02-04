@@ -155,14 +155,14 @@ const AdminDashboard = () => {
         </div>
 
         {/* Pending Approvals Card */}
-        <Card>
+        <Card className="bg-white shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-base font-medium">Pending Service Approvals</CardTitle>
+            <CardTitle className="text-base font-medium text-ceremonial-maroon">Pending Service Approvals</CardTitle>
             <BellDot className="h-4 w-4 text-ceremonial-gold" />
           </CardHeader>
           <CardContent>
             {stats?.pendingApprovals ? (
-              <div className="text-lg">{stats.pendingApprovals} pending approval(s)</div>
+              <div className="text-lg font-medium">{stats.pendingApprovals} pending approval(s)</div>
             ) : (
               <div className="text-lg text-muted-foreground">No pending approvals</div>
             )}
@@ -195,21 +195,27 @@ const AdminDashboard = () => {
             <h3 className="text-xl font-semibold text-ceremonial-maroon">
               Service Providers Management
             </h3>
-            <ServiceProvidersTable />
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <ServiceProvidersTable />
+            </div>
           </TabsContent>
 
           <TabsContent value="users" className="space-y-4">
             <h3 className="text-xl font-semibold text-ceremonial-maroon">
               User Management
             </h3>
-            <UsersTable />
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <UsersTable />
+            </div>
           </TabsContent>
 
           <TabsContent value="reviews" className="space-y-4">
             <h3 className="text-xl font-semibold text-ceremonial-maroon">
               Review Management
             </h3>
-            <ReviewsTable />
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <ReviewsTable />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
