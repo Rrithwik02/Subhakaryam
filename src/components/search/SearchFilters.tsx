@@ -1,6 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Search as SearchIcon } from "lucide-react";
+import { serviceCategories } from "@/data/services";
 
 const cities = [
   { id: "vizag", name: "Visakhapatnam" },
