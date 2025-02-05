@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseAdmin } from "@/integrations/supabase/admin-client";
 import { useToast } from "@/hooks/use-toast";
 import {
   Table,
@@ -74,8 +75,8 @@ const UsersTable = () => {
 
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
-      // Delete from auth.users which will cascade to profiles due to foreign key
-      const { error } = await supabase.auth.admin.deleteUser(userId);
+      // Use the admin client for user deletion
+      const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
       
       if (error) {
         throw error;
@@ -92,7 +93,7 @@ const UsersTable = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete user",
+        description: "Failed to delete user. Make sure you have admin privileges.",
       });
       console.error("Delete user error:", error);
     },
