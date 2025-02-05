@@ -30,7 +30,7 @@ const ServiceDashboard = () => {
         .from("service_providers")
         .select("id")
         .eq("profile_id", session?.user?.id)
-        .single();
+        .maybeSingle();  // Changed from .single() to .maybeSingle()
 
       if (error) {
         toast({
