@@ -29,6 +29,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { format } from "date-fns";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -37,6 +39,7 @@ interface BookingDialogProps {
     id: string;
     business_name: string;
     base_price: number;
+    portfolio_images?: string[];
   };
 }
 
@@ -71,7 +74,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
   const handlePayment = async (bookingId: string) => {
     try {
-      const advanceAmount = provider.base_price * 0.3; // 30% advance payment
+      const advanceAmount = provider.base_price * 0.3;
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
@@ -81,10 +84,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
         },
       });
 
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
-      }
+      if (error) throw error;
 
       if (data?.url) {
         window.location.href = data.url;
@@ -144,10 +144,32 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Book Service with {provider.business_name}</DialogTitle>
+          <DialogTitle className="text-ceremonial-maroon">Book Service with {provider.business_name}</DialogTitle>
         </DialogHeader>
+
+        {provider.portfolio_images && provider.portfolio_images.length > 0 && (
+          <div className="mb-6">
+            <Carousel>
+              <CarouselContent>
+                {provider.portfolio_images.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <AspectRatio ratio={16 / 9}>
+                      <img
+                        src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
+                        alt={`Portfolio ${index + 1}`}
+                        className="rounded-lg object-cover w-full h-full"
+                      />
+                    </AspectRatio>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          </div>
+        )}
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -165,6 +187,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                       date < new Date() || date < new Date("1900-01-01")
                     }
                     initialFocus
+                    className="rounded-md border"
                   />
                   <FormMessage />
                 </FormItem>
