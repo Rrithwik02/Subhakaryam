@@ -75,12 +75,14 @@ const UsersTable = () => {
 
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
-      // Use the admin client for user deletion
-      const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+      // First delete the user from auth.users using admin client
+      const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(userId);
       
-      if (error) {
-        throw error;
+      if (authError) {
+        throw authError;
       }
+
+      // The profile will be automatically deleted due to the CASCADE constraint
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
@@ -93,7 +95,7 @@ const UsersTable = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete user. Make sure you have admin privileges.",
+        description: "Failed to delete user. Please try again.",
       });
       console.error("Delete user error:", error);
     },
