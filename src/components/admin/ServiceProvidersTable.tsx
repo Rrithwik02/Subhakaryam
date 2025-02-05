@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseAdmin } from "@/integrations/supabase/admin-client";
 import { useToast } from "@/hooks/use-toast";
 import {
   Table,
@@ -19,6 +20,18 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Trash2 } from "lucide-react";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
@@ -71,6 +84,50 @@ const ServiceProvidersTable = () => {
     },
   });
 
+  const deleteProvider = useMutation({
+    mutationFn: async (providerId: string) => {
+      // First get the profile_id
+      const { data: provider, error: fetchError } = await supabase
+        .from("service_providers")
+        .select("profile_id")
+        .eq("id", providerId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Delete the service provider
+      const { error: deleteError } = await supabase
+        .from("service_providers")
+        .delete()
+        .eq("id", providerId);
+
+      if (deleteError) throw deleteError;
+
+      // Delete the user from auth.users using admin client
+      if (provider.profile_id) {
+        const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(
+          provider.profile_id
+        );
+        if (authError) throw authError;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["service-providers"] });
+      toast({
+        title: "Success",
+        description: "Service provider deleted successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete service provider",
+      });
+      console.error("Delete provider error:", error);
+    },
+  });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -113,8 +170,8 @@ const ServiceProvidersTable = () => {
                 </Badge>
               </TableCell>
               <TableCell>
-                {provider.status === "pending" && (
-                  <div className="space-x-2">
+                <div className="space-x-2">
+                  {provider.status === "pending" && (
                     <Button
                       size="sm"
                       onClick={() => setSelectedProvider(provider)}
@@ -122,8 +179,38 @@ const ServiceProvidersTable = () => {
                     >
                       Review
                     </Button>
-                  </div>
-                )}
+                  )}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete the service
+                          provider account and all associated data.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteProvider.mutate(provider.id)}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </TableCell>
             </TableRow>
           ))}

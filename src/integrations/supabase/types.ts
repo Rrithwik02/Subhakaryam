@@ -448,7 +448,7 @@ export type Database = {
           id: string
           is_premium: boolean | null
           portfolio_images: string[] | null
-          portfolio_link: string
+          portfolio_link: string | null
           profile_id: string | null
           profile_image: string | null
           rating: number | null
@@ -466,7 +466,7 @@ export type Database = {
           id?: string
           is_premium?: boolean | null
           portfolio_images?: string[] | null
-          portfolio_link?: string
+          portfolio_link?: string | null
           profile_id?: string | null
           profile_image?: string | null
           rating?: number | null
@@ -484,7 +484,7 @@ export type Database = {
           id?: string
           is_premium?: boolean | null
           portfolio_images?: string[] | null
-          portfolio_link?: string
+          portfolio_link?: string | null
           profile_id?: string | null
           profile_image?: string | null
           rating?: number | null
