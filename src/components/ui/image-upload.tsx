@@ -9,9 +9,16 @@ import { Progress } from "./progress";
 interface ImageUploadProps {
   onUploadComplete: (url: string) => void;
   className?: string;
+  maxSizeInBytes?: number;
+  allowedFileTypes?: string[];
 }
 
-export function ImageUpload({ onUploadComplete, className }: ImageUploadProps) {
+export function ImageUpload({ 
+  onUploadComplete, 
+  className,
+  maxSizeInBytes = 5 * 1024 * 1024, // Default 5MB
+  allowedFileTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/heic"]
+}: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const { toast } = useToast();
@@ -22,10 +29,21 @@ export function ImageUpload({ onUploadComplete, className }: ImageUploadProps) {
         return;
       }
 
+      const file = event.target.files[0];
+
+      // Validate file type
+      if (!allowedFileTypes.includes(file.type)) {
+        throw new Error(`File type not allowed. Allowed types: ${allowedFileTypes.join(', ')}`);
+      }
+
+      // Validate file size
+      if (file.size > maxSizeInBytes) {
+        throw new Error(`File size too large. Maximum size: ${maxSizeInBytes / (1024 * 1024)}MB`);
+      }
+
       setUploading(true);
       setProgress(0);
 
-      const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
       const filePath = `${crypto.randomUUID()}.${fileExt}`;
 
@@ -41,7 +59,7 @@ export function ImageUpload({ onUploadComplete, className }: ImageUploadProps) {
       }, 100);
 
       const { error: uploadError, data } = await supabase.storage
-        .from('profile_images')
+        .from('portfolio_images')
         .upload(filePath, file, {
           cacheControl: '3600',
           upsert: false
@@ -55,7 +73,7 @@ export function ImageUpload({ onUploadComplete, className }: ImageUploadProps) {
       }
 
       const { data: { publicUrl } } = supabase.storage
-        .from('profile_images')
+        .from('portfolio_images')
         .getPublicUrl(filePath);
 
       onUploadComplete(publicUrl);
@@ -84,7 +102,7 @@ export function ImageUpload({ onUploadComplete, className }: ImageUploadProps) {
       <input
         type="file"
         id="image-upload"
-        accept="image/*"
+        accept={allowedFileTypes.join(',')}
         className="hidden"
         onChange={uploadImage}
         disabled={uploading}
