@@ -1,6 +1,6 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { SessionContextProvider } from "@supabase/auth-helpers-react";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import { SessionContextProvider, useSessionContext } from "@supabase/auth-helpers-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
 import Login from "./pages/auth/Login";
@@ -19,6 +19,7 @@ import ContactUs from "./pages/ContactUs";
 import Navbar from "./components/layout/Navbar";
 import UserProfile from "./pages/profile/UserProfile";
 import ServiceProviderProfile from "./pages/profile/ServiceProviderProfile";
+import { useToast } from "./hooks/use-toast";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,11 +30,42 @@ const queryClient = new QueryClient({
   },
 });
 
+const AuthStateHandler = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { session } = useSessionContext();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        queryClient.clear();
+        navigate('/login');
+        toast({
+          title: "Signed out",
+          description: "You have been signed out of your account.",
+        });
+      } else if (event === 'SIGNED_IN') {
+        toast({
+          title: "Signed in",
+          description: "Welcome back!",
+        });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate, toast]);
+
+  return null;
+};
+
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionContextProvider supabaseClient={supabase}>
         <Router>
+          <AuthStateHandler />
           <Navbar />
           <BackButton />
           <Routes>
