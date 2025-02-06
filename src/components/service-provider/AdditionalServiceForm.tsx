@@ -16,10 +16,21 @@ import {
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { X } from "lucide-react";
 
 interface AdditionalServiceFormProps {
   providerId: string;
 }
+
+const ALLOWED_FILE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "image/heic",
+];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_IMAGES = 5;
 
 const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   const { toast } = useToast();
@@ -81,6 +92,10 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
 
   const handleImageUpload = (url: string) => {
     try {
+      if (portfolioImages.length >= MAX_IMAGES) {
+        throw new Error(`Maximum ${MAX_IMAGES} images allowed`);
+      }
+      
       setPortfolioImages((prev) => [...prev, url]);
       setUploadError(null);
       
@@ -89,15 +104,22 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
         description: "Image uploaded successfully",
       });
     } catch (error: any) {
-      setUploadError("Failed to add image. Please try again.");
+      setUploadError(error.message);
       console.error("Error handling image upload:", error);
       
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to upload image. Please try again.",
+        description: error.message || "Failed to upload image. Please try again.",
       });
     }
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    setPortfolioImages((prev) => prev.filter((_, index) => index !== indexToRemove));
+    toast({
+      description: "Image removed successfully",
+    });
   };
 
   return (
@@ -141,20 +163,37 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
             </div>
 
             <div className="space-y-4">
-              <Label className="text-gray-700">Portfolio Images</Label>
+              <div className="flex justify-between items-center">
+                <Label className="text-gray-700">Portfolio Images</Label>
+                <span className="text-sm text-gray-500">
+                  {portfolioImages.length}/{MAX_IMAGES} images
+                </span>
+              </div>
               <div className="space-y-4">
-                <ImageUpload
-                  onUploadComplete={handleImageUpload}
-                  className="w-full"
-                />
+                {portfolioImages.length < MAX_IMAGES && (
+                  <ImageUpload
+                    onUploadComplete={handleImageUpload}
+                    className="w-full"
+                    maxSizeInBytes={MAX_FILE_SIZE}
+                    allowedFileTypes={ALLOWED_FILE_TYPES}
+                  />
+                )}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {portfolioImages.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`Portfolio ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
+                    <div key={index} className="relative group">
+                      <img
+                        src={image}
+                        alt={`Portfolio ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
