@@ -5,12 +5,12 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Shield, UserCog, Plus, LogOut, Briefcase } from "lucide-react";
 import SuggestionForm from "@/components/suggestions/SuggestionForm";
 import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
