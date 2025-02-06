@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AdditionalServiceFormProps {
   providerId: string;
@@ -26,12 +27,18 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setUploadError(null);
 
     try {
+      if (!serviceType || !description) {
+        throw new Error("Please fill in all required fields");
+      }
+
       const { error } = await supabase.from("additional_services").insert({
         provider_id: providerId,
         service_type: serviceType,
@@ -50,8 +57,9 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       setDescription("");
       setPortfolioImages([]);
       setIsOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting additional service:", error);
+      setUploadError(error.message);
       toast({
         variant: "destructive",
         title: "Error",
@@ -63,7 +71,13 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   };
 
   const handleImageUpload = (url: string) => {
-    setPortfolioImages((prev) => [...prev, url]);
+    try {
+      setPortfolioImages((prev) => [...prev, url]);
+      setUploadError(null);
+    } catch (error: any) {
+      setUploadError("Failed to add image. Please try again.");
+      console.error("Error handling image upload:", error);
+    }
   };
 
   return (
@@ -84,6 +98,12 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
         </DialogHeader>
         <Card className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {uploadError && (
+              <Alert variant="destructive">
+                <AlertDescription>{uploadError}</AlertDescription>
+              </Alert>
+            )}
+            
             <ServiceSelection 
               onServiceChange={setServiceType} 
               className="space-y-2"
