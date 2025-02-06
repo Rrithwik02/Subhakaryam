@@ -14,15 +14,14 @@ import {
 
 interface AdditionalServiceFormProps {
   providerId: string;
-  open: boolean;
-  onClose: () => void;
 }
 
-const AdditionalServiceForm = ({ providerId, open, onClose }: AdditionalServiceFormProps) => {
+const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   const { toast } = useToast();
   const [serviceType, setServiceType] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +43,7 @@ const AdditionalServiceForm = ({ providerId, open, onClose }: AdditionalServiceF
 
       setServiceType("");
       setDescription("");
-      onClose();
+      setIsOpen(false);
     } catch (error) {
       console.error("Error submitting additional service:", error);
       toast({
@@ -58,7 +57,7 @@ const AdditionalServiceForm = ({ providerId, open, onClose }: AdditionalServiceF
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-display font-bold text-ceremonial-maroon text-center">

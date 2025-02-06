@@ -17,6 +17,8 @@ import AdvertCarousel from "@/components/home/AdvertCarousel";
 import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
 
+// ... keep existing code (imports and initial state)
+
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
