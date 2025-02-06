@@ -28,7 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { session } = useSessionContext();
+  const { session, isLoading } = useSessionContext();
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [isServiceProvider, setIsServiceProvider] = React.useState(false);
   const [serviceProviderId, setServiceProviderId] = React.useState<string | null>(null);
@@ -139,12 +139,14 @@ const Index = () => {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
+      localStorage.clear(); // Clear any stored auth data
+      
       toast({
         title: "Signed out successfully",
         description: "You have been signed out of your account.",
       });
       
-      window.location.href = '/';
+      navigate('/login', { replace: true }); // Redirect to login page and replace history
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
@@ -154,6 +156,14 @@ const Index = () => {
       });
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-16">
