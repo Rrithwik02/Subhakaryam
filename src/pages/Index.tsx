@@ -65,7 +65,6 @@ const Index = () => {
           .maybeSingle();
 
         if (error) {
-          // Ignore PGRST116 error as it just means no rows were found
           if (error.code === 'PGRST116') {
             return null;
           }
@@ -79,7 +78,7 @@ const Index = () => {
       }
     },
     enabled: !!session?.user,
-    retry: false, // Don't retry failed queries
+    retry: false,
   });
 
   useEffect(() => {
@@ -105,7 +104,6 @@ const Index = () => {
             .eq('profile_id', session.user.id)
             .maybeSingle();
           
-          // Handle case where user is not a service provider yet
           if (providerError && providerError.code !== 'PGRST116') {
             console.error('Error checking provider status:', providerError);
             return;
