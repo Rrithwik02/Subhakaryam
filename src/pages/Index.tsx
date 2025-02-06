@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
@@ -40,7 +41,7 @@ const Index = () => {
         .from("profiles")
         .select("user_type")
         .eq("id", session.user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return profile;
@@ -57,7 +58,7 @@ const Index = () => {
         .from("service_providers")
         .select("id")
         .eq("profile_id", session.user.id)
-        .maybeSingle(); // Changed from single() to maybeSingle()
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
       return data;
@@ -72,7 +73,7 @@ const Index = () => {
           .from('profiles')
           .select('user_type')
           .eq('id', session.user.id)
-          .single();
+          .maybeSingle();
         
         if (profileError) {
           console.error('Error checking user status:', profileError);
@@ -85,7 +86,7 @@ const Index = () => {
           .from('service_providers')
           .select('id')
           .eq('profile_id', session.user.id)
-          .maybeSingle(); // Changed from single() to maybeSingle()
+          .maybeSingle();
         
         if (providerError && providerError.code !== 'PGRST116') {
           console.error('Error checking provider status:', providerError);
