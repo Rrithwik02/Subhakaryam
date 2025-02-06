@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -57,28 +58,33 @@ const Index = () => {
     queryFn: async () => {
       if (!session?.user) return null;
       
-      try {
-        const { data, error } = await supabase
-          .from("service_providers")
-          .select("id")
-          .eq("profile_id", session.user.id)
-          .maybeSingle();
+      const { data, error } = await supabase
+        .from("service_providers")
+        .select("id")
+        .eq("profile_id", session.user.id)
+        .maybeSingle();
 
-        if (error) {
-          if (error.code === 'PGRST116') {
-            return null;
-          }
-          console.error('Error fetching service provider:', error);
-          throw error;
+      // Handle PGRST116 error (no rows found) silently
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return null;
         }
-        return data;
-      } catch (error) {
-        console.error('Error in service provider query:', error);
-        return null;
+        throw error;
       }
+      return data;
     },
     enabled: !!session?.user,
     retry: false,
+    meta: {
+      onError: (error: any) => {
+        console.error('Error in service provider query:', error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to check service provider status",
+        });
+      },
+    },
   });
 
   useEffect(() => {
@@ -104,6 +110,7 @@ const Index = () => {
             .eq('profile_id', session.user.id)
             .maybeSingle();
           
+          // Only log error if it's not a "no rows found" error
           if (providerError && providerError.code !== 'PGRST116') {
             console.error('Error checking provider status:', providerError);
             return;
