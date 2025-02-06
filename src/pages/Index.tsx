@@ -45,21 +45,11 @@ const Index = () => {
 
       if (error) {
         console.error('Error fetching user profile:', error);
-        throw error;
+        return null;
       }
       return profile;
     },
     enabled: !!session?.user,
-    meta: {
-      onError: (error: Error) => {
-        console.error('Error in user profile query:', error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to fetch user profile",
-        });
-      },
-    },
   });
 
   const { data: serviceProvider } = useQuery({
@@ -74,8 +64,11 @@ const Index = () => {
           .eq("profile_id", session.user.id)
           .maybeSingle();
 
-        // Handle PGRST116 error (no rows found) gracefully
-        if (error && error.code !== 'PGRST116') {
+        if (error) {
+          // Ignore PGRST116 error as it just means no rows were found
+          if (error.code === 'PGRST116') {
+            return null;
+          }
           console.error('Error fetching service provider:', error);
           throw error;
         }
@@ -86,16 +79,7 @@ const Index = () => {
       }
     },
     enabled: !!session?.user,
-    meta: {
-      onError: (error: Error) => {
-        console.error('Error in service provider query:', error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to fetch service provider information",
-        });
-      },
-    },
+    retry: false, // Don't retry failed queries
   });
 
   useEffect(() => {
@@ -121,7 +105,7 @@ const Index = () => {
             .eq('profile_id', session.user.id)
             .maybeSingle();
           
-          // Handle PGRST116 error (no rows found) gracefully
+          // Handle case where user is not a service provider yet
           if (providerError && providerError.code !== 'PGRST116') {
             console.error('Error checking provider status:', providerError);
             return;
@@ -133,12 +117,17 @@ const Index = () => {
           }
         } catch (error) {
           console.error('Error in checkUserStatus:', error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to check user status",
+          });
         }
       }
     };
 
     checkUserStatus();
-  }, [session]);
+  }, [session, toast]);
 
   const handleSignOut = async () => {
     try {
@@ -278,6 +267,7 @@ const Index = () => {
       <Footer />
     </div>
   );
+
 };
 
 export default Index;
