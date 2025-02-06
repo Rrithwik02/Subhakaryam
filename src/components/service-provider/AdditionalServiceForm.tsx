@@ -40,6 +40,11 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
         throw new Error("Please fill in all required fields");
       }
 
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user) {
+        throw new Error("You must be logged in to submit additional services");
+      }
+
       const { error } = await supabase.from("additional_services").insert({
         provider_id: providerId,
         service_type: serviceType,
@@ -47,7 +52,10 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
         portfolio_images: portfolioImages,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Submission error:", error);
+        throw new Error(error.message);
+      }
 
       toast({
         title: "Success",
@@ -76,7 +84,6 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       setPortfolioImages((prev) => [...prev, url]);
       setUploadError(null);
       
-      // Show success toast for image upload
       toast({
         title: "Success",
         description: "Image uploaded successfully",
@@ -85,7 +92,6 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       setUploadError("Failed to add image. Please try again.");
       console.error("Error handling image upload:", error);
       
-      // Show error toast
       toast({
         variant: "destructive",
         title: "Error",
