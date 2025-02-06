@@ -31,12 +31,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trash2 } from "lucide-react";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
+  const [selectedAdditionalService, setSelectedAdditionalService] = useState<any>(null);
 
   const { data: providers, isLoading } = useQuery({
     queryKey: ["service-providers"],
@@ -49,6 +51,12 @@ const ServiceProvidersTable = () => {
             full_name,
             email,
             phone
+          ),
+          additional_services (
+            id,
+            service_type,
+            description,
+            status
           )
         `)
         .order("created_at", { ascending: false });
@@ -80,6 +88,32 @@ const ServiceProvidersTable = () => {
         variant: "destructive",
         title: "Error",
         description: "Failed to update provider status",
+      });
+    },
+  });
+
+  const updateAdditionalServiceStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase
+        .from("additional_services")
+        .update({ status })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["service-providers"] });
+      toast({
+        title: "Success",
+        description: "Additional service status updated successfully",
+      });
+      setSelectedAdditionalService(null);
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update additional service status",
       });
     },
   });
@@ -147,7 +181,14 @@ const ServiceProvidersTable = () => {
         <TableBody>
           {providers?.map((provider) => (
             <TableRow key={provider.id}>
-              <TableCell className="font-medium">{provider.business_name}</TableCell>
+              <TableCell className="font-medium">
+                {provider.business_name}
+                {provider.additional_services?.length > 0 && (
+                  <Badge variant="outline" className="ml-2">
+                    +{provider.additional_services.length} additional
+                  </Badge>
+                )}
+              </TableCell>
               <TableCell className="capitalize">{provider.service_type}</TableCell>
               <TableCell>
                 <div className="space-y-1">
@@ -178,6 +219,17 @@ const ServiceProvidersTable = () => {
                       className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
                     >
                       Review
+                    </Button>
+                  )}
+                  {provider.additional_services?.some(
+                    (service: any) => service.status === "pending"
+                  ) && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setSelectedAdditionalService(provider)}
+                    >
+                      Review Additional Services
                     </Button>
                   )}
                   <AlertDialog>
@@ -217,10 +269,13 @@ const ServiceProvidersTable = () => {
         </TableBody>
       </Table>
 
+      {/* Provider Review Dialog */}
       <Dialog open={!!selectedProvider} onOpenChange={() => setSelectedProvider(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-ceremonial-maroon">Review Service Provider Application</DialogTitle>
+            <DialogTitle className="text-ceremonial-maroon">
+              Review Service Provider Application
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -260,6 +315,58 @@ const ServiceProvidersTable = () => {
               Approve
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Additional Services Review Dialog */}
+      <Dialog
+        open={!!selectedAdditionalService}
+        onOpenChange={() => setSelectedAdditionalService(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-ceremonial-maroon">
+              Review Additional Services
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {selectedAdditionalService?.additional_services
+              ?.filter((service: any) => service.status === "pending")
+              .map((service: any) => (
+                <div key={service.id} className="border p-4 rounded-lg">
+                  <h3 className="font-semibold text-ceremonial-maroon">
+                    {service.service_type}
+                  </h3>
+                  <p className="text-gray-600 mt-2">{service.description}</p>
+                  <div className="flex justify-end space-x-2 mt-4">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() =>
+                        updateAdditionalServiceStatus.mutate({
+                          id: service.id,
+                          status: "rejected",
+                        })
+                      }
+                    >
+                      Reject
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+                      onClick={() =>
+                        updateAdditionalServiceStatus.mutate({
+                          id: service.id,
+                          status: "approved",
+                        })
+                      }
+                    >
+                      Approve
+                    </Button>
+                  </div>
+                </div>
+              ))}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
