@@ -13,24 +13,25 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Inbox } from "lucide-react";
+import { Inbox, AlertCircle } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: provider } = useQuery({
+  const { data: provider, isError: isProviderError } = useQuery({
     queryKey: ["service-provider"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("service_providers")
         .select("id")
         .eq("profile_id", session?.user?.id)
-        .maybeSingle();  // Changed from .single() to .maybeSingle()
+        .maybeSingle();
 
       if (error) {
         toast({
@@ -38,7 +39,7 @@ const ServiceDashboard = () => {
           title: "Error",
           description: "Failed to fetch provider information",
         });
-        return null;
+        throw error;
       }
 
       return data;
@@ -70,7 +71,7 @@ const ServiceDashboard = () => {
           title: "Error",
           description: "Failed to fetch service requests",
         });
-        return [];
+        throw error;
       }
 
       return data;
@@ -95,6 +96,38 @@ const ServiceDashboard = () => {
       });
     },
   });
+
+  if (isProviderError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white pt-24">
+        <div className="max-w-7xl mx-auto px-4">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              Failed to load service provider information. Please try again later.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    );
+  }
+
+  if (!provider) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white pt-24">
+        <div className="max-w-7xl mx-auto px-4">
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Not Found</AlertTitle>
+            <AlertDescription>
+              No service provider profile found. Please complete your registration first.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -172,32 +205,33 @@ const ServiceDashboard = () => {
                             {format(new Date(request.created_at), "PPp")}
                           </TableCell>
                           <TableCell>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                              onClick={() =>
-                                updateBookingStatus.mutate({
-                                  bookingId: request.id,
-                                  status: "accepted",
-                                })
-                              }
-                            >
-                              Accept
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              className="hover:bg-red-600 hover:text-white transition-colors"
-                              onClick={() =>
-                                updateBookingStatus.mutate({
-                                  bookingId: request.id,
-                                  status: "rejected",
-                                })
-                              }
-                            >
-                              Decline
-                            </Button>
+                            <div className="space-x-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="hover:bg-ceremonial-gold hover:text-white transition-colors"
+                                onClick={() =>
+                                  updateBookingStatus.mutate({
+                                    bookingId: request.id,
+                                    status: "accepted",
+                                  })
+                                }
+                              >
+                                Accept
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() =>
+                                  updateBookingStatus.mutate({
+                                    bookingId: request.id,
+                                    status: "rejected",
+                                  })
+                                }
+                              >
+                                Decline
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -218,7 +252,7 @@ const ServiceDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {provider && <AvailabilityCalendar providerId={provider.id} />}
+                <AvailabilityCalendar providerId={provider.id} />
               </CardContent>
             </Card>
           </div>
