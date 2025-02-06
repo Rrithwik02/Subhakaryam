@@ -60,7 +60,11 @@ const Index = () => {
         .eq("profile_id", session.user.id)
         .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      // Handle PGRST116 error (no rows found) gracefully
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching service provider:', error);
+        throw error;
+      }
       return data;
     },
     enabled: !!session?.user,
@@ -69,33 +73,38 @@ const Index = () => {
   useEffect(() => {
     const checkUserStatus = async () => {
       if (session?.user) {
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('user_type')
-          .eq('id', session.user.id)
-          .maybeSingle();
-        
-        if (profileError) {
-          console.error('Error checking user status:', profileError);
-          return;
-        }
-        
-        setIsAdmin(profileData?.user_type === 'admin');
+        try {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('user_type')
+            .eq('id', session.user.id)
+            .maybeSingle();
+          
+          if (profileError) {
+            console.error('Error checking user status:', profileError);
+            return;
+          }
+          
+          setIsAdmin(profileData?.user_type === 'admin');
 
-        const { data: providerData, error: providerError } = await supabase
-          .from('service_providers')
-          .select('id')
-          .eq('profile_id', session.user.id)
-          .maybeSingle();
-        
-        if (providerError && providerError.code !== 'PGRST116') {
-          console.error('Error checking provider status:', providerError);
-          return;
-        }
-        
-        setIsServiceProvider(!!providerData);
-        if (providerData) {
-          setServiceProviderId(providerData.id);
+          const { data: providerData, error: providerError } = await supabase
+            .from('service_providers')
+            .select('id')
+            .eq('profile_id', session.user.id)
+            .maybeSingle();
+          
+          // Handle PGRST116 error (no rows found) gracefully
+          if (providerError && providerError.code !== 'PGRST116') {
+            console.error('Error checking provider status:', providerError);
+            return;
+          }
+          
+          setIsServiceProvider(!!providerData);
+          if (providerData) {
+            setServiceProviderId(providerData.id);
+          }
+        } catch (error) {
+          console.error('Error in checkUserStatus:', error);
         }
       }
     };
