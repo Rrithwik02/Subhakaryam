@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { Button } from "./button";
@@ -63,11 +64,12 @@ export function ImageUpload({ onUploadComplete, className }: ImageUploadProps) {
         title: "Success",
         description: "Image uploaded successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Upload error:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to upload image. Please try again.",
+        description: error.message || "Failed to upload image. Please try again.",
       });
     } finally {
       setTimeout(() => {

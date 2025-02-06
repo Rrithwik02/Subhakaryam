@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -74,9 +75,22 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
     try {
       setPortfolioImages((prev) => [...prev, url]);
       setUploadError(null);
+      
+      // Show success toast for image upload
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully",
+      });
     } catch (error: any) {
       setUploadError("Failed to add image. Please try again.");
       console.error("Error handling image upload:", error);
+      
+      // Show error toast
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to upload image. Please try again.",
+      });
     }
   };
 
