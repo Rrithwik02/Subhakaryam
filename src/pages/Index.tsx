@@ -1,23 +1,27 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Shield, UserCog, Plus, LogOut, Briefcase } from "lucide-react";
+import SuggestionForm from "@/components/suggestions/SuggestionForm";
+import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
 import Hero from "@/components/home/Hero";
 import Services from "@/components/home/Services";
 import HowItWorks from "@/components/home/HowItWorks";
 import Testimonials from "@/components/home/Testimonials";
 import Footer from "@/components/layout/Footer";
-import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { Shield, UserCog, Plus, LogOut, Briefcase } from "lucide-react";
-import { useSessionContext } from "@supabase/auth-helpers-react";
-import SuggestionForm from "@/components/suggestions/SuggestionForm";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
 import AdvertCarousel from "@/components/home/AdvertCarousel";
 import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
-
-// ... keep existing code (imports and initial state)
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -26,6 +30,40 @@ const Index = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isServiceProvider, setIsServiceProvider] = useState(false);
   const [serviceProviderId, setServiceProviderId] = useState<string | null>(null);
+
+  const { data: userProfile } = useQuery({
+    queryKey: ["user-profile"],
+    queryFn: async () => {
+      if (!session?.user) return null;
+      
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("user_type")
+        .eq("id", session.user.id)
+        .single();
+
+      if (error) throw error;
+      return profile;
+    },
+    enabled: !!session?.user,
+  });
+
+  const { data: serviceProvider } = useQuery({
+    queryKey: ["service-provider"],
+    queryFn: async () => {
+      if (!session?.user) return null;
+      
+      const { data, error } = await supabase
+        .from("service_providers")
+        .select("id")
+        .eq("profile_id", session.user.id)
+        .maybeSingle(); // Changed from single() to maybeSingle()
+
+      if (error && error.code !== 'PGRST116') throw error;
+      return data;
+    },
+    enabled: !!session?.user,
+  });
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -47,9 +85,9 @@ const Index = () => {
           .from('service_providers')
           .select('id')
           .eq('profile_id', session.user.id)
-          .maybeSingle();
+          .maybeSingle(); // Changed from single() to maybeSingle()
         
-        if (providerError) {
+        if (providerError && providerError.code !== 'PGRST116') {
           console.error('Error checking provider status:', providerError);
           return;
         }
