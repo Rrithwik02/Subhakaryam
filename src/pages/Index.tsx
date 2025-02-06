@@ -43,10 +43,23 @@ const Index = () => {
         .eq("id", session.user.id)
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching user profile:', error);
+        throw error;
+      }
       return profile;
     },
     enabled: !!session?.user,
+    meta: {
+      onError: (error: Error) => {
+        console.error('Error in user profile query:', error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch user profile",
+        });
+      },
+    },
   });
 
   const { data: serviceProvider } = useQuery({
@@ -54,20 +67,35 @@ const Index = () => {
     queryFn: async () => {
       if (!session?.user) return null;
       
-      const { data, error } = await supabase
-        .from("service_providers")
-        .select("id")
-        .eq("profile_id", session.user.id)
-        .maybeSingle();
+      try {
+        const { data, error } = await supabase
+          .from("service_providers")
+          .select("id")
+          .eq("profile_id", session.user.id)
+          .maybeSingle();
 
-      // Handle PGRST116 error (no rows found) gracefully
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching service provider:', error);
-        throw error;
+        // Handle PGRST116 error (no rows found) gracefully
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error fetching service provider:', error);
+          throw error;
+        }
+        return data;
+      } catch (error) {
+        console.error('Error in service provider query:', error);
+        return null;
       }
-      return data;
     },
     enabled: !!session?.user,
+    meta: {
+      onError: (error: Error) => {
+        console.error('Error in service provider query:', error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch service provider information",
+        });
+      },
+    },
   });
 
   useEffect(() => {
