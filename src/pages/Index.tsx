@@ -129,27 +129,6 @@ const Index = () => {
     checkUserStatus();
   }, [session, toast]);
 
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      toast({
-        title: "Signed out successfully",
-        description: "You have been signed out of your account.",
-      });
-      
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Error signing out:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to sign out. Please try again.",
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen pt-16">
       <div className="absolute top-20 right-4 flex gap-4 z-50">
