@@ -9,6 +9,11 @@ import { ImagePlus, Link } from "lucide-react";
 export function PhotoFields() {
   const [showPortfolioImages, setShowPortfolioImages] = useState(true);
   const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
+  const [portfolioLink, setPortfolioLink] = useState("");
+
+  const handleImageUpload = (url: string) => {
+    setPortfolioImages((prev) => [...prev, url]);
+  };
 
   return (
     <div className="space-y-6">
@@ -18,6 +23,7 @@ export function PhotoFields() {
           placeholder="List your camera equipment and accessories"
           required
           className="w-full min-h-[100px]"
+          name="equipment_details"
         />
       </div>
       <div className="space-y-2">
@@ -26,6 +32,7 @@ export function PhotoFields() {
           placeholder="e.g., Traditional, Contemporary, Candid"
           required
           className="w-full"
+          name="photography_style"
         />
       </div>
       
@@ -56,8 +63,13 @@ export function PhotoFields() {
           {showPortfolioImages ? (
             <div className="space-y-4">
               <ImageUpload
-                onUploadComplete={(url) => setPortfolioImages([...portfolioImages, url])}
+                onUploadComplete={handleImageUpload}
                 className="w-full"
+              />
+              <input
+                type="hidden"
+                name="portfolio_images"
+                value={JSON.stringify(portfolioImages)}
               />
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {portfolioImages.map((image, index) => (
@@ -73,7 +85,10 @@ export function PhotoFields() {
           ) : (
             <Input
               type="url"
+              name="portfolio_link"
               placeholder="Enter your portfolio website URL"
+              value={portfolioLink}
+              onChange={(e) => setPortfolioLink(e.target.value)}
               required={!showPortfolioImages}
               className="w-full"
             />

@@ -5,12 +5,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { ServiceSelection } from "./ServiceSelection";
+import { ImageUpload } from "@/components/ui/image-upload";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
+import { Card } from "@/components/ui/card";
 
 interface AdditionalServiceFormProps {
   providerId: string;
@@ -20,6 +23,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   const { toast } = useToast();
   const [serviceType, setServiceType] = useState("");
   const [description, setDescription] = useState("");
+  const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -32,6 +36,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
         provider_id: providerId,
         service_type: serviceType,
         description,
+        portfolio_images: portfolioImages,
       });
 
       if (error) throw error;
@@ -43,6 +48,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
 
       setServiceType("");
       setDescription("");
+      setPortfolioImages([]);
       setIsOpen(false);
     } catch (error) {
       console.error("Error submitting additional service:", error);
@@ -56,39 +62,73 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
     }
   };
 
+  const handleImageUpload = (url: string) => {
+    setPortfolioImages((prev) => [...prev, url]);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-md">
+      <DialogTrigger asChild>
+        <Button
+          variant="outline"
+          className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
+        >
+          Add Extra Service
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-display font-bold text-ceremonial-maroon text-center">
+          <DialogTitle className="text-2xl font-display font-bold text-ceremonial-maroon text-center mb-6">
             Add Additional Service
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-          <ServiceSelection 
-            onServiceChange={setServiceType} 
-            className="space-y-2"
-          />
-          
-          <div className="space-y-2">
-            <Label className="text-gray-700">Description</Label>
-            <Textarea
-              placeholder="Describe the additional service you'd like to offer..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              className="min-h-[120px] resize-none"
+        <Card className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <ServiceSelection 
+              onServiceChange={setServiceType} 
+              className="space-y-2"
             />
-          </div>
+            
+            <div className="space-y-2">
+              <Label className="text-gray-700">Description</Label>
+              <Textarea
+                placeholder="Describe the additional service you'd like to offer..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                className="min-h-[120px] resize-none"
+              />
+            </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white py-6"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Submitting..." : "Submit Additional Service"}
-          </Button>
-        </form>
+            <div className="space-y-4">
+              <Label className="text-gray-700">Portfolio Images</Label>
+              <div className="space-y-4">
+                <ImageUpload
+                  onUploadComplete={handleImageUpload}
+                  className="w-full"
+                />
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {portfolioImages.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Portfolio ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white py-6"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit Additional Service"}
+            </Button>
+          </form>
+        </Card>
       </DialogContent>
     </Dialog>
   );
