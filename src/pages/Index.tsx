@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
@@ -28,9 +28,9 @@ const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { session } = useSessionContext();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isServiceProvider, setIsServiceProvider] = useState(false);
-  const [serviceProviderId, setServiceProviderId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = React.useState(false);
+  const [isServiceProvider, setIsServiceProvider] = React.useState(false);
+  const [serviceProviderId, setServiceProviderId] = React.useState<string | null>(null);
 
   const { data: userProfile } = useQuery({
     queryKey: ["user-profile"],
@@ -267,7 +267,6 @@ const Index = () => {
       <Footer />
     </div>
   );
-
 };
 
 export default Index;
