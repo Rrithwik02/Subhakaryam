@@ -48,23 +48,26 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="p-4 md:p-6">
         {service.portfolio_images && service.portfolio_images.length > 0 && (
-          <div className="mb-4">
+          <div className="mb-4 -mx-4 md:-mx-6">
             <Carousel className="w-full">
               <CarouselContent>
                 {service.portfolio_images.map((image, index) => (
                   <CarouselItem key={index}>
-                    <AspectRatio ratio={16 / 9}>
+                    <AspectRatio ratio={16 / 9} className="bg-muted">
                       <img
                         src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
                         alt={`Portfolio ${index + 1}`}
-                        className="rounded-lg object-cover w-full h-full"
+                        className="rounded-none md:rounded-lg object-cover w-full h-full"
+                        loading="lazy"
                       />
                     </AspectRatio>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
+              <div className="hidden md:block">
+                <CarouselPrevious />
+                <CarouselNext />
+              </div>
             </Carousel>
           </div>
         )}
