@@ -19,11 +19,12 @@ interface DeletionRequest {
   reason: string | null;
   status: string;
   created_at: string;
+  updated_at: string;
   profiles: {
     full_name: string | null;
     email: string | null;
     user_type: string | null;
-  } | null;
+  };
 }
 
 const DeletionRequestsTable = () => {
@@ -37,7 +38,7 @@ const DeletionRequestsTable = () => {
         .from("account_deletion_requests")
         .select(`
           *,
-          profiles:user_id (
+          profiles:profiles!user_id(
             full_name,
             email,
             user_type
@@ -46,7 +47,7 @@ const DeletionRequestsTable = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as DeletionRequest[];
+      return data as unknown as DeletionRequest[];
     },
   });
 
