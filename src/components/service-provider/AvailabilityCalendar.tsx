@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { X } from "lucide-react";
 
 const daysOfWeek = [
   "Sunday",
@@ -50,6 +52,11 @@ const AvailabilityCalendar = ({ providerId }: { providerId: string }) => {
 
   const updateAvailability = useMutation({
     mutationFn: async () => {
+      // Check if we already have 7 days set
+      if (availability && availability.length >= 7 && !availability.some(slot => slot.day_of_week === selectedDay)) {
+        throw new Error("Maximum 7 days of availability can be set");
+      }
+
       const { error } = await supabase
         .from("service_provider_availability")
         .upsert({
@@ -68,11 +75,36 @@ const AvailabilityCalendar = ({ providerId }: { providerId: string }) => {
         description: "Availability updated successfully",
       });
     },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to update availability",
+      });
+    },
+  });
+
+  const deleteAvailability = useMutation({
+    mutationFn: async (slotId: string) => {
+      const { error } = await supabase
+        .from("service_provider_availability")
+        .delete()
+        .eq("id", slotId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["availability"] });
+      toast({
+        title: "Success",
+        description: "Availability slot deleted successfully",
+      });
+    },
     onError: () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update availability",
+        description: "Failed to delete availability slot",
       });
     },
   });
@@ -146,9 +178,17 @@ const AvailabilityCalendar = ({ providerId }: { providerId: string }) => {
               {availability.map((slot) => (
                 <li key={slot.id} className="flex justify-between items-center text-sm">
                   <span>{daysOfWeek[slot.day_of_week]}</span>
-                  <span>
-                    {slot.start_time} - {slot.end_time}
-                  </span>
+                  <div className="flex items-center gap-4">
+                    <span>
+                      {slot.start_time} - {slot.end_time}
+                    </span>
+                    <button
+                      onClick={() => deleteAvailability.mutate(slot.id)}
+                      className="p-1 text-red-500 hover:bg-red-50 rounded-full"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
