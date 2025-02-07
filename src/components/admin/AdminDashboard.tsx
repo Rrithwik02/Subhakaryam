@@ -1,7 +1,9 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ServiceProvidersTable from "./ServiceProvidersTable";
 import UsersTable from "./UsersTable";
 import ReviewsTable from "./ReviewsTable";
+import DeletionRequestsTable from "./DeletionRequestsTable";
 
 const AdminDashboard = () => {
   return (
@@ -12,7 +14,7 @@ const AdminDashboard = () => {
             Admin Dashboard
           </h1>
           <p className="text-gray-600 mt-2">
-            Manage service providers, users, and reviews
+            Manage service providers, users, reviews, and account deletion requests
           </p>
         </div>
 
@@ -21,6 +23,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="providers">Service Providers</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
+            <TabsTrigger value="deletion-requests">Deletion Requests</TabsTrigger>
           </TabsList>
 
           <TabsContent value="providers" className="bg-white rounded-lg shadow-lg p-6">
@@ -33,6 +36,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="reviews" className="bg-white rounded-lg shadow-lg p-6">
             <ReviewsTable />
+          </TabsContent>
+
+          <TabsContent value="deletion-requests" className="bg-white rounded-lg shadow-lg p-6">
+            <DeletionRequestsTable />
           </TabsContent>
         </Tabs>
       </div>
