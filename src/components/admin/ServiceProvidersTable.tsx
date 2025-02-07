@@ -57,6 +57,15 @@ const ServiceProvidersTable = () => {
             service_type,
             description,
             status
+          ),
+          provider_payment_details (
+            payment_method,
+            account_holder_name,
+            bank_name,
+            account_number,
+            ifsc_code,
+            upi_id,
+            qr_code_url
           )
         `)
         .order("created_at", { ascending: false });
@@ -271,25 +280,81 @@ const ServiceProvidersTable = () => {
 
       {/* Provider Review Dialog */}
       <Dialog open={!!selectedProvider} onOpenChange={() => setSelectedProvider(null)}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-ceremonial-maroon">
               Review Service Provider Application
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
               <h3 className="font-semibold text-ceremonial-maroon">Business Details</h3>
               <p>Name: {selectedProvider?.business_name}</p>
               <p>Service: {selectedProvider?.service_type}</p>
               <p>City: {selectedProvider?.city}</p>
+              <p>Description: {selectedProvider?.description}</p>
             </div>
+            
             <div>
               <h3 className="font-semibold text-ceremonial-maroon">Contact Information</h3>
               <p>Name: {selectedProvider?.profiles?.full_name}</p>
               <p>Email: {selectedProvider?.profiles?.email}</p>
               <p>Phone: {selectedProvider?.profiles?.phone}</p>
             </div>
+            
+            {selectedProvider?.portfolio_images?.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-ceremonial-maroon mb-3">Portfolio Images</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {selectedProvider.portfolio_images.map((image: string, index: number) => (
+                    <div key={index} className="relative aspect-square">
+                      <img
+                        src={image}
+                        alt={`Portfolio ${index + 1}`}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedProvider?.provider_payment_details && (
+              <div>
+                <h3 className="font-semibold text-ceremonial-maroon">Payment Information</h3>
+                {selectedProvider.provider_payment_details.payment_method === 'bank_account' && (
+                  <div className="space-y-2">
+                    <p>Payment Method: Bank Account</p>
+                    <p>Account Holder: {selectedProvider.provider_payment_details.account_holder_name}</p>
+                    <p>Bank Name: {selectedProvider.provider_payment_details.bank_name}</p>
+                    <p>Account Number: {selectedProvider.provider_payment_details.account_number}</p>
+                    <p>IFSC Code: {selectedProvider.provider_payment_details.ifsc_code}</p>
+                  </div>
+                )}
+                
+                {selectedProvider.provider_payment_details.payment_method === 'upi' && (
+                  <div className="space-y-2">
+                    <p>Payment Method: UPI</p>
+                    <p>UPI ID: {selectedProvider.provider_payment_details.upi_id}</p>
+                  </div>
+                )}
+                
+                {selectedProvider.provider_payment_details.payment_method === 'qr_code' && (
+                  <div className="space-y-2">
+                    <p>Payment Method: QR Code</p>
+                    {selectedProvider.provider_payment_details.qr_code_url && (
+                      <div className="w-48 h-48 relative">
+                        <img
+                          src={selectedProvider.provider_payment_details.qr_code_url}
+                          alt="Payment QR Code"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           <DialogFooter className="flex justify-end space-x-2">
             <Button
