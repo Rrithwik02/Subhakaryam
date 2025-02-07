@@ -13,11 +13,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AdditionalServiceFormProps {
   providerId: string;
@@ -32,9 +44,14 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setShowConfirmation(true);
+  };
+
+  const submitForm = async () => {
     setIsSubmitting(true);
     setUploadError(null);
 
@@ -71,6 +88,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       setBasePrice("");
       setPortfolioImages([]);
       setIsOpen(false);
+      setShowConfirmation(false);
     } catch (error: any) {
       console.error("Error submitting additional service:", error);
       setUploadError(error.message);
@@ -187,11 +205,11 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
                 )}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {portfolioImages.map((image, index) => (
-                    <div key={index} className="relative group">
+                    <div key={index} className="relative group aspect-square">
                       <img
                         src={image}
                         alt={`Portfolio ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg"
+                        className="w-full h-full object-cover rounded-lg"
                       />
                       <button
                         type="button"
@@ -206,18 +224,37 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white py-6"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Submit Additional Service"}
-            </Button>
+            <DialogFooter>
+              <Button
+                type="submit"
+                className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white py-6"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Additional Service"}
+              </Button>
+            </DialogFooter>
           </form>
         </Card>
       </DialogContent>
+
+      <AlertDialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Submission</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to submit this additional service? Please review all details before confirming.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={submitForm}
+              className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+            >
+              Confirm Submission
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
-};
-
-export default AdditionalServiceForm;

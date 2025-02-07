@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,12 +51,6 @@ const ServiceProvidersTable = () => {
             full_name,
             email,
             phone
-          ),
-          additional_services (
-            id,
-            service_type,
-            description,
-            status
           ),
           provider_payment_details!provider_payment_details_provider_id_fkey (
             payment_method,
@@ -162,11 +157,6 @@ const ServiceProvidersTable = () => {
             <TableRow key={provider.id}>
               <TableCell className="font-medium">
                 {provider.business_name}
-                {provider.additional_services?.length > 0 && (
-                  <Badge variant="outline" className="ml-2">
-                    +{provider.additional_services.length} additional
-                  </Badge>
-                )}
               </TableCell>
               <TableCell className="capitalize">{provider.service_type}</TableCell>
               <TableCell>

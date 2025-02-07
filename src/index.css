@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @tailwind base;
@@ -60,14 +61,31 @@
     width: 100%;
     object-fit: cover;
   }
-  
-  h1, h2, h3 {
-    font-size: 90%;
-    line-height: 1.4;
+
+  .aspect-square img {
+    aspect-ratio: 1;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
   }
   
-  p {
-    font-size: 90%;
-    line-height: 1.5;
+  h1 {
+    @apply text-3xl;
+  }
+  
+  h2 {
+    @apply text-2xl;
+  }
+  
+  h3 {
+    @apply text-xl;
+  }
+  
+  p, span, div {
+    @apply text-base leading-relaxed;
+  }
+  
+  .text-sm {
+    @apply text-xs;
   }
 }
