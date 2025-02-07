@@ -1,10 +1,11 @@
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ImagePlus, Link } from "lucide-react";
+import { ImagePlus, Link, X } from "lucide-react";
 
 export function PhotoFields() {
   const [showPortfolioImages, setShowPortfolioImages] = useState(true);
@@ -13,6 +14,10 @@ export function PhotoFields() {
 
   const handleImageUpload = (url: string) => {
     setPortfolioImages((prev) => [...prev, url]);
+  };
+
+  const handleDeleteImage = (indexToDelete: number) => {
+    setPortfolioImages((prev) => prev.filter((_, index) => index !== indexToDelete));
   };
 
   return (
@@ -73,12 +78,20 @@ export function PhotoFields() {
               />
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {portfolioImages.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`Portfolio ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
+                  <div key={index} className="relative group">
+                    <img
+                      src={image}
+                      alt={`Portfolio ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImage(index)}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
