@@ -13,6 +13,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+interface DeletionRequest {
+  id: string;
+  user_id: string;
+  reason: string | null;
+  status: string;
+  created_at: string;
+  profiles: {
+    full_name: string | null;
+    email: string | null;
+    user_type: string | null;
+  } | null;
+}
+
 const DeletionRequestsTable = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -33,7 +46,7 @@ const DeletionRequestsTable = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as DeletionRequest[];
     },
   });
 
