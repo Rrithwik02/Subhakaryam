@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,7 +33,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2 } from "lucide-react";
+import { Trash2, CreditCard, Image } from "lucide-react";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
@@ -304,7 +305,10 @@ const ServiceProvidersTable = () => {
             
             {selectedProvider?.portfolio_images?.length > 0 && (
               <div>
-                <h3 className="font-semibold text-ceremonial-maroon mb-3">Portfolio Images</h3>
+                <h3 className="font-semibold text-ceremonial-maroon mb-3 flex items-center gap-2">
+                  <Image className="h-5 w-5" />
+                  Portfolio Images
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {selectedProvider.portfolio_images.map((image: string, index: number) => (
                     <div key={index} className="relative aspect-square">
@@ -321,9 +325,12 @@ const ServiceProvidersTable = () => {
 
             {selectedProvider?.provider_payment_details && (
               <div>
-                <h3 className="font-semibold text-ceremonial-maroon">Payment Information</h3>
+                <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
+                  <CreditCard className="h-5 w-5" />
+                  Payment Information
+                </h3>
                 {selectedProvider.provider_payment_details.payment_method === 'bank_account' && (
-                  <div className="space-y-2">
+                  <div className="space-y-2 mt-3">
                     <p>Payment Method: Bank Account</p>
                     <p>Account Holder: {selectedProvider.provider_payment_details.account_holder_name}</p>
                     <p>Bank Name: {selectedProvider.provider_payment_details.bank_name}</p>
@@ -333,14 +340,14 @@ const ServiceProvidersTable = () => {
                 )}
                 
                 {selectedProvider.provider_payment_details.payment_method === 'upi' && (
-                  <div className="space-y-2">
+                  <div className="space-y-2 mt-3">
                     <p>Payment Method: UPI</p>
                     <p>UPI ID: {selectedProvider.provider_payment_details.upi_id}</p>
                   </div>
                 )}
                 
                 {selectedProvider.provider_payment_details.payment_method === 'qr_code' && (
-                  <div className="space-y-2">
+                  <div className="space-y-2 mt-3">
                     <p>Payment Method: QR Code</p>
                     {selectedProvider.provider_payment_details.qr_code_url && (
                       <div className="w-48 h-48 relative">
