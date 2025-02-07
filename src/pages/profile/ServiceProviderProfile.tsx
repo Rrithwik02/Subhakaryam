@@ -1,4 +1,3 @@
-
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import BookingsList from "@/components/profile/BookingsList";
 import { X } from "lucide-react";
+import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 
 const ServiceProviderProfile = () => {
   const { session } = useSessionContext();
@@ -156,7 +156,10 @@ const ServiceProviderProfile = () => {
               isServiceProvider={true}
               onImageUpload={(url) => updateProfileImage.mutate(url)}
             />
-            
+            <div className="mt-8">
+              <DeleteAccountButton />
+            </div>
+
             {provider?.portfolio_images && provider.portfolio_images.length > 0 && (
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-ceremonial-maroon">Portfolio Images</h3>
@@ -198,4 +201,3 @@ const ServiceProviderProfile = () => {
 };
 
 export default ServiceProviderProfile;
-

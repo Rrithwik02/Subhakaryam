@@ -1,9 +1,11 @@
+
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
+import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 
 const UserProfile = () => {
   const { session } = useSessionContext();
@@ -109,6 +111,9 @@ const UserProfile = () => {
               profileImage={profile?.profile_image}
               onImageUpload={(url) => updateProfileImage.mutate(url)}
             />
+            <div className="mt-8">
+              <DeleteAccountButton />
+            </div>
           </CardContent>
         </Card>
 

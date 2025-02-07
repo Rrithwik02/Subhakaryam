@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,11 +69,7 @@ const ServiceProvidersTable = () => {
         `)
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching providers:", error);
-        throw error;
-      }
-      console.log("Fetched providers data:", data);
+      if (error) throw error;
       return data;
     },
   });
@@ -245,12 +240,12 @@ const ServiceProvidersTable = () => {
       <Dialog open={!!selectedProvider} onOpenChange={() => setSelectedProvider(null)}>
         <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-ceremonial-maroon">
+            <DialogTitle className="text-2xl font-display text-ceremonial-maroon">
               Review Service Provider Application
             </DialogTitle>
           </DialogHeader>
 
-          <Tabs defaultValue="details" className="w-full">
+          <Tabs defaultValue="details">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
@@ -324,7 +319,7 @@ const ServiceProvidersTable = () => {
                         <img
                           src={image}
                           alt={`Portfolio ${index + 1}`}
-                          className="w-full h-full object-cover rounded-lg border border-gray-200"
+                          className="w-full h-full object-cover rounded-lg"
                         />
                       </div>
                     ))}
@@ -408,28 +403,63 @@ const ServiceProvidersTable = () => {
           </Tabs>
 
           <DialogFooter className="flex justify-end space-x-2 mt-6">
-            <Button
-              variant="destructive"
-              onClick={() =>
-                updateStatus.mutate({
-                  id: selectedProvider?.id,
-                  status: "rejected",
-                })
-              }
-            >
-              Reject
-            </Button>
-            <Button
-              className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
-              onClick={() =>
-                updateStatus.mutate({
-                  id: selectedProvider?.id,
-                  status: "approved",
-                })
-              }
-            >
-              Approve
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">Reject</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reject Service Provider?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to reject this service provider? This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() =>
+                      updateStatus.mutate({
+                        id: selectedProvider?.id,
+                        status: "rejected",
+                      })
+                    }
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    Reject
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button className="bg-ceremonial-gold hover:bg-ceremonial-gold/90">
+                  Approve
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Approve Service Provider?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to approve this service provider?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() =>
+                      updateStatus.mutate({
+                        id: selectedProvider?.id,
+                        status: "approved",
+                      })
+                    }
+                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+                  >
+                    Approve
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DialogFooter>
         </DialogContent>
       </Dialog>
