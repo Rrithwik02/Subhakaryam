@@ -33,7 +33,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, CreditCard, Image } from "lucide-react";
+import { Trash2, CreditCard, Image, User, Building2, MapPin } from "lucide-react";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
@@ -59,7 +59,7 @@ const ServiceProvidersTable = () => {
             description,
             status
           ),
-          provider_payment_details (
+          provider_payment_details!inner (
             payment_method,
             account_holder_name,
             bank_name,
@@ -71,7 +71,10 @@ const ServiceProvidersTable = () => {
         `)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching providers:", error);
+        throw error;
+      }
       return data;
     },
   });
@@ -288,24 +291,59 @@ const ServiceProvidersTable = () => {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-ceremonial-maroon">Business Details</h3>
-              <p>Name: {selectedProvider?.business_name}</p>
-              <p>Service: {selectedProvider?.service_type}</p>
-              <p>City: {selectedProvider?.city}</p>
-              <p>Description: {selectedProvider?.description}</p>
+            <div className="space-y-4">
+              <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
+                <Building2 className="h-5 w-5" />
+                Business Details
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Business Name</p>
+                  <p className="font-medium">{selectedProvider?.business_name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Service Type</p>
+                  <p className="font-medium capitalize">{selectedProvider?.service_type}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">City</p>
+                  <p className="font-medium">{selectedProvider?.city}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Base Price</p>
+                  <p className="font-medium">₹{selectedProvider?.base_price}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Description</p>
+                <p className="font-medium">{selectedProvider?.description}</p>
+              </div>
             </div>
             
-            <div>
-              <h3 className="font-semibold text-ceremonial-maroon">Contact Information</h3>
-              <p>Name: {selectedProvider?.profiles?.full_name}</p>
-              <p>Email: {selectedProvider?.profiles?.email}</p>
-              <p>Phone: {selectedProvider?.profiles?.phone}</p>
+            <div className="space-y-4">
+              <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Contact Information
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Name</p>
+                  <p className="font-medium">{selectedProvider?.profiles?.full_name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="font-medium">{selectedProvider?.profiles?.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Phone</p>
+                  <p className="font-medium">{selectedProvider?.profiles?.phone}</p>
+                </div>
+              </div>
             </div>
             
             {selectedProvider?.portfolio_images?.length > 0 && (
-              <div>
-                <h3 className="font-semibold text-ceremonial-maroon mb-3 flex items-center gap-2">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
                   <Image className="h-5 w-5" />
                   Portfolio Images
                 </h3>
@@ -315,7 +353,7 @@ const ServiceProvidersTable = () => {
                       <img
                         src={image}
                         alt={`Portfolio ${index + 1}`}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full object-cover rounded-lg border border-gray-200"
                       />
                     </div>
                   ))}
@@ -324,37 +362,54 @@ const ServiceProvidersTable = () => {
             )}
 
             {selectedProvider?.provider_payment_details && (
-              <div>
+              <div className="space-y-4">
                 <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
                   <CreditCard className="h-5 w-5" />
                   Payment Information
                 </h3>
                 {selectedProvider.provider_payment_details.payment_method === 'bank_account' && (
-                  <div className="space-y-2 mt-3">
-                    <p>Payment Method: Bank Account</p>
-                    <p>Account Holder: {selectedProvider.provider_payment_details.account_holder_name}</p>
-                    <p>Bank Name: {selectedProvider.provider_payment_details.bank_name}</p>
-                    <p>Account Number: {selectedProvider.provider_payment_details.account_number}</p>
-                    <p>IFSC Code: {selectedProvider.provider_payment_details.ifsc_code}</p>
+                  <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
+                    <p className="font-medium">Bank Account Details</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-500">Account Holder</p>
+                        <p className="font-medium">{selectedProvider.provider_payment_details.account_holder_name}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Bank Name</p>
+                        <p className="font-medium">{selectedProvider.provider_payment_details.bank_name}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Account Number</p>
+                        <p className="font-medium">{selectedProvider.provider_payment_details.account_number}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">IFSC Code</p>
+                        <p className="font-medium">{selectedProvider.provider_payment_details.ifsc_code}</p>
+                      </div>
+                    </div>
                   </div>
                 )}
                 
                 {selectedProvider.provider_payment_details.payment_method === 'upi' && (
-                  <div className="space-y-2 mt-3">
-                    <p>Payment Method: UPI</p>
-                    <p>UPI ID: {selectedProvider.provider_payment_details.upi_id}</p>
+                  <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
+                    <p className="font-medium">UPI Details</p>
+                    <div>
+                      <p className="text-sm text-gray-500">UPI ID</p>
+                      <p className="font-medium">{selectedProvider.provider_payment_details.upi_id}</p>
+                    </div>
                   </div>
                 )}
                 
                 {selectedProvider.provider_payment_details.payment_method === 'qr_code' && (
-                  <div className="space-y-2 mt-3">
-                    <p>Payment Method: QR Code</p>
+                  <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
+                    <p className="font-medium">QR Code</p>
                     {selectedProvider.provider_payment_details.qr_code_url && (
-                      <div className="w-48 h-48 relative">
+                      <div className="w-48 h-48 relative mx-auto">
                         <img
                           src={selectedProvider.provider_payment_details.qr_code_url}
                           alt="Payment QR Code"
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-contain border border-gray-200 rounded-lg"
                         />
                       </div>
                     )}
@@ -363,7 +418,7 @@ const ServiceProvidersTable = () => {
               </div>
             )}
           </div>
-          <DialogFooter className="flex justify-end space-x-2">
+          <DialogFooter className="flex justify-end space-x-2 mt-6">
             <Button
               variant="destructive"
               onClick={() =>
