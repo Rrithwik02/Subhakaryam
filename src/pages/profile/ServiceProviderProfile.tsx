@@ -1,3 +1,4 @@
+
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import BookingsList from "@/components/profile/BookingsList";
+import { X } from "lucide-react";
 
 const ServiceProviderProfile = () => {
   const { session } = useSessionContext();
@@ -66,6 +68,41 @@ const ServiceProviderProfile = () => {
     },
   });
 
+  const deletePortfolioImage = useMutation({
+    mutationFn: async (imageUrlToDelete: string) => {
+      // Get current portfolio images
+      const currentImages = provider?.portfolio_images || [];
+      
+      // Filter out the image to delete
+      const updatedImages = currentImages.filter(url => url !== imageUrlToDelete);
+      
+      const { error } = await supabase
+        .from("service_providers")
+        .update({ portfolio_images: updatedImages })
+        .eq("profile_id", session?.user?.id);
+
+      if (error) throw error;
+      
+      return updatedImages;
+    },
+    onSuccess: () => {
+      refetchProvider();
+      toast({
+        title: "Success",
+        description: "Portfolio image deleted successfully",
+      });
+    },
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to delete portfolio image",
+        });
+      },
+    },
+  });
+
   const { data: bookings } = useQuery({
     queryKey: ["provider-bookings"],
     queryFn: async () => {
@@ -119,6 +156,29 @@ const ServiceProviderProfile = () => {
               isServiceProvider={true}
               onImageUpload={(url) => updateProfileImage.mutate(url)}
             />
+            
+            {provider?.portfolio_images && provider.portfolio_images.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-ceremonial-maroon">Portfolio Images</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {provider.portfolio_images.map((image, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={image}
+                        alt={`Portfolio ${index + 1}`}
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <button
+                        onClick={() => deletePortfolioImage.mutate(image)}
+                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -138,3 +198,4 @@ const ServiceProviderProfile = () => {
 };
 
 export default ServiceProviderProfile;
+
