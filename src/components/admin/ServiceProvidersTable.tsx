@@ -33,21 +33,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Trash2, 
-  CreditCard, 
-  Image as ImageIcon, 
-  User, 
-  Building2, 
-  MapPin,
-  Wallet
-} from "lucide-react";
+import { Trash2, Building2, User, MapPin } from "lucide-react";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
-  const [selectedAdditionalService, setSelectedAdditionalService] = useState<any>(null);
 
   const { data: providers, isLoading } = useQuery({
     queryKey: ["service-providers"],
@@ -113,35 +104,8 @@ const ServiceProvidersTable = () => {
     },
   });
 
-  const updateAdditionalServiceStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase
-        .from("additional_services")
-        .update({ status })
-        .eq("id", id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["service-providers"] });
-      toast({
-        title: "Success",
-        description: "Additional service status updated successfully",
-      });
-      setSelectedAdditionalService(null);
-    },
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update additional service status",
-      });
-    },
-  });
-
   const deleteProvider = useMutation({
     mutationFn: async (providerId: string) => {
-      // First get the profile_id
       const { data: provider, error: fetchError } = await supabase
         .from("service_providers")
         .select("profile_id")
@@ -150,7 +114,6 @@ const ServiceProvidersTable = () => {
 
       if (fetchError) throw fetchError;
 
-      // Delete the service provider
       const { error: deleteError } = await supabase
         .from("service_providers")
         .delete()
@@ -158,7 +121,6 @@ const ServiceProvidersTable = () => {
 
       if (deleteError) throw deleteError;
 
-      // Delete the user from auth.users using admin client
       if (provider.profile_id) {
         const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(
           provider.profile_id
@@ -242,17 +204,6 @@ const ServiceProvidersTable = () => {
                       Review
                     </Button>
                   )}
-                  {provider.additional_services?.some(
-                    (service: any) => service.status === "pending"
-                  ) && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setSelectedAdditionalService(provider)}
-                    >
-                      Review Additional Services
-                    </Button>
-                  )}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
@@ -290,7 +241,6 @@ const ServiceProvidersTable = () => {
         </TableBody>
       </Table>
 
-      {/* Provider Review Dialog */}
       <Dialog open={!!selectedProvider} onOpenChange={() => setSelectedProvider(null)}>
         <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
@@ -300,10 +250,9 @@ const ServiceProvidersTable = () => {
           </DialogHeader>
 
           <Tabs defaultValue="details" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-              <TabsTrigger value="payment">Payment</TabsTrigger>
             </TabsList>
 
             <TabsContent value="details">
@@ -363,7 +312,7 @@ const ServiceProvidersTable = () => {
             <TabsContent value="portfolio">
               <div className="space-y-4">
                 <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
-                  <ImageIcon className="h-5 w-5" />
+                  <MapPin className="h-5 w-5" />
                   Portfolio Images
                 </h3>
                 {selectedProvider?.portfolio_images && selectedProvider.portfolio_images.length > 0 ? (
@@ -380,88 +329,6 @@ const ServiceProvidersTable = () => {
                   </div>
                 ) : (
                   <p className="text-gray-500">No portfolio images provided</p>
-                )}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="payment">
-              <div className="space-y-4">
-                <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
-                  <Wallet className="h-5 w-5" />
-                  Payment Information
-                </h3>
-                {selectedProvider?.provider_payment_details ? (
-                  <div className="space-y-4">
-                    {selectedProvider.provider_payment_details.payment_method === 'bank_account' && (
-                      <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
-                        <p className="font-medium flex items-center gap-2">
-                          <CreditCard className="h-4 w-4" />
-                          Bank Account Details
-                        </p>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-sm text-gray-500">Account Holder</p>
-                            <p className="font-medium">
-                              {selectedProvider.provider_payment_details.account_holder_name}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500">Bank Name</p>
-                            <p className="font-medium">
-                              {selectedProvider.provider_payment_details.bank_name}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500">Account Number</p>
-                            <p className="font-medium">
-                              {selectedProvider.provider_payment_details.account_number}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500">IFSC Code</p>
-                            <p className="font-medium">
-                              {selectedProvider.provider_payment_details.ifsc_code}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedProvider.provider_payment_details.payment_method === 'upi' && (
-                      <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
-                        <p className="font-medium flex items-center gap-2">
-                          <CreditCard className="h-4 w-4" />
-                          UPI Details
-                        </p>
-                        <div>
-                          <p className="text-sm text-gray-500">UPI ID</p>
-                          <p className="font-medium">
-                            {selectedProvider.provider_payment_details.upi_id}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedProvider.provider_payment_details.payment_method === 'qr_code' && (
-                      <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
-                        <p className="font-medium flex items-center gap-2">
-                          <CreditCard className="h-4 w-4" />
-                          QR Code
-                        </p>
-                        {selectedProvider.provider_payment_details.qr_code_url && (
-                          <div className="w-48 h-48 relative mx-auto">
-                            <img
-                              src={selectedProvider.provider_payment_details.qr_code_url}
-                              alt="Payment QR Code"
-                              className="w-full h-full object-contain border border-gray-200 rounded-lg"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-gray-500">No payment details provided</p>
                 )}
               </div>
             </TabsContent>
@@ -491,58 +358,6 @@ const ServiceProvidersTable = () => {
               Approve
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Additional Services Review Dialog */}
-      <Dialog
-        open={!!selectedAdditionalService}
-        onOpenChange={() => setSelectedAdditionalService(null)}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-ceremonial-maroon">
-              Review Additional Services
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {selectedAdditionalService?.additional_services
-              ?.filter((service: any) => service.status === "pending")
-              .map((service: any) => (
-                <div key={service.id} className="border p-4 rounded-lg">
-                  <h3 className="font-semibold text-ceremonial-maroon">
-                    {service.service_type}
-                  </h3>
-                  <p className="text-gray-600 mt-2">{service.description}</p>
-                  <div className="flex justify-end space-x-2 mt-4">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() =>
-                        updateAdditionalServiceStatus.mutate({
-                          id: service.id,
-                          status: "rejected",
-                        })
-                      }
-                    >
-                      Reject
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
-                      onClick={() =>
-                        updateAdditionalServiceStatus.mutate({
-                          id: service.id,
-                          status: "approved",
-                        })
-                      }
-                    >
-                      Approve
-                    </Button>
-                  </div>
-                </div>
-              ))}
-          </div>
         </DialogContent>
       </Dialog>
     </div>
