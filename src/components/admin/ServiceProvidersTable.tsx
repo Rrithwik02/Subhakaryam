@@ -33,7 +33,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Building2, User, MapPin } from "lucide-react";
+import { Trash2, Building2, User, MapPin, CreditCard } from "lucide-react";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
@@ -250,9 +250,10 @@ const ServiceProvidersTable = () => {
           </DialogHeader>
 
           <Tabs defaultValue="details" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+              <TabsTrigger value="payment">Payment</TabsTrigger>
             </TabsList>
 
             <TabsContent value="details">
@@ -282,7 +283,7 @@ const ServiceProvidersTable = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Description</p>
-                    <p className="font-medium">{selectedProvider?.description}</p>
+                    <p className="font-medium">{selectedProvider?.description || "No description provided"}</p>
                   </div>
                 </div>
 
@@ -328,7 +329,78 @@ const ServiceProvidersTable = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500">No portfolio images provided</p>
+                  <p className="text-gray-500 py-4">No portfolio images provided</p>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="payment">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
+                  <CreditCard className="h-5 w-5" />
+                  Payment Information
+                </h3>
+                {selectedProvider?.provider_payment_details ? (
+                  <div className="space-y-4">
+                    <p className="text-sm font-medium text-gray-500">
+                      Payment Method: {selectedProvider.provider_payment_details.payment_method}
+                    </p>
+                    
+                    {selectedProvider.provider_payment_details.payment_method === "bank_account" && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-500">Account Holder Name</p>
+                          <p className="font-medium">
+                            {selectedProvider.provider_payment_details.account_holder_name}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Bank Name</p>
+                          <p className="font-medium">
+                            {selectedProvider.provider_payment_details.bank_name}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Account Number</p>
+                          <p className="font-medium">
+                            {selectedProvider.provider_payment_details.account_number}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">IFSC Code</p>
+                          <p className="font-medium">
+                            {selectedProvider.provider_payment_details.ifsc_code}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedProvider.provider_payment_details.payment_method === "upi" && (
+                      <div>
+                        <p className="text-sm text-gray-500">UPI ID</p>
+                        <p className="font-medium">
+                          {selectedProvider.provider_payment_details.upi_id}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedProvider.provider_payment_details.payment_method === "qr_code" && (
+                      <div>
+                        <p className="text-sm text-gray-500">QR Code</p>
+                        {selectedProvider.provider_payment_details.qr_code_url ? (
+                          <img
+                            src={selectedProvider.provider_payment_details.qr_code_url}
+                            alt="Payment QR Code"
+                            className="max-w-[200px] mt-2 border rounded-lg"
+                          />
+                        ) : (
+                          <p className="text-gray-500">No QR code provided</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 py-4">No payment details provided</p>
                 )}
               </div>
             </TabsContent>
