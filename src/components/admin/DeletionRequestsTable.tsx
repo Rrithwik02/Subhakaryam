@@ -38,7 +38,7 @@ const DeletionRequestsTable = () => {
         .from("account_deletion_requests")
         .select(`
           *,
-          profiles:profiles!user_id(
+          profiles:user_id(
             full_name,
             email,
             user_type
@@ -47,7 +47,7 @@ const DeletionRequestsTable = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as unknown as DeletionRequest[];
+      return data as DeletionRequest[];
     },
   });
 
