@@ -258,3 +258,6 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       </AlertDialog>
     </Dialog>
   );
+};
+
+export default AdditionalServiceForm;
