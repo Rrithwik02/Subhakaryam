@@ -16,26 +16,18 @@ import {
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
 
 interface AdditionalServiceFormProps {
   providerId: string;
 }
 
-const ALLOWED_FILE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-  "image/heic",
-];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const MAX_IMAGES = 5;
-
 const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   const { toast } = useToast();
   const [serviceType, setServiceType] = useState("");
   const [description, setDescription] = useState("");
+  const [basePrice, setBasePrice] = useState("");
   const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -47,7 +39,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
     setUploadError(null);
 
     try {
-      if (!serviceType || !description) {
+      if (!serviceType || !description || !basePrice) {
         throw new Error("Please fill in all required fields");
       }
 
@@ -60,6 +52,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
         provider_id: providerId,
         service_type: serviceType,
         description,
+        base_price: parseFloat(basePrice),
         portfolio_images: portfolioImages,
       });
 
@@ -75,6 +68,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
 
       setServiceType("");
       setDescription("");
+      setBasePrice("");
       setPortfolioImages([]);
       setIsOpen(false);
     } catch (error: any) {
@@ -92,8 +86,8 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
 
   const handleImageUpload = (url: string) => {
     try {
-      if (portfolioImages.length >= MAX_IMAGES) {
-        throw new Error(`Maximum ${MAX_IMAGES} images allowed`);
+      if (portfolioImages.length >= 5) {
+        throw new Error("Maximum 5 images allowed");
       }
       
       setPortfolioImages((prev) => [...prev, url]);
@@ -152,9 +146,22 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
             />
             
             <div className="space-y-2">
-              <Label className="text-gray-700">Description</Label>
+              <Label className="text-base">Base Price (₹)</Label>
+              <Input
+                type="number"
+                value={basePrice}
+                onChange={(e) => setBasePrice(e.target.value)}
+                placeholder="Enter base price"
+                min="0"
+                required
+                className="w-full"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-base">Description</Label>
               <Textarea
-                placeholder="Describe the additional service you'd like to offer..."
+                placeholder="Describe your additional service in detail..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -164,18 +171,18 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
 
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <Label className="text-gray-700">Portfolio Images</Label>
+                <Label className="text-base">Portfolio Images</Label>
                 <span className="text-sm text-gray-500">
-                  {portfolioImages.length}/{MAX_IMAGES} images
+                  {portfolioImages.length}/5 images
                 </span>
               </div>
               <div className="space-y-4">
-                {portfolioImages.length < MAX_IMAGES && (
+                {portfolioImages.length < 5 && (
                   <ImageUpload
                     onUploadComplete={handleImageUpload}
                     className="w-full"
-                    maxSizeInBytes={MAX_FILE_SIZE}
-                    allowedFileTypes={ALLOWED_FILE_TYPES}
+                    maxSizeInBytes={5 * 1024 * 1024}
+                    allowedFileTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
                   />
                 )}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

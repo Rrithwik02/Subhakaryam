@@ -58,7 +58,7 @@ const ServiceProvidersTable = () => {
             description,
             status
           ),
-          provider_payment_details (
+          provider_payment_details!provider_payment_details_provider_id_fkey (
             payment_method,
             account_holder_name,
             bank_name,
@@ -74,6 +74,7 @@ const ServiceProvidersTable = () => {
         console.error("Error fetching providers:", error);
         throw error;
       }
+      console.log("Fetched providers data:", data);
       return data;
     },
   });
@@ -342,7 +343,7 @@ const ServiceProvidersTable = () => {
                 </h3>
                 {selectedProvider?.provider_payment_details ? (
                   <div className="space-y-4">
-                    <p className="text-sm font-medium text-gray-500">
+                    <p className="text-sm font-medium text-gray-500 capitalize">
                       Payment Method: {selectedProvider.provider_payment_details.payment_method}
                     </p>
                     
