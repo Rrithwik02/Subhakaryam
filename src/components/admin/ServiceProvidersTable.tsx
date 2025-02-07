@@ -33,7 +33,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, CreditCard, Image, User, Building2, MapPin } from "lucide-react";
+import { 
+  Trash2, 
+  CreditCard, 
+  Image as ImageIcon, 
+  User, 
+  Building2, 
+  MapPin,
+  Wallet
+} from "lucide-react";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
@@ -59,7 +67,7 @@ const ServiceProvidersTable = () => {
             description,
             status
           ),
-          provider_payment_details!inner (
+          provider_payment_details (
             payment_method,
             account_holder_name,
             bank_name,
@@ -290,134 +298,175 @@ const ServiceProvidersTable = () => {
               Review Service Provider Application
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
-                <Building2 className="h-5 w-5" />
-                Business Details
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">Business Name</p>
-                  <p className="font-medium">{selectedProvider?.business_name}</p>
+
+          <Tabs defaultValue="details" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+              <TabsTrigger value="payment">Payment</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="details">
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
+                    <Building2 className="h-5 w-5" />
+                    Business Details
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Business Name</p>
+                      <p className="font-medium">{selectedProvider?.business_name}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Service Type</p>
+                      <p className="font-medium capitalize">{selectedProvider?.service_type}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">City</p>
+                      <p className="font-medium">{selectedProvider?.city}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Base Price</p>
+                      <p className="font-medium">₹{selectedProvider?.base_price}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Description</p>
+                    <p className="font-medium">{selectedProvider?.description}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500">Service Type</p>
-                  <p className="font-medium capitalize">{selectedProvider?.service_type}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">City</p>
-                  <p className="font-medium">{selectedProvider?.city}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Base Price</p>
-                  <p className="font-medium">₹{selectedProvider?.base_price}</p>
+
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    Contact Information
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Name</p>
+                      <p className="font-medium">{selectedProvider?.profiles?.full_name}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Email</p>
+                      <p className="font-medium">{selectedProvider?.profiles?.email}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Phone</p>
+                      <p className="font-medium">{selectedProvider?.profiles?.phone}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-500">Description</p>
-                <p className="font-medium">{selectedProvider?.description}</p>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Contact Information
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">Name</p>
-                  <p className="font-medium">{selectedProvider?.profiles?.full_name}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Email</p>
-                  <p className="font-medium">{selectedProvider?.profiles?.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Phone</p>
-                  <p className="font-medium">{selectedProvider?.profiles?.phone}</p>
-                </div>
-              </div>
-            </div>
-            
-            {selectedProvider?.portfolio_images?.length > 0 && (
+            </TabsContent>
+
+            <TabsContent value="portfolio">
               <div className="space-y-4">
                 <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
-                  <Image className="h-5 w-5" />
+                  <ImageIcon className="h-5 w-5" />
                   Portfolio Images
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {selectedProvider.portfolio_images.map((image: string, index: number) => (
-                    <div key={index} className="relative aspect-square">
-                      <img
-                        src={image}
-                        alt={`Portfolio ${index + 1}`}
-                        className="w-full h-full object-cover rounded-lg border border-gray-200"
-                      />
-                    </div>
-                  ))}
-                </div>
+                {selectedProvider?.portfolio_images && selectedProvider.portfolio_images.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {selectedProvider.portfolio_images.map((image: string, index: number) => (
+                      <div key={index} className="relative aspect-square">
+                        <img
+                          src={image}
+                          alt={`Portfolio ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg border border-gray-200"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No portfolio images provided</p>
+                )}
               </div>
-            )}
+            </TabsContent>
 
-            {selectedProvider?.provider_payment_details && (
+            <TabsContent value="payment">
               <div className="space-y-4">
                 <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
+                  <Wallet className="h-5 w-5" />
                   Payment Information
                 </h3>
-                {selectedProvider.provider_payment_details.payment_method === 'bank_account' && (
-                  <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
-                    <p className="font-medium">Bank Account Details</p>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-500">Account Holder</p>
-                        <p className="font-medium">{selectedProvider.provider_payment_details.account_holder_name}</p>
+                {selectedProvider?.provider_payment_details ? (
+                  <div className="space-y-4">
+                    {selectedProvider.provider_payment_details.payment_method === 'bank_account' && (
+                      <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
+                        <p className="font-medium flex items-center gap-2">
+                          <CreditCard className="h-4 w-4" />
+                          Bank Account Details
+                        </p>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm text-gray-500">Account Holder</p>
+                            <p className="font-medium">
+                              {selectedProvider.provider_payment_details.account_holder_name}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500">Bank Name</p>
+                            <p className="font-medium">
+                              {selectedProvider.provider_payment_details.bank_name}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500">Account Number</p>
+                            <p className="font-medium">
+                              {selectedProvider.provider_payment_details.account_number}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500">IFSC Code</p>
+                            <p className="font-medium">
+                              {selectedProvider.provider_payment_details.ifsc_code}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Bank Name</p>
-                        <p className="font-medium">{selectedProvider.provider_payment_details.bank_name}</p>
+                    )}
+
+                    {selectedProvider.provider_payment_details.payment_method === 'upi' && (
+                      <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
+                        <p className="font-medium flex items-center gap-2">
+                          <CreditCard className="h-4 w-4" />
+                          UPI Details
+                        </p>
+                        <div>
+                          <p className="text-sm text-gray-500">UPI ID</p>
+                          <p className="font-medium">
+                            {selectedProvider.provider_payment_details.upi_id}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Account Number</p>
-                        <p className="font-medium">{selectedProvider.provider_payment_details.account_number}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">IFSC Code</p>
-                        <p className="font-medium">{selectedProvider.provider_payment_details.ifsc_code}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {selectedProvider.provider_payment_details.payment_method === 'upi' && (
-                  <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
-                    <p className="font-medium">UPI Details</p>
-                    <div>
-                      <p className="text-sm text-gray-500">UPI ID</p>
-                      <p className="font-medium">{selectedProvider.provider_payment_details.upi_id}</p>
-                    </div>
-                  </div>
-                )}
-                
-                {selectedProvider.provider_payment_details.payment_method === 'qr_code' && (
-                  <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
-                    <p className="font-medium">QR Code</p>
-                    {selectedProvider.provider_payment_details.qr_code_url && (
-                      <div className="w-48 h-48 relative mx-auto">
-                        <img
-                          src={selectedProvider.provider_payment_details.qr_code_url}
-                          alt="Payment QR Code"
-                          className="w-full h-full object-contain border border-gray-200 rounded-lg"
-                        />
+                    )}
+
+                    {selectedProvider.provider_payment_details.payment_method === 'qr_code' && (
+                      <div className="space-y-2 bg-gray-50 p-4 rounded-lg">
+                        <p className="font-medium flex items-center gap-2">
+                          <CreditCard className="h-4 w-4" />
+                          QR Code
+                        </p>
+                        {selectedProvider.provider_payment_details.qr_code_url && (
+                          <div className="w-48 h-48 relative mx-auto">
+                            <img
+                              src={selectedProvider.provider_payment_details.qr_code_url}
+                              alt="Payment QR Code"
+                              className="w-full h-full object-contain border border-gray-200 rounded-lg"
+                            />
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
+                ) : (
+                  <p className="text-gray-500">No payment details provided</p>
                 )}
               </div>
-            )}
-          </div>
+            </TabsContent>
+          </Tabs>
+
           <DialogFooter className="flex justify-end space-x-2 mt-6">
             <Button
               variant="destructive"
