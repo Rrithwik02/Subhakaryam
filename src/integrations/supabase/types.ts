@@ -349,6 +349,56 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_payment_details: {
+        Row: {
+          account_holder_name: string | null
+          account_number: string | null
+          bank_name: string | null
+          created_at: string | null
+          id: string
+          ifsc_code: string | null
+          payment_method: Database["public"]["Enums"]["payment_method_type"]
+          provider_id: string
+          qr_code_url: string | null
+          updated_at: string | null
+          upi_id: string | null
+        }
+        Insert: {
+          account_holder_name?: string | null
+          account_number?: string | null
+          bank_name?: string | null
+          created_at?: string | null
+          id?: string
+          ifsc_code?: string | null
+          payment_method: Database["public"]["Enums"]["payment_method_type"]
+          provider_id: string
+          qr_code_url?: string | null
+          updated_at?: string | null
+          upi_id?: string | null
+        }
+        Update: {
+          account_holder_name?: string | null
+          account_number?: string | null
+          bank_name?: string | null
+          created_at?: string | null
+          id?: string
+          ifsc_code?: string | null
+          payment_method?: Database["public"]["Enums"]["payment_method_type"]
+          provider_id?: string
+          qr_code_url?: string | null
+          updated_at?: string | null
+          upi_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_payment_details_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -594,7 +644,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      payment_method_type: "bank_account" | "upi" | "qr_code"
     }
     CompositeTypes: {
       [_ in never]: never
