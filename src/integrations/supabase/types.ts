@@ -84,13 +84,12 @@ export type Database = {
       }
       bookings: {
         Row: {
-          advance_payment_status: string | null
           completion_confirmed_by_customer: boolean | null
           completion_confirmed_by_provider: boolean | null
           completion_status: string | null
           created_at: string | null
-          final_payment_status: string | null
           id: string
+          payment_preference: string | null
           provider_id: string
           service_date: string
           special_requirements: string | null
@@ -100,13 +99,12 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          advance_payment_status?: string | null
           completion_confirmed_by_customer?: boolean | null
           completion_confirmed_by_provider?: boolean | null
           completion_status?: string | null
           created_at?: string | null
-          final_payment_status?: string | null
           id?: string
+          payment_preference?: string | null
           provider_id: string
           service_date: string
           special_requirements?: string | null
@@ -116,13 +114,12 @@ export type Database = {
           user_id: string
         }
         Update: {
-          advance_payment_status?: string | null
           completion_confirmed_by_customer?: boolean | null
           completion_confirmed_by_provider?: boolean | null
           completion_status?: string | null
           created_at?: string | null
-          final_payment_status?: string | null
           id?: string
+          payment_preference?: string | null
           provider_id?: string
           service_date?: string
           special_requirements?: string | null
@@ -144,6 +141,47 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_connections: {
+        Row: {
+          booking_id: string | null
+          created_at: string | null
+          id: string
+          provider_confirmed: boolean | null
+          provider_id: string | null
+          updated_at: string | null
+          user_confirmed: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          provider_confirmed?: boolean | null
+          provider_id?: string | null
+          updated_at?: string | null
+          user_confirmed?: boolean | null
+          user_id?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          provider_confirmed?: boolean | null
+          provider_id?: string | null
+          updated_at?: string | null
+          user_confirmed?: boolean | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_connections_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
         ]
@@ -300,50 +338,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      payments: {
-        Row: {
-          amount: number
-          booking_id: string
-          created_at: string | null
-          id: string
-          payment_type: string
-          status: string
-          stripe_payment_intent_id: string | null
-          stripe_session_id: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          amount: number
-          booking_id: string
-          created_at?: string | null
-          id?: string
-          payment_type: string
-          status?: string
-          stripe_payment_intent_id?: string | null
-          stripe_session_id?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          amount?: number
-          booking_id?: string
-          created_at?: string | null
-          id?: string
-          payment_type?: string
-          status?: string
-          stripe_payment_intent_id?: string | null
-          stripe_session_id?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "payments_booking_id_fkey"
-            columns: ["booking_id"]
-            isOneToOne: false
-            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
         ]

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar";
@@ -29,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { format } from "date-fns";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
@@ -47,6 +49,7 @@ type FormData = {
   date: Date;
   timeSlot: string;
   specialRequirements: string;
+  paymentPreference: 'pay_now' | 'pay_on_delivery';
 };
 
 const timeSlots = [
@@ -65,41 +68,14 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
   const { session } = useSessionContext();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showProviderContact, setShowProviderContact] = useState(false);
 
   const form = useForm<FormData>({
     defaultValues: {
       specialRequirements: "",
+      paymentPreference: 'pay_now',
     },
   });
-
-  const handlePayment = async (bookingId: string) => {
-    try {
-      const advanceAmount = provider.base_price * 0.3;
-      
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: {
-          bookingId,
-          paymentType: 'advance',
-          amount: advanceAmount,
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error('No checkout URL received');
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to process payment. Please try again.",
-      });
-    }
-  };
 
   const onSubmit = async (data: FormData) => {
     if (!session?.user) {
@@ -113,22 +89,49 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
     setIsSubmitting(true);
     try {
-      const { data: booking, error } = await supabase.from("bookings").insert({
-        user_id: session.user.id,
-        provider_id: provider.id,
-        service_date: format(data.date, "yyyy-MM-dd"),
-        time_slot: data.timeSlot,
-        special_requirements: data.specialRequirements,
-      }).select().single();
+      const { data: booking, error: bookingError } = await supabase
+        .from("bookings")
+        .insert({
+          user_id: session.user.id,
+          provider_id: provider.id,
+          service_date: format(data.date, "yyyy-MM-dd"),
+          time_slot: data.timeSlot,
+          special_requirements: data.specialRequirements,
+          payment_preference: data.paymentPreference,
+          status: data.paymentPreference === 'pay_now' ? 'pending_payment' : 'confirmed',
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (bookingError) throw bookingError;
 
-      toast({
-        title: "Success",
-        description: "Your booking has been submitted. Proceeding to payment...",
-      });
+      if (data.paymentPreference === 'pay_on_delivery') {
+        // Create chat connection for pay on delivery
+        const { error: chatError } = await supabase
+          .from("chat_connections")
+          .insert({
+            booking_id: booking.id,
+            user_id: session.user.id,
+            provider_id: provider.id,
+          });
 
-      await handlePayment(booking.id);
+        if (chatError) throw chatError;
+
+        toast({
+          title: "Booking Confirmed",
+          description: "Your booking has been confirmed! You can now contact the service provider.",
+        });
+        setShowProviderContact(true);
+      } else {
+        // Redirect to external payment app
+        // This is where you'd integrate with your payment app
+        toast({
+          title: "Redirecting to Payment",
+          description: "You will be redirected to complete the payment.",
+        });
+        // Implement your payment app redirection here
+      }
+
       onClose();
     } catch (error) {
       console.error("Error creating booking:", error);
@@ -236,10 +239,43 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="paymentPreference"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Payment Method</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="pay_now" />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          Pay Now (Online Payment)
+                        </FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="pay_on_delivery" />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          Pay on Delivery (Cash)
+                        </FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="text-sm text-gray-500">
-              <p>Advance Payment (30%): ₹{(provider.base_price * 0.3).toFixed(2)}</p>
-              <p>Final Payment (70%): ₹{(provider.base_price * 0.7).toFixed(2)}</p>
-              <p className="font-semibold">Total: ₹{provider.base_price.toFixed(2)}</p>
+              <p>Total Price: ₹{provider.base_price.toFixed(2)}</p>
             </div>
 
             <DialogFooter>
@@ -248,7 +284,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                 className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Processing..." : "Book and Pay"}
+                {isSubmitting ? "Processing..." : "Book Service"}
               </Button>
             </DialogFooter>
           </form>
