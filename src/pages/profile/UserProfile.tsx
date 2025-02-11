@@ -7,7 +7,7 @@ import ProfileHeader from "@/components/profile/ProfileHeader";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import ChatInterface from "@/components/chat/ChatInterface";
 import { useState } from "react";
-import Button from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 const UserProfile = () => {
   const { session } = useSessionContext();

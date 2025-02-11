@@ -1,3 +1,4 @@
+
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import ChatInterface from "@/components/chat/ChatInterface";
+import { useState } from "react";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
@@ -54,7 +56,7 @@ const ServiceDashboard = () => {
       if (!provider) return [];
 
       const { data, error } = await supabase
-        .from("service_requests")
+        .from("bookings")
         .select(`
           *,
           profiles:user_id (
@@ -190,7 +192,7 @@ const ServiceDashboard = () => {
                           <TableCell>{request.profiles?.full_name}</TableCell>
                           <TableCell>{request.profiles?.email}</TableCell>
                           <TableCell className="capitalize">{request.service_type}</TableCell>
-                          <TableCell>{request.description}</TableCell>
+                          <TableCell>{request.special_requirements}</TableCell>
                           <TableCell>
                             <Badge
                               variant={
@@ -238,16 +240,14 @@ const ServiceDashboard = () => {
                                   </Button>
                                 </>
                               )}
-                              {request.payment_preference === "pay_on_delivery" && (
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => setSelectedChat(request.id)}
-                                  disabled={new Date(request.service_date) < new Date()}
-                                >
-                                  Chat
-                                </Button>
-                              )}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setSelectedChat(request.id)}
+                                disabled={new Date(request.service_date) < new Date()}
+                              >
+                                Chat
+                              </Button>
                             </div>
                           </TableCell>
                         </TableRow>
