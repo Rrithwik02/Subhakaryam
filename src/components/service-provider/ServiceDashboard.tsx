@@ -18,6 +18,7 @@ import AvailabilityCalendar from "./AvailabilityCalendar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import ChatInterface from "@/components/chat/ChatInterface";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
@@ -96,6 +97,8 @@ const ServiceDashboard = () => {
       });
     },
   });
+
+  const [selectedChat, setSelectedChat] = useState<string | null>(null);
 
   if (isProviderError) {
     return (
@@ -206,31 +209,45 @@ const ServiceDashboard = () => {
                           </TableCell>
                           <TableCell>
                             <div className="space-x-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                                onClick={() =>
-                                  updateBookingStatus.mutate({
-                                    bookingId: request.id,
-                                    status: "accepted",
-                                  })
-                                }
-                              >
-                                Accept
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() =>
-                                  updateBookingStatus.mutate({
-                                    bookingId: request.id,
-                                    status: "rejected",
-                                  })
-                                }
-                              >
-                                Decline
-                              </Button>
+                              {request.status === "pending" && (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="hover:bg-ceremonial-gold hover:text-white transition-colors"
+                                    onClick={() =>
+                                      updateBookingStatus.mutate({
+                                        bookingId: request.id,
+                                        status: "accepted",
+                                      })
+                                    }
+                                  >
+                                    Accept
+                                  </Button>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() =>
+                                      updateBookingStatus.mutate({
+                                        bookingId: request.id,
+                                        status: "rejected",
+                                      })
+                                    }
+                                  >
+                                    Decline
+                                  </Button>
+                                </>
+                              )}
+                              {request.payment_preference === "pay_on_delivery" && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setSelectedChat(request.id)}
+                                  disabled={new Date(request.service_date) < new Date()}
+                                >
+                                  Chat
+                                </Button>
+                              )}
                             </div>
                           </TableCell>
                         </TableRow>
@@ -248,11 +265,19 @@ const ServiceDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-2xl font-display text-ceremonial-maroon">
-                  Availability
+                  {selectedChat ? "Chat" : "Availability"}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <AvailabilityCalendar providerId={provider.id} />
+                {selectedChat ? (
+                  <ChatInterface
+                    bookingId={selectedChat}
+                    receiverId={requests?.find(r => r.id === selectedChat)?.user_id || ""}
+                    isDisabled={requests?.find(r => r.id === selectedChat)?.service_date < new Date().toISOString()}
+                  />
+                ) : (
+                  <AvailabilityCalendar providerId={provider?.id} />
+                )}
               </CardContent>
             </Card>
           </div>

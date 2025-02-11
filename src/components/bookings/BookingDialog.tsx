@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar";
@@ -124,7 +123,6 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
         setShowProviderContact(true);
       } else {
         // Redirect to external payment app
-        // This is where you'd integrate with your payment app
         toast({
           title: "Redirecting to Payment",
           description: "You will be redirected to complete the payment.",
