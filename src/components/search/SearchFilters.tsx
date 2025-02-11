@@ -1,3 +1,4 @@
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Search as SearchIcon } from "lucide-react";
@@ -67,7 +68,7 @@ const SearchFilters = ({
             <SelectContent>
               <SelectItem value="all">All Services</SelectItem>
               {serviceCategories.map((category) => (
-                <SelectItem key={category.id} value={category.name.toLowerCase()}>
+                <SelectItem key={category.id} value={category.id}>
                   {category.name}
                 </SelectItem>
               ))}

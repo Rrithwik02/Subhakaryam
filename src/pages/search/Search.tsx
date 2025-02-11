@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,12 +18,12 @@ const Search = () => {
   const [sortBy, setSortBy] = useState<"price_asc" | "price_desc" | "rating_desc">("rating_desc");
 
   const { data: services, isLoading, error, refetch } = useQuery({
-    queryKey: ["services", searchTerm, city, sortBy, serviceType],
+    queryKey: ["services", searchTerm, city, serviceType, sortBy],
     queryFn: async () => {
       try {
         let query = supabase
           .from("service_providers")
-          .select("*, profiles(full_name)");
+          .select("*, profiles(full_name, phone)");
 
         // Search by business name
         if (searchTerm) {
@@ -36,7 +37,7 @@ const Search = () => {
 
         // Filter by service type
         if (serviceType && serviceType !== "all") {
-          query = query.eq("service_type", serviceType.toLowerCase());
+          query = query.eq("service_type", serviceType);
         }
 
         // Apply sorting

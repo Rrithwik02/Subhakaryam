@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Crown, MapPin, IndianRupee, Star, Phone } from "lucide-react";
@@ -122,7 +123,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
             className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
             onClick={() => setShowBookingDialog(true)}
           >
-            Book Now
+            Book Service
           </Button>
           <Button
             variant="outline"
