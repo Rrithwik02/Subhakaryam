@@ -1,4 +1,3 @@
-
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,10 +9,13 @@ import ChatInterface from "@/components/chat/ChatInterface";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 const UserProfile = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const { data: profile, refetch: refetchProfile } = useQuery({
     queryKey: ["profile"],
@@ -101,9 +103,41 @@ const UserProfile = () => {
 
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
 
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: "Logged out successfully",
+        description: "You have been signed out of your account.",
+      });
+      
+      navigate('/login');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
       <div className="max-w-6xl mx-auto space-y-8">
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-display text-ceremonial-maroon">Your Profile</h1>
+          <Button 
+            variant="outline" 
+            onClick={handleLogout}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </Button>
+        </div>
+
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl font-display text-ceremonial-maroon">
@@ -118,24 +152,67 @@ const UserProfile = () => {
               profileImage={profile?.profile_image}
               onImageUpload={(url) => updateProfileImage.mutate(url)}
             />
-            <div className="mt-8">
-              <DeleteAccountButton />
-            </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl font-display text-ceremonial-maroon">
-              Bookings & Chats
+              Your Messages & Bookings
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="bookings">
-              <TabsList>
-                <TabsTrigger value="bookings">Bookings</TabsTrigger>
-                <TabsTrigger value="chats">Chats</TabsTrigger>
+            <Tabs defaultValue="chats">
+              <TabsList className="w-full">
+                <TabsTrigger value="chats" className="flex-1">Messages</TabsTrigger>
+                <TabsTrigger value="bookings" className="flex-1">Bookings</TabsTrigger>
               </TabsList>
+              
+              <TabsContent value="chats">
+                {selectedChat ? (
+                  <div className="space-y-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setSelectedChat(null)}
+                      className="mb-4"
+                    >
+                      Back to Messages
+                    </Button>
+                    <ChatInterface
+                      bookingId={selectedChat}
+                      receiverId={bookings?.find(b => b.id === selectedChat)?.service_providers?.id || ""}
+                      isDisabled={bookings?.find(b => b.id === selectedChat)?.service_date < new Date().toISOString()}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {bookings?.filter(b => b.payment_preference === "pay_on_delivery").map((booking) => (
+                      <Card key={booking.id} className="cursor-pointer hover:bg-gray-50" onClick={() => setSelectedChat(booking.id)}>
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <h3 className="font-semibold">
+                                {booking.service_providers?.business_name}
+                              </h3>
+                              <p className="text-sm text-gray-600">
+                                {new Date(booking.service_date).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              Open Chat
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                    {!bookings?.some(b => b.payment_preference === "pay_on_delivery") && (
+                      <div className="text-center py-8 text-gray-500">
+                        No active chats
+                      </div>
+                    )}
+                  </div>
+                )}
+              </TabsContent>
               
               <TabsContent value="bookings">
                 <div className="space-y-4">
@@ -185,53 +262,18 @@ const UserProfile = () => {
                   )}
                 </div>
               </TabsContent>
-              
-              <TabsContent value="chats">
-                {selectedChat ? (
-                  <div className="space-y-4">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setSelectedChat(null)}
-                      className="mb-4"
-                    >
-                      Back to Chats
-                    </Button>
-                    <ChatInterface
-                      bookingId={selectedChat}
-                      receiverId={bookings?.find(b => b.id === selectedChat)?.service_providers?.id || ""}
-                      isDisabled={bookings?.find(b => b.id === selectedChat)?.service_date < new Date().toISOString()}
-                    />
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {bookings?.filter(b => b.payment_preference === "pay_on_delivery").map((booking) => (
-                      <Card key={booking.id} className="cursor-pointer hover:bg-gray-50" onClick={() => setSelectedChat(booking.id)}>
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <h3 className="font-semibold">
-                                {booking.service_providers?.business_name}
-                              </h3>
-                              <p className="text-sm text-gray-600">
-                                {new Date(booking.service_date).toLocaleDateString()}
-                              </p>
-                            </div>
-                            <Button variant="outline" size="sm">
-                              Open Chat
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                    {!bookings?.some(b => b.payment_preference === "pay_on_delivery") && (
-                      <div className="text-center py-8 text-gray-500">
-                        No active chats
-                      </div>
-                    )}
-                  </div>
-                )}
-              </TabsContent>
             </Tabs>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-red-50">
+          <CardHeader>
+            <CardTitle className="text-2xl font-display text-red-600">
+              Danger Zone
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DeleteAccountButton />
           </CardContent>
         </Card>
       </div>
