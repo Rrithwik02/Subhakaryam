@@ -1,4 +1,3 @@
-
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +25,7 @@ const ServiceDashboard = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [selectedChat, setSelectedChat] = useState<string | null>(null);
 
   const { data: provider, isError: isProviderError } = useQuery({
     queryKey: ["service-provider"],
@@ -63,6 +63,9 @@ const ServiceDashboard = () => {
             full_name,
             email,
             phone
+          ),
+          service_providers!bookings_provider_id_fkey (
+            service_type
           )
         `)
         .eq("provider_id", provider.id)
@@ -99,8 +102,6 @@ const ServiceDashboard = () => {
       });
     },
   });
-
-  const [selectedChat, setSelectedChat] = useState<string | null>(null);
 
   if (isProviderError) {
     return (
@@ -180,7 +181,7 @@ const ServiceDashboard = () => {
                         <TableHead>Client Name</TableHead>
                         <TableHead>Contact</TableHead>
                         <TableHead>Service Type</TableHead>
-                        <TableHead>Description</TableHead>
+                        <TableHead>Special Requirements</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Requested On</TableHead>
                         <TableHead>Actions</TableHead>
@@ -191,7 +192,9 @@ const ServiceDashboard = () => {
                         <TableRow key={request.id}>
                           <TableCell>{request.profiles?.full_name}</TableCell>
                           <TableCell>{request.profiles?.email}</TableCell>
-                          <TableCell className="capitalize">{request.service_type}</TableCell>
+                          <TableCell className="capitalize">
+                            {request.service_providers?.service_type}
+                          </TableCell>
                           <TableCell>{request.special_requirements}</TableCell>
                           <TableCell>
                             <Badge
