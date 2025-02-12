@@ -50,7 +50,7 @@ const Register = () => {
           theme="light"
           providers={[]}
           view="sign_up"
-          redirectTo={`${window.location.origin}/`}
+          redirectTo={`https://subhakaryam.org/`}
         />
         <div className="text-center">
           <span className="text-gray-600">Are you a service provider?</span>{" "}

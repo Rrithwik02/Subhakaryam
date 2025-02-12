@@ -1,11 +1,11 @@
+
 const Footer = () => {
   const scrollToServices = () => {
     const servicesSection = document.getElementById('services-section');
     if (servicesSection) {
       servicesSection.scrollIntoView({ behavior: 'smooth' });
     } else {
-      // If we're not on the home page, redirect to home page services section
-      window.location.href = '/#services-section';
+      window.location.href = 'https://subhakaryam.org/#services-section';
     }
   };
 
@@ -72,7 +72,7 @@ const Footer = () => {
         </div>
         <div>
           <h4 className="font-semibold mb-4">Contact Us</h4>
-          <p className="text-sm opacity-80 mb-2">Email: info@subhakaryam.com</p>
+          <p className="text-sm opacity-80 mb-2">Email: info@subhakaryam.org</p>
           <p className="text-sm opacity-80">Phone: +91 98765 43210</p>
         </div>
       </div>

@@ -67,7 +67,7 @@ const Login = () => {
                   }}
                   theme="light"
                   providers={["google"]}
-                  redirectTo={`${window.location.origin}/`}
+                  redirectTo={`https://subhakaryam.org/`}
                 />
                 <div className="text-center mt-4">
                   <p className="text-sm text-gray-600">
@@ -106,7 +106,7 @@ const Login = () => {
                   }}
                   theme="light"
                   providers={["google"]}
-                  redirectTo={`${window.location.origin}/dashboard`}
+                  redirectTo={`https://subhakaryam.org/dashboard`}
                 />
                 <div className="text-center mt-4">
                   <p className="text-sm text-gray-600">
