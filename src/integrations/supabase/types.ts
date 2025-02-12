@@ -184,6 +184,13 @@ export type Database = {
             referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "chat_connections_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
         ]
       }
       chat_messages: {
