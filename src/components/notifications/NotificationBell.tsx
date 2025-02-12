@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 interface Notification {
   id: string;
@@ -26,6 +28,7 @@ const NotificationBell = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const { session } = useSessionContext();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!session?.user) return;
@@ -76,6 +79,16 @@ const NotificationBell = () => {
     };
   }, [session, toast]);
 
+  const handleNotificationClick = async (notification: Notification) => {
+    // Mark as read
+    await markAsRead(notification.id);
+
+    // If it's a chat notification, navigate to profile page
+    if (notification.type === 'chat') {
+      navigate('/profile');
+    }
+  };
+
   const markAsRead = async (notificationId: string) => {
     const { error } = await supabase
       .from("notifications")
@@ -119,10 +132,10 @@ const NotificationBell = () => {
           notifications.map((notification) => (
             <DropdownMenuItem
               key={notification.id}
-              className={`flex flex-col items-start p-4 space-y-1 ${
+              className={`flex flex-col items-start p-4 space-y-1 cursor-pointer ${
                 !notification.read ? "bg-gray-50" : ""
               }`}
-              onClick={() => markAsRead(notification.id)}
+              onClick={() => handleNotificationClick(notification)}
             >
               <div className="font-semibold">{notification.title}</div>
               <div className="text-sm text-gray-500">{notification.message}</div>

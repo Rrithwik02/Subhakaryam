@@ -1,3 +1,4 @@
+
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +9,7 @@ import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import ChatInterface from "@/components/chat/ChatInterface";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const UserProfile = () => {
   const { session } = useSessionContext();
@@ -72,7 +74,8 @@ const UserProfile = () => {
           *,
           service_providers (
             business_name,
-            service_type
+            service_type,
+            id
           )
         `)
         .eq("user_id", session?.user?.id)
@@ -124,73 +127,111 @@ const UserProfile = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl font-display text-ceremonial-maroon">
-              {selectedChat ? "Chat" : "My Bookings"}
+              Bookings & Chats
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {selectedChat ? (
-              <div className="space-y-4">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setSelectedChat(null)}
-                  className="mb-4"
-                >
-                  Back to Bookings
-                </Button>
-                <ChatInterface
-                  bookingId={selectedChat}
-                  receiverId={bookings?.find(b => b.id === selectedChat)?.provider_id || ""}
-                  isDisabled={bookings?.find(b => b.id === selectedChat)?.service_date < new Date().toISOString()}
-                />
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {bookings?.map((booking) => (
-                  <Card key={booking.id}>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-lg">
-                            {booking.service_providers?.business_name}
-                          </h3>
-                          <p className="text-sm text-gray-600 capitalize">
-                            {booking.service_providers?.service_type}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-                            <span>
-                              {new Date(booking.service_date).toLocaleDateString()}
-                            </span>
-                            <span>
-                              {new Date(`2000-01-01T${booking.time_slot}`).toLocaleTimeString()}
-                            </span>
+            <Tabs defaultValue="bookings">
+              <TabsList>
+                <TabsTrigger value="bookings">Bookings</TabsTrigger>
+                <TabsTrigger value="chats">Chats</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="bookings">
+                <div className="space-y-4">
+                  {bookings?.map((booking) => (
+                    <Card key={booking.id}>
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-semibold text-lg">
+                              {booking.service_providers?.business_name}
+                            </h3>
+                            <p className="text-sm text-gray-600 capitalize">
+                              {booking.service_providers?.service_type}
+                            </p>
+                            <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                              <span>
+                                {new Date(booking.service_date).toLocaleDateString()}
+                              </span>
+                              <span>
+                                {new Date(`2000-01-01T${booking.time_slot}`).toLocaleTimeString()}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="px-2 py-1 rounded text-sm capitalize">
+                              {booking.status}
+                            </div>
+                            {booking.payment_preference === "pay_on_delivery" && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setSelectedChat(booking.id)}
+                                disabled={new Date(booking.service_date) < new Date()}
+                              >
+                                Chat
+                              </Button>
+                            )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <div className="px-2 py-1 rounded text-sm capitalize">
-                            {booking.status}
-                          </div>
-                          {booking.payment_preference === "pay_on_delivery" && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setSelectedChat(booking.id)}
-                              disabled={new Date(booking.service_date) < new Date()}
-                            >
-                              Chat
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {(!bookings || bookings.length === 0) && (
+                    <div className="text-center py-8 text-gray-500">
+                      No bookings found
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="chats">
+                {selectedChat ? (
+                  <div className="space-y-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setSelectedChat(null)}
+                      className="mb-4"
+                    >
+                      Back to Chats
+                    </Button>
+                    <ChatInterface
+                      bookingId={selectedChat}
+                      receiverId={bookings?.find(b => b.id === selectedChat)?.service_providers?.id || ""}
+                      isDisabled={bookings?.find(b => b.id === selectedChat)?.service_date < new Date().toISOString()}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {bookings?.filter(b => b.payment_preference === "pay_on_delivery").map((booking) => (
+                      <Card key={booking.id} className="cursor-pointer hover:bg-gray-50" onClick={() => setSelectedChat(booking.id)}>
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <h3 className="font-semibold">
+                                {booking.service_providers?.business_name}
+                              </h3>
+                              <p className="text-sm text-gray-600">
+                                {new Date(booking.service_date).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              Open Chat
                             </Button>
-                          )}
-                        </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                    {!bookings?.some(b => b.payment_preference === "pay_on_delivery") && (
+                      <div className="text-center py-8 text-gray-500">
+                        No active chats
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-                {(!bookings || bookings.length === 0) && (
-                  <div className="text-center py-8 text-gray-500">
-                    No bookings found
+                    )}
                   </div>
                 )}
-              </div>
-            )}
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>
