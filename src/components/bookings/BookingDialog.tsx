@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar";
@@ -30,8 +31,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { format } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -86,8 +85,18 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
       return;
     }
 
+    if (!data.date || !data.timeSlot) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please select both date and time slot",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
+      // First create the booking
       const { data: booking, error: bookingError } = await supabase
         .from("bookings")
         .insert({
@@ -97,7 +106,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
           time_slot: data.timeSlot,
           special_requirements: data.specialRequirements,
           payment_preference: data.paymentPreference,
-          status: data.paymentPreference === 'pay_now' ? 'pending_payment' : 'confirmed',
+          status: data.paymentPreference === 'pay_now' ? 'pending_payment' : 'pending',
         })
         .select()
         .single();
@@ -118,25 +127,24 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
         toast({
           title: "Booking Confirmed",
-          description: "Your booking has been confirmed! You can now contact the service provider.",
+          description: "Your booking has been confirmed! You can now chat with the service provider.",
         });
-        setShowProviderContact(true);
       } else {
-        // Redirect to external payment app
         toast({
           title: "Redirecting to Payment",
           description: "You will be redirected to complete the payment.",
         });
-        // Implement your payment app redirection here
+        // Implement payment redirection here
       }
 
       onClose();
-    } catch (error) {
+      form.reset();
+    } catch (error: any) {
       console.error("Error creating booking:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to create booking. Please try again.",
+        description: error.message || "Failed to create booking. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -145,32 +153,10 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="text-ceremonial-maroon">Book Service with {provider.business_name}</DialogTitle>
+          <DialogTitle>Book Service with {provider.business_name}</DialogTitle>
         </DialogHeader>
-
-        {provider.portfolio_images && provider.portfolio_images.length > 0 && (
-          <div className="mb-6">
-            <Carousel>
-              <CarouselContent>
-                {provider.portfolio_images.map((image, index) => (
-                  <CarouselItem key={index}>
-                    <AspectRatio ratio={16 / 9}>
-                      <img
-                        src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
-                        alt={`Portfolio ${index + 1}`}
-                        className="rounded-lg object-cover w-full h-full"
-                      />
-                    </AspectRatio>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
-          </div>
-        )}
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
