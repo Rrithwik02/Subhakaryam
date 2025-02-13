@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus } from "lucide-react";
+import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
@@ -84,6 +84,26 @@ const Navbar = () => {
             Contact
           </NavigationMenuLink>
         </NavigationMenuItem>
+        {session && isServiceProvider && (
+          <>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
+                onClick={() => navigate("/dashboard")}
+              >
+                Provider Dashboard
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6"
+                onClick={() => navigate("/dashboard")}
+              >
+                Add Extra Service
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </>
+        )}
       </NavigationMenuList>
     </NavigationMenu>
   );
@@ -120,7 +140,7 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
+                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
@@ -153,32 +173,15 @@ const Navbar = () => {
                       onClick={() => navigate("/contact")} 
                     />
 
-                    {session && (
+                    {session && !isServiceProvider && (
                       <>
                         <Separator className="my-4" />
-                        {isServiceProvider ? (
-                          <>
-                            <MenuLink 
-                              icon={HomeIcon}
-                              text="Provider Dashboard"
-                              onClick={() => navigate("/dashboard")}
-                              className="text-ceremonial-maroon"
-                            />
-                            <MenuLink 
-                              icon={Plus}
-                              text="Add Extra Service"
-                              onClick={() => navigate("/dashboard")}
-                              className="text-ceremonial-gold"
-                            />
-                          </>
-                        ) : (
-                          <MenuLink 
-                            icon={MessageSquare}
-                            text="My Chats"
-                            onClick={() => navigate("/profile")}
-                            className="text-ceremonial-maroon"
-                          />
-                        )}
+                        <MenuLink 
+                          icon={MessageSquare}
+                          text="My Chats"
+                          onClick={() => navigate("/profile")}
+                          className="text-ceremonial-maroon"
+                        />
                       </>
                     )}
                   </div>
