@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { useNavigate } from "react-router-dom";
@@ -43,33 +44,41 @@ const Navbar = () => {
   };
 
   const NavLinks = () => (
-    <>
-      <NavigationMenuLink 
-        className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
-        onClick={() => navigate("/about")}
-      >
-        About Us
-      </NavigationMenuLink>
-      <NavigationMenuLink 
-        className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
-        onClick={() => {
-          const servicesSection = document.getElementById('services-section');
-          if (servicesSection) {
-            servicesSection.scrollIntoView({ behavior: 'smooth' });
-          } else {
-            navigate("/#services");
-          }
-        }}
-      >
-        Services
-      </NavigationMenuLink>
-      <NavigationMenuLink 
-        className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
-        onClick={() => navigate("/contact")}
-      >
-        Contact
-      </NavigationMenuLink>
-    </>
+    <NavigationMenu>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuLink
+            className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
+            onClick={() => navigate("/about")}
+          >
+            About Us
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink
+            className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
+            onClick={() => {
+              const servicesSection = document.getElementById('services-section');
+              if (servicesSection) {
+                servicesSection.scrollIntoView({ behavior: 'smooth' });
+              } else {
+                navigate("/#services");
+              }
+            }}
+          >
+            Services
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink
+            className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
+            onClick={() => navigate("/contact")}
+          >
+            Contact
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 
   return (
@@ -85,13 +94,9 @@ const Navbar = () => {
           </Button>
 
           <div className="flex items-center gap-8">
-            <NavigationMenu className="hidden md:block">
-              <NavigationMenuList className="flex space-x-2">
-                <NavigationMenuItem>
-                  <NavLinks />
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+            <div className="hidden md:block">
+              <NavLinks />
+            </div>
 
             <div className="flex items-center gap-4">
               {session && <NotificationBell />}
