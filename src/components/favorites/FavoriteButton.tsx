@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,10 +26,12 @@ const FavoriteButton = ({ providerId, initialIsFavorite = false }: FavoriteButto
         .select("id")
         .eq("user_id", session.user.id)
         .eq("provider_id", providerId)
-        .single();
+        .maybeSingle(); // Changed from .single() to .maybeSingle()
 
       if (!error && data) {
         setIsFavorite(true);
+      } else {
+        setIsFavorite(false);
       }
     };
 
