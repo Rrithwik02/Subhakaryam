@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -170,67 +169,13 @@ const Index = () => {
       <div className="absolute top-20 right-4 flex gap-4 z-50">
         <div className="flex gap-2">
           {session ? (
-            <>
-              {isServiceProvider ? (
-                <>
-                  <Button
-                    variant="outline"
-                    className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    <UserCog className="w-4 h-4" />
-                    Provider Dashboard
-                  </Button>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
-                      >
-                        <Plus className="w-4 h-4" />
-                        Add Extra Service
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Add Additional Service</DialogTitle>
-                      </DialogHeader>
-                      {serviceProviderId && (
-                        <AdditionalServiceForm providerId={serviceProviderId} />
-                      )}
-                    </DialogContent>
-                  </Dialog>
-                </>
-              ) : (
-                <Button
-                  variant="outline"
-                  className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
-                  onClick={() => navigate("/register/service-provider")}
-                >
-                  <Briefcase className="w-4 h-4" />
-                  Become a Service Provider
-                </Button>
-              )}
-              
-              {isAdmin && (
-                <Button
-                  variant="outline"
-                  className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
-                  onClick={() => navigate("/admin")}
-                >
-                  <Shield className="w-4 h-4" />
-                  Admin Dashboard
-                </Button>
-              )}
-              
-              <Button
-                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md flex items-center gap-2"
-                onClick={handleSignOut}
-              >
-                <LogOut className="w-4 h-4" />
-                Sign Out
-              </Button>
-            </>
+            <Button
+              className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md flex items-center gap-2"
+              onClick={handleSignOut}
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </Button>
           ) : (
             <>
               <Button
