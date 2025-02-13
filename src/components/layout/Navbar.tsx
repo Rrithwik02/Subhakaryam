@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu } from "lucide-react";
+import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -43,9 +44,22 @@ const Navbar = () => {
     }
   };
 
+  const isServiceProvider = userProfile?.user_type === "service_provider";
+
+  const MenuLink = ({ icon: Icon, text, onClick, className = "" }) => (
+    <Button
+      variant="ghost"
+      className={`w-full justify-start gap-2 px-4 py-6 text-lg font-medium text-gray-700 hover:text-ceremonial-maroon hover:bg-ceremonial-cream/50 transition-colors ${className}`}
+      onClick={onClick}
+    >
+      <Icon className="h-5 w-5" />
+      {text}
+    </Button>
+  );
+
   const NavLinks = () => (
     <NavigationMenu>
-      <NavigationMenuList>
+      <NavigationMenuList className="hidden md:flex">
         <NavigationMenuItem>
           <NavigationMenuLink
             className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
@@ -57,14 +71,7 @@ const Navbar = () => {
         <NavigationMenuItem>
           <NavigationMenuLink
             className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
-            onClick={() => {
-              const servicesSection = document.getElementById('services-section');
-              if (servicesSection) {
-                servicesSection.scrollIntoView({ behavior: 'smooth' });
-              } else {
-                navigate("/#services");
-              }
-            }}
+            onClick={() => navigate("/services")}
           >
             Services
           </NavigationMenuLink>
@@ -94,9 +101,7 @@ const Navbar = () => {
           </Button>
 
           <div className="flex items-center gap-8">
-            <div className="hidden md:block">
-              <NavLinks />
-            </div>
+            <NavLinks />
 
             <div className="flex items-center gap-4">
               {session && <NotificationBell />}
@@ -115,15 +120,68 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
+                    className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[250px] sm:w-[300px] bg-ceremonial-cream">
-                  <nav className="flex flex-col gap-2 mt-8">
-                    <NavLinks />
-                  </nav>
+                <SheetContent side="right" className="w-[300px] bg-white p-0">
+                  <SheetHeader className="p-6 bg-ceremonial-cream">
+                    <SheetTitle className="text-2xl font-display text-ceremonial-maroon">
+                      Menu
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col py-4">
+                    <MenuLink 
+                      icon={HomeIcon} 
+                      text="Home" 
+                      onClick={() => navigate("/")} 
+                    />
+                    <MenuLink 
+                      icon={Info} 
+                      text="About Us" 
+                      onClick={() => navigate("/about")} 
+                    />
+                    <MenuLink 
+                      icon={MessageSquare} 
+                      text="Services" 
+                      onClick={() => navigate("/services")} 
+                    />
+                    <MenuLink 
+                      icon={Phone} 
+                      text="Contact" 
+                      onClick={() => navigate("/contact")} 
+                    />
+
+                    {session && (
+                      <>
+                        <Separator className="my-4" />
+                        {isServiceProvider ? (
+                          <>
+                            <MenuLink 
+                              icon={HomeIcon}
+                              text="Provider Dashboard"
+                              onClick={() => navigate("/dashboard")}
+                              className="text-ceremonial-maroon"
+                            />
+                            <MenuLink 
+                              icon={Plus}
+                              text="Add Extra Service"
+                              onClick={() => navigate("/dashboard")}
+                              className="text-ceremonial-gold"
+                            />
+                          </>
+                        ) : (
+                          <MenuLink 
+                            icon={MessageSquare}
+                            text="My Chats"
+                            onClick={() => navigate("/profile")}
+                            className="text-ceremonial-maroon"
+                          />
+                        )}
+                      </>
+                    )}
+                  </div>
                 </SheetContent>
               </Sheet>
             </div>
