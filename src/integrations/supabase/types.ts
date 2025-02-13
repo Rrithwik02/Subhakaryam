@@ -349,6 +349,45 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          admin_verified: boolean | null
+          amount: number
+          booking_id: string
+          created_at: string | null
+          id: string
+          payment_type: string
+          status: string | null
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_verified?: boolean | null
+          amount: number
+          booking_id: string
+          created_at?: string | null
+          id?: string
+          payment_type: string
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_verified?: boolean | null
+          amount?: number
+          booking_id?: string
+          created_at?: string | null
+          id?: string
+          payment_type?: string
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null

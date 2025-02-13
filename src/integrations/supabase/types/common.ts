@@ -5,6 +5,7 @@ import { ProfilesTable } from './profiles';
 import { ReviewsTable } from './reviews';
 import { ServiceRequestsTable, ServiceSuggestionsTable } from './requests';
 import { ChatConnectionsTable } from './chat-connections';
+import { PaymentsTable } from './payments';
 
 export type Json =
   | string
@@ -42,4 +43,5 @@ export type Tables = {
   service_requests: ServiceRequestsTable
   service_suggestions: ServiceSuggestionsTable
   chat_connections: ChatConnectionsTable
+  payments: PaymentsTable
 }
