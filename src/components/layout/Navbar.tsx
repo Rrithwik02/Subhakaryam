@@ -84,6 +84,26 @@ const Navbar = () => {
             Contact
           </NavigationMenuLink>
         </NavigationMenuItem>
+        {session && isServiceProvider && (
+          <>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
+                onClick={() => navigate("/dashboard")}
+              >
+                Provider Dashboard
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6"
+                onClick={() => navigate("/dashboard")}
+              >
+                Add Extra Service
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </>
+        )}
       </NavigationMenuList>
     </NavigationMenu>
   );
@@ -163,12 +183,6 @@ const Navbar = () => {
                               text="Provider Dashboard"
                               onClick={() => navigate("/dashboard")}
                               className="text-ceremonial-maroon"
-                            />
-                            <MenuLink 
-                              icon={Plus}
-                              text="Add Extra Service"
-                              onClick={() => navigate("/dashboard")}
-                              className="text-ceremonial-gold"
                             />
                           </>
                         ) : (
