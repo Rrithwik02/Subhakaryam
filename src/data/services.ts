@@ -1,10 +1,12 @@
+
 import { 
   UserRoundCog, 
-  Brush, // Changed from Paintbrush2 to Brush for makeup
+  Brush,
   Camera, 
   UtensilsCrossed, 
   Music2, 
-  Flower2
+  Flower2,
+  Building2 // Added for Function Hall
 } from "lucide-react";
 import { ServiceCategory } from "../types/services";
 
@@ -50,5 +52,12 @@ export const serviceCategories: ServiceCategory[] = [
     description: "Beautiful traditional decorations",
     icon: Flower2,
     basePrice: 20000,
+  },
+  {
+    id: "function_hall",
+    name: "Function Hall (Coming Soon)",
+    description: "Spacious venues for your special occasions",
+    icon: Building2,
+    basePrice: 50000,
   },
 ];
