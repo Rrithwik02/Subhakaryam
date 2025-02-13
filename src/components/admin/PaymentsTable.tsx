@@ -23,10 +23,31 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
+type PaymentWithDetails = {
+  id: string;
+  amount: number;
+  payment_type: 'advance' | 'final';
+  status: 'pending' | 'completed' | 'failed';
+  admin_verified: boolean;
+  created_at: string;
+  bookings: {
+    profiles: {
+      full_name: string;
+      phone: string;
+    };
+    service_providers: {
+      business_name: string;
+      profiles: {
+        phone: string;
+      };
+    };
+  };
+};
+
 const PaymentsTable = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [selectedPayment, setSelectedPayment] = useState<any>(null);
+  const [selectedPayment, setSelectedPayment] = useState<PaymentWithDetails | null>(null);
 
   const { data: payments, isLoading } = useQuery({
     queryKey: ["payments"],
@@ -36,24 +57,22 @@ const PaymentsTable = () => {
         .select(`
           *,
           bookings (
-            *,
+            profiles (
+              full_name,
+              phone
+            ),
             service_providers (
-              *,
+              business_name,
               profiles (
                 phone
               )
-            ),
-            profiles (
-              full_name,
-              email,
-              phone
             )
           )
         `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as PaymentWithDetails[];
     },
   });
 
@@ -143,7 +162,7 @@ const PaymentsTable = () => {
                 <Badge
                   variant={
                     payment.status === "completed"
-                      ? "success"
+                      ? "secondary"
                       : payment.status === "failed"
                       ? "destructive"
                       : "default"
@@ -221,9 +240,7 @@ const PaymentsTable = () => {
                 <p className="flex items-center gap-2">
                   <Phone className="h-4 w-4" />
                   <span className="font-medium">
-                    {
-                      selectedPayment?.bookings?.service_providers?.profiles?.phone
-                    }
+                    {selectedPayment?.bookings?.service_providers?.profiles?.phone}
                   </span>
                 </p>
               </div>
