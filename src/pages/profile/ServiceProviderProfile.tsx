@@ -1,3 +1,4 @@
+
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,18 +8,22 @@ import ProfileHeader from "@/components/profile/ProfileHeader";
 import BookingsList from "@/components/profile/BookingsList";
 import { X } from "lucide-react";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
+import { useLocation } from 'react-router-dom';
 
 const ServiceProviderProfile = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const providerId = queryParams.get('id');
 
   const { data: provider, refetch: refetchProvider } = useQuery({
-    queryKey: ["service-provider-profile"],
+    queryKey: ["service-provider-profile", providerId],
     queryFn: async () => {
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", session?.user?.id)
+        .eq("id", providerId || session?.user?.id)
         .single();
 
       if (profileError) throw profileError;
@@ -26,14 +31,14 @@ const ServiceProviderProfile = () => {
       const { data: provider, error: providerError } = await supabase
         .from("service_providers")
         .select("*")
-        .eq("profile_id", session?.user?.id)
+        .eq("profile_id", providerId || session?.user?.id)
         .single();
 
       if (providerError) throw providerError;
 
       return { ...provider, ...profile };
     },
-    enabled: !!session?.user,
+    enabled: !!(session?.user || providerId),
     meta: {
       onError: () => {
         toast({
@@ -68,43 +73,8 @@ const ServiceProviderProfile = () => {
     },
   });
 
-  const deletePortfolioImage = useMutation({
-    mutationFn: async (imageUrlToDelete: string) => {
-      // Get current portfolio images
-      const currentImages = provider?.portfolio_images || [];
-      
-      // Filter out the image to delete
-      const updatedImages = currentImages.filter(url => url !== imageUrlToDelete);
-      
-      const { error } = await supabase
-        .from("service_providers")
-        .update({ portfolio_images: updatedImages })
-        .eq("profile_id", session?.user?.id);
-
-      if (error) throw error;
-      
-      return updatedImages;
-    },
-    onSuccess: () => {
-      refetchProvider();
-      toast({
-        title: "Success",
-        description: "Portfolio image deleted successfully",
-      });
-    },
-    meta: {
-      onError: () => {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to delete portfolio image",
-        });
-      },
-    },
-  });
-
   const { data: bookings } = useQuery({
-    queryKey: ["provider-bookings"],
+    queryKey: ["provider-bookings", provider?.id],
     queryFn: async () => {
       if (!provider?.id) return [];
 
@@ -135,6 +105,39 @@ const ServiceProviderProfile = () => {
     },
   });
 
+  const deletePortfolioImage = useMutation({
+    mutationFn: async (imageUrlToDelete: string) => {
+      const currentImages = provider?.portfolio_images || [];
+      const updatedImages = currentImages.filter(url => url !== imageUrlToDelete);
+      
+      const { error } = await supabase
+        .from("service_providers")
+        .update({ portfolio_images: updatedImages })
+        .eq("profile_id", session?.user?.id);
+
+      if (error) throw error;
+      return updatedImages;
+    },
+    onSuccess: () => {
+      refetchProvider();
+      toast({
+        title: "Success",
+        description: "Portfolio image deleted successfully",
+      });
+    },
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to delete portfolio image",
+        });
+      },
+    },
+  });
+
+  const isOwnProfile = provider?.profile_id === session?.user?.id;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -154,11 +157,14 @@ const ServiceProviderProfile = () => {
               city={provider?.city}
               profileImage={provider?.profile_image}
               isServiceProvider={true}
-              onImageUpload={(url) => updateProfileImage.mutate(url)}
+              onImageUpload={isOwnProfile ? (url) => updateProfileImage.mutate(url) : undefined}
             />
-            <div className="mt-8">
-              <DeleteAccountButton />
-            </div>
+            
+            {isOwnProfile && (
+              <div className="mt-8">
+                <DeleteAccountButton />
+              </div>
+            )}
 
             {provider?.portfolio_images && provider.portfolio_images.length > 0 && (
               <div className="space-y-4">
@@ -171,12 +177,14 @@ const ServiceProviderProfile = () => {
                         alt={`Portfolio ${index + 1}`}
                         className="w-full h-48 object-cover rounded-lg"
                       />
-                      <button
-                        onClick={() => deletePortfolioImage.mutate(image)}
-                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
+                      {isOwnProfile && (
+                        <button
+                          onClick={() => deletePortfolioImage.mutate(image)}
+                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -185,16 +193,18 @@ const ServiceProviderProfile = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl font-display text-ceremonial-maroon">
-              Upcoming Bookings
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <BookingsList bookings={bookings} isServiceProvider />
-          </CardContent>
-        </Card>
+        {isOwnProfile && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-display text-ceremonial-maroon">
+                Upcoming Bookings
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <BookingsList bookings={bookings} isServiceProvider />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
