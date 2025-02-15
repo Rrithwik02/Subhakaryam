@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ServiceCategory } from "@/types/services";
@@ -31,10 +32,7 @@ const FeaturedService = ({ service, onMouseEnter, onMouseLeave }: FeaturedServic
           <h3 className="text-xl md:text-2xl font-display font-semibold mt-4 mb-3 text-ceremonial-maroon">
             {service.name}
           </h3>
-          <p className="text-gray-600 mb-4 text-base md:text-lg">{service.description}</p>
-          <p className="text-ceremonial-gold font-semibold mb-4 text-lg md:text-xl animate-pulse-gold">
-            Starting from ₹{service.basePrice.toLocaleString()}
-          </p>
+          <p className="text-gray-600 mb-6 text-base md:text-lg">{service.description}</p>
         </div>
         <div className="w-full md:w-auto">
           <Button 

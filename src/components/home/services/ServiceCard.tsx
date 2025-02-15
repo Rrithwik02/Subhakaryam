@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ServiceCategory } from "@/types/services";
@@ -33,10 +34,7 @@ const ServiceCard = ({ service, index, onMouseEnter, onMouseLeave }: ServiceCard
       <h3 className="text-lg font-display font-semibold mt-3 mb-2 text-ceremonial-maroon">
         {service.name}
       </h3>
-      <p className="text-gray-600 mb-3 line-clamp-2 text-sm">{service.description}</p>
-      <p className="text-ceremonial-gold font-semibold mb-3 text-sm animate-pulse-gold">
-        Starting from ₹{service.basePrice.toLocaleString()}
-      </p>
+      <p className="text-gray-600 mb-6 line-clamp-2 text-sm">{service.description}</p>
       <Button 
         variant="outline"
         className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-colors"
