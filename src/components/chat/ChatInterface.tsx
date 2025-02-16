@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,20 +26,28 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
   useEffect(() => {
     const verifyProfiles = async () => {
       if (!session?.user?.id || !receiverId) {
+        console.log('Missing required IDs:', { sessionUserId: session?.user?.id, receiverId });
         setIsInitialized(false);
         return;
       }
 
       try {
+        console.log('Verifying profiles for:', { userId: session.user.id, receiverId });
+        
         const { data, error } = await supabase
           .from('profiles')
-          .select('id')
+          .select('id, email, user_type')
           .in('id', [session.user.id, receiverId]);
 
         if (error) throw error;
         
+        console.log('Profile verification results:', data);
+        
         if (!data || data.length !== 2) {
-          console.error('Profile verification failed: Not all profiles found');
+          console.error('Profile verification failed: Not all profiles found', {
+            foundProfiles: data?.length,
+            profiles: data
+          });
           setIsInitialized(false);
           toast({
             variant: "destructive",
@@ -119,6 +126,12 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
     if (!newMessage.trim() || !session?.user || !isInitialized) return;
 
     try {
+      console.log('Attempting to send message:', {
+        senderId: session.user.id,
+        receiverId,
+        bookingId
+      });
+
       // Verify sender profile exists
       const { data: senderProfile, error: senderError } = await supabase
         .from('profiles')
