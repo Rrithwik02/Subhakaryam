@@ -85,8 +85,12 @@ const ServiceProviderProfile = () => {
         .select(`
           *,
           profiles:user_id (
+            id,
             full_name,
             email
+          ),
+          service_providers!inner (
+            profile_id
           )
         `)
         .eq("provider_id", provider.id)
@@ -219,7 +223,9 @@ const ServiceProviderProfile = () => {
                       <ChatInterface
                         key={booking.id}
                         bookingId={booking.id}
-                        receiverId={isOwnProfile ? booking.user_id : provider?.profile_id || ''}
+                        receiverId={isOwnProfile 
+                          ? booking.profiles?.id 
+                          : booking.service_providers?.profile_id || ''}
                       />
                     ))}
                   </div>
