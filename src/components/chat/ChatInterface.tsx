@@ -22,6 +22,29 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
   const { toast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // First, verify that both sender and receiver exist in profiles table
+  useEffect(() => {
+    const verifyProfiles = async () => {
+      if (!session?.user?.id || !receiverId) return;
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .in('id', [session.user.id, receiverId]);
+
+      if (error || !data || data.length !== 2) {
+        console.error('Profile verification failed:', { error, data });
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Unable to initialize chat - invalid user profiles",
+        });
+      }
+    };
+
+    verifyProfiles();
+  }, [session?.user?.id, receiverId, toast]);
+
   useEffect(() => {
     const fetchMessages = async () => {
       const { data, error } = await supabase
@@ -74,17 +97,42 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
     if (!newMessage.trim() || !session?.user) return;
 
     try {
-      const { error } = await supabase.from("chat_messages").insert({
+      // Verify sender profile exists
+      const { data: senderProfile, error: senderError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', session.user.id)
+        .single();
+
+      if (senderError || !senderProfile) {
+        console.error('Sender profile not found:', senderError);
+        throw new Error('Sender profile not found');
+      }
+
+      // Verify receiver profile exists
+      const { data: receiverProfile, error: receiverError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', receiverId)
+        .single();
+
+      if (receiverError || !receiverProfile) {
+        console.error('Receiver profile not found:', receiverError);
+        throw new Error('Receiver profile not found');
+      }
+
+      const { error: insertError } = await supabase.from("chat_messages").insert({
         booking_id: bookingId,
         sender_id: session.user.id,
         receiver_id: receiverId,
         message: newMessage.trim(),
       });
 
-      if (error) throw error;
+      if (insertError) throw insertError;
 
       setNewMessage("");
     } catch (error) {
+      console.error('Error sending message:', error);
       toast({
         variant: "destructive",
         title: "Error",
