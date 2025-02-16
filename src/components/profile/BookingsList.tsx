@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock } from "lucide-react";
@@ -10,12 +11,14 @@ interface Booking {
   status: string;
   special_requirements?: string;
   profiles?: {
+    id?: string;
     full_name?: string;
     email?: string;
   };
   service_providers?: {
     business_name?: string;
     service_type?: string;
+    profile_id?: string;
   };
 }
 

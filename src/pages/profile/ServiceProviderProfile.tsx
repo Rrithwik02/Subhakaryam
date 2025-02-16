@@ -90,6 +90,8 @@ const ServiceProviderProfile = () => {
             email
           ),
           service_providers!inner (
+            business_name,
+            service_type,
             profile_id
           )
         `)
