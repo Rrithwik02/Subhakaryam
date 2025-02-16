@@ -18,6 +18,7 @@ interface ChatInterfaceProps {
 const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [isInitialized, setIsInitialized] = useState(false);
   const { session } = useSessionContext();
   const { toast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -25,19 +26,38 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
   // First, verify that both sender and receiver exist in profiles table
   useEffect(() => {
     const verifyProfiles = async () => {
-      if (!session?.user?.id || !receiverId) return;
+      if (!session?.user?.id || !receiverId) {
+        setIsInitialized(false);
+        return;
+      }
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id')
-        .in('id', [session.user.id, receiverId]);
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id')
+          .in('id', [session.user.id, receiverId]);
 
-      if (error || !data || data.length !== 2) {
-        console.error('Profile verification failed:', { error, data });
+        if (error) throw error;
+        
+        if (!data || data.length !== 2) {
+          console.error('Profile verification failed: Not all profiles found');
+          setIsInitialized(false);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Unable to initialize chat - invalid user profiles",
+          });
+          return;
+        }
+
+        setIsInitialized(true);
+      } catch (error) {
+        console.error('Profile verification failed:', error);
+        setIsInitialized(false);
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Unable to initialize chat - invalid user profiles",
+          description: "Unable to initialize chat - please try again later",
         });
       }
     };
@@ -47,6 +67,8 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
 
   useEffect(() => {
     const fetchMessages = async () => {
+      if (!isInitialized) return;
+
       const { data, error } = await supabase
         .from("chat_messages")
         .select("*")
@@ -87,14 +109,14 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [bookingId, toast]);
+  }, [bookingId, isInitialized, toast]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !session?.user) return;
+    if (!newMessage.trim() || !session?.user || !isInitialized) return;
 
     try {
       // Verify sender profile exists
@@ -102,7 +124,7 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
         .from('profiles')
         .select('id')
         .eq('id', session.user.id)
-        .single();
+        .maybeSingle();
 
       if (senderError || !senderProfile) {
         console.error('Sender profile not found:', senderError);
@@ -114,7 +136,7 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
         .from('profiles')
         .select('id')
         .eq('id', receiverId)
-        .single();
+        .maybeSingle();
 
       if (receiverError || !receiverProfile) {
         console.error('Receiver profile not found:', receiverError);
@@ -140,6 +162,21 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
       });
     }
   };
+
+  if (!isInitialized) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Chat</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center text-gray-500 py-4">
+            Unable to initialize chat. Please try again later.
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full">
