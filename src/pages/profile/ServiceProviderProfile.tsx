@@ -6,9 +6,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import BookingsList from "@/components/profile/BookingsList";
+import ChatInterface from "@/components/chat/ChatInterface";
 import { X } from "lucide-react";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import { useLocation } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ServiceProviderProfile = () => {
   const { session } = useSessionContext();
@@ -193,15 +195,36 @@ const ServiceProviderProfile = () => {
           </CardContent>
         </Card>
 
-        {isOwnProfile && (
+        {(isOwnProfile || session?.user) && bookings && bookings.length > 0 && (
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl font-display text-ceremonial-maroon">
-                Upcoming Bookings
+                {isOwnProfile ? "Dashboard" : "Interaction"}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <BookingsList bookings={bookings} isServiceProvider />
+              <Tabs defaultValue="bookings">
+                <TabsList className="w-full">
+                  <TabsTrigger value="bookings">Bookings</TabsTrigger>
+                  <TabsTrigger value="messages">Messages</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="bookings">
+                  <BookingsList bookings={bookings} isServiceProvider={isOwnProfile} />
+                </TabsContent>
+                
+                <TabsContent value="messages">
+                  <div className="space-y-4">
+                    {bookings.map((booking) => (
+                      <ChatInterface
+                        key={booking.id}
+                        bookingId={booking.id}
+                        receiverId={isOwnProfile ? booking.user_id : provider?.profile_id || ''}
+                      />
+                    ))}
+                  </div>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         )}
