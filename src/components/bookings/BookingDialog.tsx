@@ -75,6 +75,70 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
     },
   });
 
+  // Check for booking clashes
+  const checkAvailability = async (date: Date, timeSlot: string) => {
+    if (!date || !timeSlot) return true;
+
+    try {
+      // First check if the provider is available on this day of week
+      const dayOfWeek = date.getDay();
+      const { data: availabilityData, error: availabilityError } = await supabase
+        .from('service_provider_availability')
+        .select('*')
+        .eq('provider_id', provider.id)
+        .eq('day_of_week', dayOfWeek)
+        .single();
+
+      if (availabilityError || !availabilityData) {
+        toast({
+          variant: "destructive",
+          title: "Provider Unavailable",
+          description: "The provider is not available on this day.",
+        });
+        return false;
+      }
+
+      // Check if the time slot falls within provider's available hours
+      const requestedTime = new Date(`2000-01-01T${timeSlot}`);
+      const startTime = new Date(`2000-01-01T${availabilityData.start_time}`);
+      const endTime = new Date(`2000-01-01T${availabilityData.end_time}`);
+
+      if (requestedTime < startTime || requestedTime > endTime) {
+        toast({
+          variant: "destructive",
+          title: "Time Slot Unavailable",
+          description: `Provider is only available between ${availabilityData.start_time} and ${availabilityData.end_time} on this day.`,
+        });
+        return false;
+      }
+
+      // Check for existing bookings
+      const { data: existingBookings, error: bookingsError } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('provider_id', provider.id)
+        .eq('service_date', format(date, "yyyy-MM-dd"))
+        .eq('time_slot', timeSlot)
+        .neq('status', 'rejected');
+
+      if (bookingsError) throw bookingsError;
+
+      if (existingBookings && existingBookings.length > 0) {
+        toast({
+          variant: "destructive",
+          title: "Time Slot Unavailable",
+          description: "This time slot is already booked. Please select another time.",
+        });
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error checking availability:', error);
+      return false;
+    }
+  };
+
   const onSubmit = async (data: FormData) => {
     if (!session?.user) {
       toast({
@@ -93,6 +157,10 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
       });
       return;
     }
+
+    // Check availability before proceeding
+    const isAvailable = await checkAvailability(data.date, data.timeSlot);
+    if (!isAvailable) return;
 
     setIsSubmitting(true);
     try {

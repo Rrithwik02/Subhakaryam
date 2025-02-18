@@ -20,6 +20,7 @@ import Navbar from "./components/layout/Navbar";
 import UserProfile from "./pages/profile/UserProfile";
 import ServiceProviderProfile from "./pages/profile/ServiceProviderProfile";
 import { useToast } from "./hooks/use-toast";
+import ServicesPage from "./pages/services";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +73,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<ContactUs />} />
+            <Route path="/services" element={<ServicesPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route 
