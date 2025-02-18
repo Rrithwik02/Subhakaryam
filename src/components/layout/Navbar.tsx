@@ -114,10 +114,14 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <Button 
             variant="ghost" 
-            className="font-display text-2xl text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors p-0"
+            className="p-0 hover:bg-transparent"
             onClick={() => navigate("/")}
           >
-            Subhakaryam
+            <img 
+              src="/lovable-uploads/eae6e160-ff8e-40a8-b8b9-5d3f1eaafee1.png" 
+              alt="Subhakaryam Logo" 
+              className="h-12"
+            />
           </Button>
 
           <div className="flex items-center gap-8">
