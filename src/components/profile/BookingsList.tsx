@@ -1,8 +1,11 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, Clock, X } from "lucide-react";
 import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Booking {
   id: string;
@@ -25,9 +28,39 @@ interface Booking {
 interface BookingsListProps {
   bookings?: Booking[];
   isServiceProvider?: boolean;
+  onBookingUpdate?: () => void;
 }
 
-const BookingsList = ({ bookings, isServiceProvider }: BookingsListProps) => {
+const BookingsList = ({ bookings, isServiceProvider, onBookingUpdate }: BookingsListProps) => {
+  const { toast } = useToast();
+
+  const handleCancellation = async (bookingId: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'cancelled' })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Booking has been cancelled successfully.",
+      });
+
+      if (onBookingUpdate) {
+        onBookingUpdate();
+      }
+    } catch (error) {
+      console.error('Error cancelling booking:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to cancel booking. Please try again.",
+      });
+    }
+  };
+
   if (!bookings || bookings.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -70,17 +103,30 @@ const BookingsList = ({ bookings, isServiceProvider }: BookingsListProps) => {
                   </p>
                 )}
               </div>
-              <Badge
-                variant={
-                  booking.status === "pending"
-                    ? "default"
-                    : booking.status === "confirmed"
-                    ? "secondary"
-                    : "destructive"
-                }
-              >
-                {booking.status}
-              </Badge>
+              <div className="flex flex-col gap-2">
+                <Badge
+                  variant={
+                    booking.status === "pending"
+                      ? "default"
+                      : booking.status === "confirmed"
+                      ? "secondary"
+                      : "destructive"
+                  }
+                >
+                  {booking.status}
+                </Badge>
+                {booking.status !== 'cancelled' && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => handleCancellation(booking.id)}
+                  >
+                    <X className="h-4 w-4 mr-1" />
+                    Cancel
+                  </Button>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>

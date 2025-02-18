@@ -21,6 +21,10 @@ import UserProfile from "./pages/profile/UserProfile";
 import ServiceProviderProfile from "./pages/profile/ServiceProviderProfile";
 import { useToast } from "./hooks/use-toast";
 import ServicesPage from "./pages/services";
+import PrivacyPolicy from "./pages/policies/PrivacyPolicy";
+import TermsConditions from "./pages/policies/TermsConditions";
+import CancellationPolicy from "./pages/policies/CancellationPolicy";
+import RefundPolicy from "./pages/policies/RefundPolicy";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,6 +78,10 @@ const App: React.FC = () => {
             <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/services" element={<ServicesPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-conditions" element={<TermsConditions />} />
+            <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route 
