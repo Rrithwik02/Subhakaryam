@@ -34,39 +34,47 @@ const Footer = () => {
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-4">Services</h4>
+          <h4 className="font-semibold mb-4">Legal</h4>
           <ul className="space-y-2">
             <li>
-              <button 
-                onClick={scrollToServices}
-                className="text-white hover:text-ceremonial-gold transition-colors cursor-pointer"
+              <a 
+                href="https://subhakaryam.org/privacy-policy" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-ceremonial-gold transition-colors"
               >
-                Poojari Services
-              </button>
+                Privacy Policy
+              </a>
             </li>
             <li>
-              <button 
-                onClick={scrollToServices}
-                className="text-white hover:text-ceremonial-gold transition-colors cursor-pointer"
+              <a 
+                href="https://subhakaryam.org/terms-conditions" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-ceremonial-gold transition-colors"
               >
-                Mehendi & Makeup
-              </button>
+                Terms & Conditions
+              </a>
             </li>
             <li>
-              <button 
-                onClick={scrollToServices}
-                className="text-white hover:text-ceremonial-gold transition-colors cursor-pointer"
+              <a 
+                href="https://subhakaryam.org/cancellation-policy" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-ceremonial-gold transition-colors"
               >
-                Catering
-              </button>
+                Cancellation Policy
+              </a>
             </li>
             <li>
-              <button 
-                onClick={scrollToServices}
-                className="text-ceremonial-gold hover:text-ceremonial-gold/80 transition-colors cursor-pointer"
+              <a 
+                href="https://subhakaryam.org/refund-policy" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-ceremonial-gold transition-colors"
               >
-                Read More Services →
-              </button>
+                Refund Policy
+              </a>
             </li>
           </ul>
         </div>
@@ -84,3 +92,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
