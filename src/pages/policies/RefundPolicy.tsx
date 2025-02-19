@@ -16,23 +16,41 @@ const RefundPolicy = () => {
           
           <h2>Refund Eligibility</h2>
           <ul>
+            <li>Booking cancellations as per cancellation policy</li>
             <li>Service not provided as described</li>
             <li>Technical issues preventing service delivery</li>
-            <li>Cancellations within policy guidelines</li>
+            <li>Service provider unavailability</li>
           </ul>
 
           <h2>Refund Process</h2>
           <ul>
-            <li>Refunds are processed within 5-7 business days</li>
-            <li>Original payment method will be used for refund</li>
-            <li>Processing fees may be deducted for certain cases</li>
+            <li>Refund requests must be submitted within 7 days</li>
+            <li>Processing time: 5-7 business days</li>
+            <li>Amount credited to original payment method</li>
+            <li>Processing fees may be deducted</li>
           </ul>
 
-          <h2>Non-Refundable Cases</h2>
+          <h2>Special Circumstances</h2>
           <ul>
-            <li>Late cancellations (less than 24 hours notice)</li>
-            <li>No-shows</li>
+            <li>Force majeure events: Case-by-case evaluation</li>
+            <li>Weather-related cancellations: Full refund</li>
+            <li>Health emergencies: Full refund with proof</li>
+          </ul>
+
+          <h2>Non-Refundable Items</h2>
+          <ul>
+            <li>Convenience fees</li>
+            <li>Last-minute cancellations (less than 24 hours)</li>
             <li>Partially completed services</li>
+            <li>Special arrangement costs</li>
+          </ul>
+
+          <h2>Contact for Refunds</h2>
+          <p>For refund requests and queries:</p>
+          <ul>
+            <li>Email: refunds@subhakaryam.org</li>
+            <li>Phone: +91 98765 43210</li>
+            <li>Response time: Within 24-48 hours</li>
           </ul>
         </div>
       </div>
