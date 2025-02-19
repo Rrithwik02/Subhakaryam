@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import {
   Table,
@@ -18,41 +18,29 @@ import { useToast } from "@/hooks/use-toast";
 
 const BookingsTable = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const { session, isLoading: sessionLoading } = useSessionContext();
   
-  useEffect(() => {
-    const checkAdminAccess = async () => {
-      if (!session?.user) {
-        navigate("/login");
-        return;
+  const { data: isAdmin, isLoading: isAdminLoading } = useQuery({
+    queryKey: ["is-admin", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user) return false;
+      const { data, error } = await supabase
+        .rpc('is_admin', { user_id: session.user.id });
+      
+      if (error) {
+        console.error("Error checking admin status:", error);
+        return false;
       }
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("user_type")
-        .eq("id", session.user.id)
-        .single();
-
-      if (profile?.user_type !== "admin") {
-        toast({
-          variant: "destructive",
-          title: "Access Denied",
-          description: "You don't have permission to view this page.",
-        });
-        navigate("/");
-      }
-    };
-
-    if (!sessionLoading) {
-      checkAdminAccess();
-    }
-  }, [session, sessionLoading, navigate, toast]);
+      
+      return data;
+    },
+    enabled: !!session?.user,
+  });
 
   const { data: bookings, isLoading: bookingsLoading, error } = useQuery({
     queryKey: ["admin-bookings"],
     queryFn: async () => {
-      if (!session?.user) return null;
+      if (!session?.user || !isAdmin) return null;
 
       const { data, error } = await supabase
         .from("bookings")
@@ -65,12 +53,12 @@ const BookingsTable = () => {
           special_requirements,
           user_id,
           provider_id,
-          profiles (
+          profiles!bookings_user_id_fkey (
             full_name,
             email,
             phone
           ),
-          service_providers (
+          service_providers!bookings_provider_id_fkey (
             business_name,
             service_type,
             base_price
@@ -94,10 +82,11 @@ const BookingsTable = () => {
       }
       return data;
     },
-    enabled: !!session?.user,
+    enabled: !!session?.user && !!isAdmin,
   });
 
-  if (sessionLoading || bookingsLoading) {
+  // Loading state
+  if (sessionLoading || isAdminLoading || bookingsLoading) {
     return (
       <div className="p-4 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
@@ -105,16 +94,28 @@ const BookingsTable = () => {
     );
   }
 
+  // Not authenticated
+  if (!session) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Not admin
+  if (!isAdmin) {
+    toast({
+      variant: "destructive",
+      title: "Access Denied",
+      description: "You don't have permission to view this page.",
+    });
+    return <Navigate to="/" replace />;
+  }
+
+  // Error state
   if (error) {
     return (
       <div className="p-4 text-red-500">
         Failed to load bookings. Please try again later.
       </div>
     );
-  }
-
-  if (!session) {
-    return null;
   }
 
   return (
