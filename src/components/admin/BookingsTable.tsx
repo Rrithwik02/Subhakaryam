@@ -20,13 +20,16 @@ const BookingsTable = () => {
       const { data, error } = await supabase
         .from("bookings")
         .select(`
-          *,
-          profiles:user_id (
+          id,
+          created_at,
+          service_date,
+          status,
+          profiles!bookings_user_id_fkey (
             full_name,
             email,
             phone
           ),
-          service_providers:provider_id (
+          service_providers (
             business_name,
             service_type,
             base_price
@@ -39,7 +42,10 @@ const BookingsTable = () => {
         `)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching bookings:", error);
+        throw error;
+      }
       return data;
     },
   });
