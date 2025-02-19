@@ -1,7 +1,9 @@
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import {
   Table,
   TableBody,
@@ -16,10 +18,42 @@ import { useToast } from "@/hooks/use-toast";
 
 const BookingsTable = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { session, isLoading: sessionLoading } = useSessionContext();
   
-  const { data: bookings, isLoading, error } = useQuery({
+  useEffect(() => {
+    const checkAdminAccess = async () => {
+      if (!session?.user) {
+        navigate("/login");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("user_type")
+        .eq("id", session.user.id)
+        .single();
+
+      if (profile?.user_type !== "admin") {
+        toast({
+          variant: "destructive",
+          title: "Access Denied",
+          description: "You don't have permission to view this page.",
+        });
+        navigate("/");
+      }
+    };
+
+    if (!sessionLoading) {
+      checkAdminAccess();
+    }
+  }, [session, sessionLoading, navigate, toast]);
+
+  const { data: bookings, isLoading: bookingsLoading, error } = useQuery({
     queryKey: ["admin-bookings"],
     queryFn: async () => {
+      if (!session?.user) return null;
+
       const { data, error } = await supabase
         .from("bookings")
         .select(`
@@ -29,12 +63,14 @@ const BookingsTable = () => {
           status,
           time_slot,
           special_requirements,
-          profiles!bookings_user_id_fkey (
+          user_id,
+          provider_id,
+          profiles (
             full_name,
             email,
             phone
           ),
-          service_providers!bookings_provider_id_fkey (
+          service_providers (
             business_name,
             service_type,
             base_price
@@ -58,7 +94,16 @@ const BookingsTable = () => {
       }
       return data;
     },
+    enabled: !!session?.user,
   });
+
+  if (sessionLoading || bookingsLoading) {
+    return (
+      <div className="p-4 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -68,8 +113,8 @@ const BookingsTable = () => {
     );
   }
 
-  if (isLoading) {
-    return <div className="p-4">Loading bookings...</div>;
+  if (!session) {
+    return null;
   }
 
   return (
