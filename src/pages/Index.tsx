@@ -63,11 +63,8 @@ const Index = () => {
         .eq("profile_id", session.user.id)
         .maybeSingle();
 
-      // Handle PGRST116 error (no rows found) silently
-      if (error) {
-        if (error.code === 'PGRST116') {
-          return null;
-        }
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error in service provider query:', error);
         throw error;
       }
       return data;
@@ -109,7 +106,6 @@ const Index = () => {
             .eq('profile_id', session.user.id)
             .maybeSingle();
           
-          // Only log error if it's not a "no rows found" error
           if (providerError && providerError.code !== 'PGRST116') {
             console.error('Error checking provider status:', providerError);
             return;

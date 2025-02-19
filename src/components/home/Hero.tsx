@@ -43,7 +43,7 @@ const Hero = () => {
         .from("profiles")
         .select("user_type")
         .eq("id", session.user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return profile;
@@ -60,7 +60,7 @@ const Hero = () => {
         .from("service_providers")
         .select("id")
         .eq("profile_id", session.user.id)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
       return data;
