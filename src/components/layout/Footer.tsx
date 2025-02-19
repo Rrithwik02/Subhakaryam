@@ -1,4 +1,6 @@
 
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   const scrollToServices = () => {
     const servicesSection = document.getElementById('services-section');
@@ -21,7 +23,7 @@ const Footer = () => {
         <div>
           <h4 className="font-semibold mb-4">Quick Links</h4>
           <ul className="space-y-2">
-            <li><a href="/about" className="hover:text-ceremonial-gold transition-colors">About Us</a></li>
+            <li><Link to="/about" className="hover:text-ceremonial-gold transition-colors">About Us</Link></li>
             <li>
               <button 
                 onClick={scrollToServices}
@@ -30,51 +32,43 @@ const Footer = () => {
                 Services
               </button>
             </li>
-            <li><a href="/contact" className="hover:text-ceremonial-gold transition-colors">Contact</a></li>
+            <li><Link to="/contact" className="hover:text-ceremonial-gold transition-colors">Contact</Link></li>
           </ul>
         </div>
         <div>
           <h4 className="font-semibold mb-4">Legal</h4>
           <ul className="space-y-2">
             <li>
-              <a 
-                href="https://subhakaryam.org/privacy-policy" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <Link 
+                to="/policies/privacy-policy" 
                 className="hover:text-ceremonial-gold transition-colors"
               >
                 Privacy Policy
-              </a>
+              </Link>
             </li>
             <li>
-              <a 
-                href="https://subhakaryam.org/terms-conditions" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <Link 
+                to="/policies/terms-conditions" 
                 className="hover:text-ceremonial-gold transition-colors"
               >
                 Terms & Conditions
-              </a>
+              </Link>
             </li>
             <li>
-              <a 
-                href="https://subhakaryam.org/cancellation-policy" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <Link 
+                to="/policies/cancellation-policy" 
                 className="hover:text-ceremonial-gold transition-colors"
               >
                 Cancellation Policy
-              </a>
+              </Link>
             </li>
             <li>
-              <a 
-                href="https://subhakaryam.org/refund-policy" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <Link 
+                to="/policies/refund-policy" 
                 className="hover:text-ceremonial-gold transition-colors"
               >
                 Refund Policy
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -92,4 +86,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
