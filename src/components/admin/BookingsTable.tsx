@@ -12,21 +12,29 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 const BookingsTable = () => {
-  const { data: bookings, isLoading } = useQuery({
+  const { toast } = useToast();
+  
+  const { data: bookings, isLoading, error } = useQuery({
     queryKey: ["admin-bookings"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("bookings")
         .select(`
-          *,
-          profiles:user_id (
+          id,
+          created_at,
+          service_date,
+          status,
+          time_slot,
+          special_requirements,
+          profiles!bookings_user_id_fkey (
             full_name,
             email,
             phone
           ),
-          service_providers:provider_id (
+          service_providers!bookings_provider_id_fkey (
             business_name,
             service_type,
             base_price
@@ -41,14 +49,27 @@ const BookingsTable = () => {
 
       if (error) {
         console.error("Error fetching bookings:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch bookings. Please try again.",
+        });
         throw error;
       }
       return data;
     },
   });
 
+  if (error) {
+    return (
+      <div className="p-4 text-red-500">
+        Failed to load bookings. Please try again later.
+      </div>
+    );
+  }
+
   if (isLoading) {
-    return <div>Loading bookings...</div>;
+    return <div className="p-4">Loading bookings...</div>;
   }
 
   return (
@@ -101,6 +122,13 @@ const BookingsTable = () => {
               </TableCell>
             </TableRow>
           ))}
+          {!bookings?.length && (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center py-4">
+                No bookings found
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
