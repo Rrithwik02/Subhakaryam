@@ -20,16 +20,13 @@ const BookingsTable = () => {
       const { data, error } = await supabase
         .from("bookings")
         .select(`
-          id,
-          created_at,
-          service_date,
-          status,
-          profiles!bookings_user_id_fkey (
+          *,
+          profiles:user_id (
             full_name,
             email,
             phone
           ),
-          service_providers (
+          service_providers:provider_id (
             business_name,
             service_type,
             base_price
