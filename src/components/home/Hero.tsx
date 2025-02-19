@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
@@ -39,16 +38,26 @@ const Hero = () => {
     queryFn: async () => {
       if (!session?.user) return null;
       
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("user_type")
-        .eq("id", session.user.id)
-        .maybeSingle();
+      try {
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("user_type")
+          .eq("id", session.user.id)
+          .maybeSingle();
 
-      if (error) throw error;
-      return profile;
+        if (error) {
+          console.error('Error fetching user profile:', error);
+          return null;
+        }
+
+        return profile;
+      } catch (error) {
+        console.error('Error in user profile query:', error);
+        return null;
+      }
     },
     enabled: !!session?.user,
+    retry: false
   });
 
   const { data: serviceProvider } = useQuery({
@@ -56,16 +65,29 @@ const Hero = () => {
     queryFn: async () => {
       if (!session?.user) return null;
       
-      const { data, error } = await supabase
-        .from("service_providers")
-        .select("id")
-        .eq("profile_id", session.user.id)
-        .maybeSingle();
+      try {
+        const { data, error } = await supabase
+          .from("service_providers")
+          .select("id")
+          .eq("profile_id", session.user.id)
+          .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error;
-      return data;
+        if (error) {
+          if (error.code === 'PGRST116') {
+            return null;
+          }
+          console.error('Error fetching service provider:', error);
+          return null;
+        }
+
+        return data;
+      } catch (error) {
+        console.error('Error in service provider query:', error);
+        return null;
+      }
     },
     enabled: !!session?.user,
+    retry: false
   });
 
   return (

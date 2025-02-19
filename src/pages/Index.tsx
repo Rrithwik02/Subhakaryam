@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -37,19 +38,26 @@ const Index = () => {
     queryFn: async () => {
       if (!session?.user) return null;
       
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("user_type")
-        .eq("id", session.user.id)
-        .maybeSingle();
+      try {
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("user_type")
+          .eq("id", session.user.id)
+          .maybeSingle();
 
-      if (error) {
-        console.error('Error fetching user profile:', error);
+        if (error) {
+          console.error('Error fetching user profile:', error);
+          return null;
+        }
+
+        return profile;
+      } catch (error) {
+        console.error('Error in user profile query:', error);
         return null;
       }
-      return profile;
     },
     enabled: !!session?.user,
+    retry: false
   });
 
   const { data: serviceProvider } = useQuery({
@@ -57,30 +65,34 @@ const Index = () => {
     queryFn: async () => {
       if (!session?.user) return null;
       
-      const { data, error } = await supabase
-        .from("service_providers")
-        .select("id")
-        .eq("profile_id", session.user.id)
-        .maybeSingle();
+      try {
+        const { data, error } = await supabase
+          .from("service_providers")
+          .select("id")
+          .eq("profile_id", session.user.id)
+          .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error in service provider query:', error);
-        throw error;
-      }
-      return data;
-    },
-    enabled: !!session?.user,
-    retry: false,
-    meta: {
-      onError: (error: any) => {
+        if (error) {
+          // Don't throw for "no rows" error
+          if (error.code === 'PGRST116') {
+            return null;
+          }
+          throw error;
+        }
+
+        return data;
+      } catch (error) {
         console.error('Error in service provider query:', error);
         toast({
           variant: "destructive",
           title: "Error",
           description: "Failed to check service provider status",
         });
-      },
+        return null;
+      }
     },
+    enabled: !!session?.user,
+    retry: false
   });
 
   useEffect(() => {
@@ -134,14 +146,14 @@ const Index = () => {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
-      localStorage.clear(); // Clear any stored auth data
+      localStorage.clear();
       
       toast({
         title: "Signed out successfully",
         description: "You have been signed out of your account.",
       });
       
-      navigate('/login', { replace: true }); // Redirect to login page and replace history
+      navigate('/login', { replace: true });
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
