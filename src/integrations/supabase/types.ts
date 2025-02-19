@@ -84,6 +84,8 @@ export type Database = {
       }
       bookings: {
         Row: {
+          cancellation_reason: string | null
+          cancelled_at: string | null
           completion_confirmed_by_customer: boolean | null
           completion_confirmed_by_provider: boolean | null
           completion_status: string | null
@@ -91,6 +93,7 @@ export type Database = {
           id: string
           payment_preference: string | null
           provider_id: string
+          refund_amount: number | null
           service_date: string
           special_requirements: string | null
           status: string | null
@@ -99,6 +102,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
           completion_confirmed_by_customer?: boolean | null
           completion_confirmed_by_provider?: boolean | null
           completion_status?: string | null
@@ -106,6 +111,7 @@ export type Database = {
           id?: string
           payment_preference?: string | null
           provider_id: string
+          refund_amount?: number | null
           service_date: string
           special_requirements?: string | null
           status?: string | null
@@ -114,6 +120,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
           completion_confirmed_by_customer?: boolean | null
           completion_confirmed_by_provider?: boolean | null
           completion_status?: string | null
@@ -121,6 +129,7 @@ export type Database = {
           id?: string
           payment_preference?: string | null
           provider_id?: string
+          refund_amount?: number | null
           service_date?: string
           special_requirements?: string | null
           status?: string | null

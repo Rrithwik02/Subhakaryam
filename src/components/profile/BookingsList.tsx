@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { Calendar, Clock, X } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import CancellationForm from "@/components/bookings/CancellationForm";
 
 interface Booking {
   id: string;
@@ -13,6 +15,7 @@ interface Booking {
   time_slot: string;
   status: string;
   special_requirements?: string;
+  refund_amount?: number;
   profiles?: {
     id?: string;
     full_name?: string;
@@ -23,6 +26,11 @@ interface Booking {
     service_type?: string;
     profile_id?: string;
   };
+  payments?: Array<{
+    amount: number;
+    payment_type: string;
+    status: string;
+  }>;
 }
 
 interface BookingsListProps {
@@ -33,32 +41,10 @@ interface BookingsListProps {
 
 const BookingsList = ({ bookings, isServiceProvider, onBookingUpdate }: BookingsListProps) => {
   const { toast } = useToast();
+  const [selectedBooking, setSelectedBooking] = useState<string | null>(null);
 
   const handleCancellation = async (bookingId: string) => {
-    try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({ status: 'cancelled' })
-        .eq('id', bookingId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Booking has been cancelled successfully.",
-      });
-
-      if (onBookingUpdate) {
-        onBookingUpdate();
-      }
-    } catch (error) {
-      console.error('Error cancelling booking:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to cancel booking. Please try again.",
-      });
-    }
+    setSelectedBooking(bookingId);
   };
 
   if (!bookings || bookings.length === 0) {
@@ -68,6 +54,17 @@ const BookingsList = ({ bookings, isServiceProvider, onBookingUpdate }: Bookings
       </div>
     );
   }
+
+  const getBookingPaymentInfo = (booking: Booking) => {
+    if (!booking.payments || booking.payments.length === 0) {
+      return { amount: 0, paymentType: 'None' };
+    }
+    const payment = booking.payments[0];
+    return {
+      amount: payment.amount,
+      paymentType: payment.payment_type,
+    };
+  };
 
   return (
     <div className="space-y-4">
@@ -131,6 +128,20 @@ const BookingsList = ({ bookings, isServiceProvider, onBookingUpdate }: Bookings
           </CardContent>
         </Card>
       ))}
+
+      {selectedBooking && (
+        <CancellationForm
+          isOpen={!!selectedBooking}
+          onClose={() => setSelectedBooking(null)}
+          bookingId={selectedBooking}
+          {...getBookingPaymentInfo(bookings.find(b => b.id === selectedBooking)!)}
+          onCancellationComplete={() => {
+            if (onBookingUpdate) {
+              onBookingUpdate();
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
