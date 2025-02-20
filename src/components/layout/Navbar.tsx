@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { useNavigate } from "react-router-dom";
@@ -86,8 +85,8 @@ const Navbar = () => {
           </NavigationMenuLink>
         </NavigationMenuItem>
 
-        {/* Become a Service Provider Link (for non-logged in users) */}
-        {!session && (
+        {/* Become a Service Provider Link (show when logged in and not a service provider) */}
+        {session && !isServiceProvider && !isAdmin && (
           <NavigationMenuItem>
             <NavigationMenuLink
               className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6 font-semibold"
@@ -214,6 +213,14 @@ const Navbar = () => {
                     {session && (
                       <>
                         <Separator className="my-4" />
+                        {!isServiceProvider && !isAdmin && (
+                          <MenuLink 
+                            icon={Briefcase}
+                            text="Become a Service Provider"
+                            onClick={() => navigate("/register/service-provider")}
+                            className="text-ceremonial-gold"
+                          />
+                        )}
                         {isAdmin && (
                           <MenuLink 
                             icon={HomeIcon}
@@ -239,16 +246,6 @@ const Navbar = () => {
                           </>
                         )}
                       </>
-                    )}
-
-                    {/* Mobile Menu Become a Provider Link */}
-                    {!session && (
-                      <MenuLink 
-                        icon={Briefcase}
-                        text="Become a Service Provider"
-                        onClick={() => navigate("/register/service-provider")}
-                        className="text-ceremonial-gold"
-                      />
                     )}
                   </div>
                 </SheetContent>
