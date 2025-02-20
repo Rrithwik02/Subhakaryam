@@ -5,7 +5,6 @@ import UsersTable from "./UsersTable";
 import ReviewsTable from "./ReviewsTable";
 import DeletionRequestsTable from "./DeletionRequestsTable";
 import PaymentsTable from "./PaymentsTable";
-import BookingsTable from "./BookingsTable";
 
 const AdminDashboard = () => {
   return (
@@ -16,7 +15,7 @@ const AdminDashboard = () => {
             Admin Dashboard
           </h1>
           <p className="text-gray-600 mt-2">
-            Manage service providers, users, reviews, payments, bookings, and account deletion requests
+            Manage service providers, users, reviews, payments, and account deletion requests
           </p>
         </div>
 
@@ -25,7 +24,6 @@ const AdminDashboard = () => {
             <TabsTrigger value="providers">Service Providers</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
-            <TabsTrigger value="bookings">Bookings</TabsTrigger>
             <TabsTrigger value="payments">Payments</TabsTrigger>
             <TabsTrigger value="deletion-requests">Deletion Requests</TabsTrigger>
           </TabsList>
@@ -40,10 +38,6 @@ const AdminDashboard = () => {
 
           <TabsContent value="reviews" className="bg-white rounded-lg shadow-lg p-6">
             <ReviewsTable />
-          </TabsContent>
-
-          <TabsContent value="bookings" className="bg-white rounded-lg shadow-lg p-6">
-            <BookingsTable />
           </TabsContent>
 
           <TabsContent value="payments" className="bg-white rounded-lg shadow-lg p-6">

@@ -14,44 +14,23 @@ const TermsConditions = () => {
         <div className="prose max-w-none">
           <p>Last updated: {new Date().toLocaleDateString()}</p>
           
-          <h2>1. Service Terms</h2>
+          <h2>1. Acceptance of Terms</h2>
+          <p>By accessing and using our service, you agree to these terms and conditions.</p>
+          
+          <h2>2. User Responsibilities</h2>
           <ul>
-            <li>Services are provided subject to availability and confirmation</li>
-            <li>All ceremonies will be conducted according to traditional customs</li>
-            <li>Service timings must be strictly adhered to</li>
-            <li>Additional requirements must be communicated in advance</li>
+            <li>Provide accurate information</li>
+            <li>Maintain confidentiality of your account</li>
+            <li>Comply with booking and cancellation policies</li>
+            <li>Treat service providers with respect</li>
           </ul>
 
-          <h2>2. Booking and Payments</h2>
+          <h2>3. Service Provider Responsibilities</h2>
           <ul>
-            <li>Advance payment is required to confirm bookings</li>
-            <li>Prices are subject to change based on specific requirements</li>
-            <li>GST and other applicable taxes will be charged extra</li>
-            <li>Payment terms are non-negotiable</li>
-          </ul>
-
-          <h2>3. Service Provider Guidelines</h2>
-          <ul>
-            <li>Providers must maintain professional standards</li>
-            <li>All religious items must be authentic and pure</li>
-            <li>Punctuality is mandatory</li>
-            <li>Proper traditional attire must be worn</li>
-          </ul>
-
-          <h2>4. User Responsibilities</h2>
-          <ul>
-            <li>Provide accurate ceremony details</li>
-            <li>Ensure venue accessibility and readiness</li>
-            <li>Follow traditional customs and practices</li>
-            <li>Maintain respectful behavior during ceremonies</li>
-          </ul>
-
-          <h2>5. Dispute Resolution</h2>
-          <p>Any disputes will be resolved through:</p>
-          <ul>
-            <li>Direct communication with customer service</li>
-            <li>Mediation if required</li>
-            <li>Legal proceedings as a last resort</li>
+            <li>Provide services as described</li>
+            <li>Maintain professional standards</li>
+            <li>Honor bookings and pricing</li>
+            <li>Communicate changes promptly</li>
           </ul>
         </div>
       </div>

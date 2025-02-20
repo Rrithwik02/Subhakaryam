@@ -13,49 +13,31 @@ const PrivacyPolicy = () => {
         </div>
         <div className="prose max-w-none">
           <p>Last updated: {new Date().toLocaleDateString()}</p>
-
-          <h2>Information Collection</h2>
-          <p>At Subhakaryam, we collect and process the following information:</p>
+          <h2>1. Information We Collect</h2>
+          <p>We collect information that you provide directly to us, including:</p>
           <ul>
-            <li>Personal identification information (Name, email address, phone number)</li>
-            <li>Religious preferences and ceremony requirements</li>
-            <li>Service booking details and history</li>
-            <li>Payment information (processed securely through our payment provider)</li>
+            <li>Name and contact information</li>
+            <li>Service booking details</li>
+            <li>Payment information</li>
+            <li>Communications with service providers</li>
+          </ul>
+          
+          <h2>2. How We Use Your Information</h2>
+          <p>We use the information we collect to:</p>
+          <ul>
+            <li>Process your bookings</li>
+            <li>Facilitate communication between users and service providers</li>
+            <li>Improve our services</li>
+            <li>Send important updates about your bookings</li>
           </ul>
 
-          <h2>Use of Information</h2>
-          <p>We use your information to:</p>
+          <h2>3. Information Sharing</h2>
+          <p>We share your information only with:</p>
           <ul>
-            <li>Facilitate ceremony bookings and services</li>
-            <li>Communicate important updates about your bookings</li>
-            <li>Improve our services and user experience</li>
-            <li>Send relevant notifications about similar services</li>
-            <li>Process payments and maintain financial records</li>
+            <li>Service providers you book with</li>
+            <li>Payment processors to complete transactions</li>
+            <li>When required by law</li>
           </ul>
-
-          <h2>Data Protection</h2>
-          <p>We implement several measures to protect your data:</p>
-          <ul>
-            <li>Secure SSL encryption for all data transmission</li>
-            <li>Regular security audits and updates</li>
-            <li>Restricted access to personal information</li>
-            <li>Compliance with data protection regulations</li>
-          </ul>
-
-          <h2>Your Rights</h2>
-          <p>You have the right to:</p>
-          <ul>
-            <li>Access your personal data</li>
-            <li>Correct inaccurate data</li>
-            <li>Request deletion of your data</li>
-            <li>Withdraw consent for data processing</li>
-            <li>Request a copy of your data</li>
-          </ul>
-
-          <h2>Contact Us</h2>
-          <p>For any privacy-related queries, please contact us at:</p>
-          <p>Email: privacy@subhakaryam.org</p>
-          <p>Phone: +91 98765 43210</p>
         </div>
       </div>
     </div>
