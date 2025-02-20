@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { BasicInformation } from "@/components/service-provider/BasicInformation";
@@ -13,15 +13,23 @@ import { ServiceDetails } from "@/components/service-provider/ServiceDetails";
 import { supabase } from "@/integrations/supabase/client";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 const ServiceProviderRegister = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { session } = useSessionContext();
   const [selectedService, setSelectedService] = useState("");
   const [primaryLocation, setPrimaryLocation] = useState("");
   const [secondaryLocation, setSecondaryLocation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAuthForm, setShowAuthForm] = useState(true);
+
+  useEffect(() => {
+    if (session) {
+      setShowAuthForm(false);
+    }
+  }, [session]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,19 +43,41 @@ const ServiceProviderRegister = () => {
       }
 
       const formData = new FormData(e.target as HTMLFormElement);
-      
-      // First update the user's profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ 
-          user_type: 'service_provider',
-          full_name: formData.get('owner_name') as string,
-          email: formData.get('email') as string,
-          phone: formData.get('phone') as string
-        })
-        .eq('id', user.id);
 
-      if (profileError) throw profileError;
+      // First check if the user already has a profile
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!existingProfile) {
+        // Create profile if it doesn't exist
+        const { error: insertProfileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            user_type: 'service_provider',
+            full_name: formData.get('owner_name') as string,
+            email: formData.get('email') as string,
+            phone: formData.get('phone') as string
+          });
+
+        if (insertProfileError) throw insertProfileError;
+      } else {
+        // Update existing profile
+        const { error: updateProfileError } = await supabase
+          .from('profiles')
+          .update({ 
+            user_type: 'service_provider',
+            full_name: formData.get('owner_name') as string,
+            email: formData.get('email') as string,
+            phone: formData.get('phone') as string
+          })
+          .eq('id', user.id);
+
+        if (updateProfileError) throw updateProfileError;
+      }
       
       // Then create the service provider record
       const serviceProviderData = {
@@ -58,6 +88,7 @@ const ServiceProviderRegister = () => {
         city: primaryLocation,
         secondary_city: secondaryLocation || null,
         base_price: parseFloat(formData.get('base_price') as string),
+        status: 'pending'
       };
 
       const { error: providerError } = await supabase
@@ -68,28 +99,21 @@ const ServiceProviderRegister = () => {
 
       toast({
         title: "Success",
-        description: "Your service provider profile has been created successfully.",
+        description: "Your service provider profile has been created successfully and is pending approval.",
       });
       
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error registering service provider:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to register as service provider. Please try again.",
+        description: error.message || "Failed to register as service provider. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  // Listen for authentication state changes
-  supabase.auth.onAuthStateChange((event) => {
-    if (event === "SIGNED_IN") {
-      setShowAuthForm(false);
-    }
-  });
 
   return (
     <div className="min-h-screen bg-ceremonial-cream py-16 px-4">
