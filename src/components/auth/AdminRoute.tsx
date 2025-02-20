@@ -1,52 +1,37 @@
+
 import { Navigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { session, isLoading } = useSessionContext();
+  const { session, isLoading: sessionLoading } = useSessionContext();
   const { toast } = useToast();
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    const checkIsAdmin = async () => {
-      if (!session?.user) {
-        setIsAdmin(false);
-        return;
-      }
+  const { data: isAdmin, isLoading: isAdminLoading } = useQuery({
+    queryKey: ["is-admin", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user) return false;
       
       try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('user_type')
-          .eq('id', session.user.id)
-          .maybeSingle();
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("user_type")
+          .eq("id", session.user.id)
+          .single();
         
         if (error) throw error;
-        
-        const isUserAdmin = data?.user_type === 'admin';
-        setIsAdmin(isUserAdmin);
-        
-        if (!isUserAdmin) {
-          toast({
-            variant: "destructive",
-            title: "Access Denied",
-            description: "You don't have admin privileges.",
-          });
-        }
+        return profile?.user_type === "admin";
       } catch (error) {
-        console.error('Error checking admin status:', error);
-        setIsAdmin(false);
+        console.error("Error checking admin status:", error);
+        return false;
       }
-    };
+    },
+    enabled: !!session?.user,
+  });
 
-    if (!isLoading) {
-      checkIsAdmin();
-    }
-  }, [session, isLoading, toast]);
-
-  if (isLoading || isAdmin === null) {
+  if (sessionLoading || isAdminLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
@@ -54,8 +39,17 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     );
   }
 
-  if (!session || !isAdmin) {
+  if (!session) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (!isAdmin) {
+    toast({
+      variant: "destructive",
+      title: "Access Denied",
+      description: "You don't have admin privileges.",
+    });
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

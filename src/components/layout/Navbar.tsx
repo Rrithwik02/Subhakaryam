@@ -45,6 +45,7 @@ const Navbar = () => {
   };
 
   const isServiceProvider = userProfile?.user_type === "service_provider";
+  const isAdmin = userProfile?.user_type === "admin";
 
   const MenuLink = ({ icon: Icon, text, onClick, className = "" }) => (
     <Button
@@ -84,24 +85,38 @@ const Navbar = () => {
             Contact
           </NavigationMenuLink>
         </NavigationMenuItem>
-        {session && isServiceProvider && (
+        {session && (
           <>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
-                onClick={() => navigate("/dashboard")}
-              >
-                Provider Dashboard
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6"
-                onClick={() => navigate("/dashboard")}
-              >
-                Add Extra Service
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            {isAdmin && (
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
+                  onClick={() => navigate("/admin")}
+                >
+                  Admin Dashboard
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            )}
+            {isServiceProvider && (
+              <>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Provider Dashboard
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Add Extra Service
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </>
+            )}
           </>
         )}
       </NavigationMenuList>
@@ -181,18 +196,23 @@ const Navbar = () => {
                       <>
                         <Separator className="my-4" />
                         {isServiceProvider ? (
-                          <>
-                            <MenuLink 
-                              icon={HomeIcon}
-                              text="Provider Dashboard"
-                              onClick={() => navigate("/dashboard")}
-                              className="text-ceremonial-maroon"
-                            />
-                          </>
+                          <MenuLink 
+                            icon={HomeIcon}
+                            text="Provider Dashboard"
+                            onClick={() => navigate("/dashboard")}
+                            className="text-ceremonial-maroon"
+                          />
+                        ) : isAdmin ? (
+                          <MenuLink 
+                            icon={HomeIcon}
+                            text="Admin Dashboard"
+                            onClick={() => navigate("/admin")}
+                            className="text-ceremonial-maroon"
+                          />
                         ) : (
                           <MenuLink 
                             icon={MessageSquare}
-                            text="My Chats"
+                            text="My Profile"
                             onClick={() => navigate("/profile")}
                             className="text-ceremonial-maroon"
                           />
