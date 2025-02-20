@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus } from "lucide-react";
+import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus, Briefcase } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
@@ -45,6 +45,7 @@ const Navbar = () => {
   };
 
   const isServiceProvider = userProfile?.user_type === "service_provider";
+  const isAdmin = userProfile?.user_type === "admin";
 
   const MenuLink = ({ icon: Icon, text, onClick, className = "" }) => (
     <Button
@@ -84,24 +85,56 @@ const Navbar = () => {
             Contact
           </NavigationMenuLink>
         </NavigationMenuItem>
-        {session && isServiceProvider && (
+
+        {/* Become a Service Provider Link (for non-logged in users) */}
+        {!session && (
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6 font-semibold"
+              onClick={() => navigate("/register/service-provider")}
+            >
+              <Briefcase className="h-4 w-4 inline-block mr-2" />
+              Become a Service Provider
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        )}
+
+        {/* Dashboard Links */}
+        {session && (
           <>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
-                onClick={() => navigate("/dashboard")}
-              >
-                Provider Dashboard
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6"
-                onClick={() => navigate("/dashboard")}
-              >
-                Add Extra Service
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            {isAdmin && (
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
+                  onClick={() => navigate("/admin")}
+                >
+                  <HomeIcon className="h-4 w-4 inline-block mr-2" />
+                  Admin Dashboard
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            )}
+            {isServiceProvider && (
+              <>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    <Briefcase className="h-4 w-4 inline-block mr-2" />
+                    Provider Dashboard
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6"
+                    onClick={() => navigate("/service/add")}
+                  >
+                    <Plus className="h-4 w-4 inline-block mr-2" />
+                    Add New Service
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </>
+            )}
           </>
         )}
       </NavigationMenuList>
@@ -177,27 +210,45 @@ const Navbar = () => {
                       onClick={() => navigate("/contact")} 
                     />
 
+                    {/* Mobile Menu Dashboard Links */}
                     {session && (
                       <>
                         <Separator className="my-4" />
-                        {isServiceProvider ? (
+                        {isAdmin && (
+                          <MenuLink 
+                            icon={HomeIcon}
+                            text="Admin Dashboard"
+                            onClick={() => navigate("/admin")}
+                            className="text-ceremonial-maroon"
+                          />
+                        )}
+                        {isServiceProvider && (
                           <>
                             <MenuLink 
-                              icon={HomeIcon}
+                              icon={Briefcase}
                               text="Provider Dashboard"
                               onClick={() => navigate("/dashboard")}
                               className="text-ceremonial-maroon"
                             />
+                            <MenuLink 
+                              icon={Plus}
+                              text="Add New Service"
+                              onClick={() => navigate("/service/add")}
+                              className="text-ceremonial-gold"
+                            />
                           </>
-                        ) : (
-                          <MenuLink 
-                            icon={MessageSquare}
-                            text="My Chats"
-                            onClick={() => navigate("/profile")}
-                            className="text-ceremonial-maroon"
-                          />
                         )}
                       </>
+                    )}
+
+                    {/* Mobile Menu Become a Provider Link */}
+                    {!session && (
+                      <MenuLink 
+                        icon={Briefcase}
+                        text="Become a Service Provider"
+                        onClick={() => navigate("/register/service-provider")}
+                        className="text-ceremonial-gold"
+                      />
                     )}
                   </div>
                 </SheetContent>
