@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +23,7 @@ const Navbar = () => {
         .from("profiles")
         .select("user_type")
         .eq("id", session.user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return profile;
@@ -45,6 +46,7 @@ const Navbar = () => {
 
   const isServiceProvider = userProfile?.user_type === "service_provider";
   const isAdmin = userProfile?.user_type === "admin";
+  const isGuest = userProfile?.user_type === "guest" || !userProfile?.user_type;
 
   const MenuLink = ({ icon: Icon, text, onClick, className = "" }) => (
     <Button
@@ -85,8 +87,8 @@ const Navbar = () => {
           </NavigationMenuLink>
         </NavigationMenuItem>
 
-        {/* Become a Service Provider Link (show when logged in and not a service provider) */}
-        {session && !isServiceProvider && !isAdmin && (
+        {/* Become a Service Provider Link (show when logged in as guest) */}
+        {session && isGuest && (
           <NavigationMenuItem>
             <NavigationMenuLink
               className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6 font-semibold"
@@ -213,7 +215,7 @@ const Navbar = () => {
                     {session && (
                       <>
                         <Separator className="my-4" />
-                        {!isServiceProvider && !isAdmin && (
+                        {isGuest && (
                           <MenuLink 
                             icon={Briefcase}
                             text="Become a Service Provider"

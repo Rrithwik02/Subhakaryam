@@ -10,7 +10,6 @@ import { BasicInformation } from "@/components/service-provider/BasicInformation
 import { ServiceSelection } from "@/components/service-provider/ServiceSelection";
 import { ServiceAreas } from "@/components/service-provider/ServiceAreas";
 import { ServiceDetails } from "@/components/service-provider/ServiceDetails";
-import { PaymentInformation } from "@/components/service-provider/PaymentInformation";
 import { supabase } from "@/integrations/supabase/client";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
@@ -23,7 +22,6 @@ const ServiceProviderRegister = () => {
   const [secondaryLocation, setSecondaryLocation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAuthForm, setShowAuthForm] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState<"bank_account" | "upi" | "qr_code">("bank_account");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,31 +60,11 @@ const ServiceProviderRegister = () => {
         base_price: parseFloat(formData.get('base_price') as string),
       };
 
-      const { data: provider, error: providerError } = await supabase
+      const { error: providerError } = await supabase
         .from('service_providers')
-        .insert(serviceProviderData)
-        .select()
-        .single();
+        .insert(serviceProviderData);
 
       if (providerError) throw providerError;
-
-      // Finally, save the payment details
-      const paymentData = {
-        provider_id: provider.id,
-        payment_method: paymentMethod,
-        account_holder_name: formData.get('account_holder_name') as string,
-        bank_name: formData.get('bank_name') as string,
-        account_number: formData.get('account_number') as string,
-        ifsc_code: formData.get('ifsc_code') as string,
-        upi_id: formData.get('upi_id') as string,
-        qr_code_url: formData.get('qr_code_url') as string,
-      };
-
-      const { error: paymentError } = await supabase
-        .from('provider_payment_details')
-        .insert(paymentData);
-
-      if (paymentError) throw paymentError;
 
       toast({
         title: "Success",
@@ -163,11 +141,6 @@ const ServiceProviderRegister = () => {
                 className="space-y-6 pt-6 border-t"
               />
             )}
-
-            <PaymentInformation 
-              className="space-y-6 pt-6 border-t"
-              onPaymentMethodChange={setPaymentMethod}
-            />
 
             <div className="space-y-6 pt-6 border-t">
               <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon">
