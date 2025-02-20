@@ -1,5 +1,4 @@
 
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigate } from "react-router-dom";
@@ -24,24 +23,24 @@ const BookingsTable = () => {
     queryKey: ["is-admin", session?.user?.id],
     queryFn: async () => {
       if (!session?.user) return false;
-      const { data, error } = await supabase
-        .rpc('is_admin', { user_id: session.user.id });
       
-      if (error) {
+      try {
+        const { data, error } = await supabase
+          .rpc('is_admin', { user_id: session.user.id });
+        
+        if (error) throw error;
+        return !!data; // Convert to boolean
+      } catch (error) {
         console.error("Error checking admin status:", error);
         return false;
       }
-      
-      return data;
     },
     enabled: !!session?.user,
   });
 
-  const { data: bookings, isLoading: bookingsLoading, error } = useQuery({
+  const { data: bookings, isLoading: bookingsLoading } = useQuery({
     queryKey: ["admin-bookings"],
     queryFn: async () => {
-      if (!session?.user || !isAdmin) return null;
-
       const { data, error } = await supabase
         .from("bookings")
         .select(`
@@ -53,12 +52,12 @@ const BookingsTable = () => {
           special_requirements,
           user_id,
           provider_id,
-          profiles!bookings_user_id_fkey (
+          profiles (
             full_name,
             email,
             phone
           ),
-          service_providers!bookings_provider_id_fkey (
+          service_providers (
             business_name,
             service_type,
             base_price
@@ -78,15 +77,16 @@ const BookingsTable = () => {
           title: "Error",
           description: "Failed to fetch bookings. Please try again.",
         });
-        throw error;
+        return [];
       }
-      return data;
+
+      return data || [];
     },
     enabled: !!session?.user && !!isAdmin,
   });
 
   // Loading state
-  if (sessionLoading || isAdminLoading || bookingsLoading) {
+  if (sessionLoading || isAdminLoading) {
     return (
       <div className="p-4 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
@@ -109,15 +109,6 @@ const BookingsTable = () => {
     return <Navigate to="/" replace />;
   }
 
-  // Error state
-  if (error) {
-    return (
-      <div className="p-4 text-red-500">
-        Failed to load bookings. Please try again later.
-      </div>
-    );
-  }
-
   return (
     <div className="rounded-md border">
       <Table>
@@ -132,46 +123,47 @@ const BookingsTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {bookings?.map((booking) => (
-            <TableRow key={booking.id}>
-              <TableCell>
-                {format(new Date(booking.service_date), "PPP")}
-              </TableCell>
-              <TableCell>
-                <div>
-                  <p className="font-medium">{booking.profiles?.full_name}</p>
-                  <p className="text-sm text-gray-500">{booking.profiles?.email}</p>
-                </div>
-              </TableCell>
-              <TableCell>{booking.service_providers?.business_name}</TableCell>
-              <TableCell>{booking.service_providers?.service_type}</TableCell>
-              <TableCell>
-                <div>
-                  <p>₹{booking.payments?.[0]?.amount || "N/A"}</p>
-                  <p className="text-sm text-gray-500">
-                    {booking.payments?.[0]?.payment_type || "Not specified"}
-                  </p>
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    booking.status === "confirmed"
-                      ? "default"
-                      : booking.status === "cancelled"
-                      ? "destructive"
-                      : "secondary"
-                  }
-                >
-                  {booking.status}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          ))}
-          {!bookings?.length && (
+          {bookings && bookings.length > 0 ? (
+            bookings.map((booking) => (
+              <TableRow key={booking.id}>
+                <TableCell>
+                  {format(new Date(booking.service_date), "PPP")}
+                </TableCell>
+                <TableCell>
+                  <div>
+                    <p className="font-medium">{booking.profiles?.full_name}</p>
+                    <p className="text-sm text-gray-500">{booking.profiles?.email}</p>
+                  </div>
+                </TableCell>
+                <TableCell>{booking.service_providers?.business_name}</TableCell>
+                <TableCell>{booking.service_providers?.service_type}</TableCell>
+                <TableCell>
+                  <div>
+                    <p>₹{booking.payments?.[0]?.amount || "N/A"}</p>
+                    <p className="text-sm text-gray-500">
+                      {booking.payments?.[0]?.payment_type || "Not specified"}
+                    </p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={
+                      booking.status === "confirmed"
+                        ? "default"
+                        : booking.status === "cancelled"
+                        ? "destructive"
+                        : "secondary"
+                    }
+                  >
+                    {booking.status}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
             <TableRow>
               <TableCell colSpan={6} className="text-center py-4">
-                No bookings found
+                {bookingsLoading ? "Loading bookings..." : "No bookings found"}
               </TableCell>
             </TableRow>
           )}
