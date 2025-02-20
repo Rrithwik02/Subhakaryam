@@ -1,17 +1,18 @@
 
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus } from "lucide-react";
+import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus, ArrowLeft, Briefcase } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { session } = useSessionContext();
 
   const { data: userProfile } = useQuery({
@@ -31,6 +32,8 @@ const Navbar = () => {
     enabled: !!session?.user,
   });
 
+  const showBackButton = location.pathname !== '/';
+
   const handleProfileClick = () => {
     if (!session) {
       navigate("/login");
@@ -45,6 +48,7 @@ const Navbar = () => {
   };
 
   const isServiceProvider = userProfile?.user_type === "service_provider";
+  const isAdmin = userProfile?.user_type === "admin";
 
   const MenuLink = ({ icon: Icon, text, onClick, className = "" }) => (
     <Button
@@ -59,7 +63,19 @@ const Navbar = () => {
 
   const NavLinks = () => (
     <NavigationMenu>
-      <NavigationMenuList className="hidden md:flex">
+      <NavigationMenuList className="hidden md:flex items-center">
+        {showBackButton && (
+          <NavigationMenuItem>
+            <Button
+              variant="ghost"
+              className="mr-4"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </NavigationMenuItem>
+        )}
+        
         <NavigationMenuItem>
           <NavigationMenuLink
             className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
@@ -68,6 +84,7 @@ const Navbar = () => {
             About Us
           </NavigationMenuLink>
         </NavigationMenuItem>
+        
         <NavigationMenuItem>
           <NavigationMenuLink
             className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
@@ -76,6 +93,7 @@ const Navbar = () => {
             Services
           </NavigationMenuLink>
         </NavigationMenuItem>
+        
         <NavigationMenuItem>
           <NavigationMenuLink
             className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
@@ -84,25 +102,49 @@ const Navbar = () => {
             Contact
           </NavigationMenuLink>
         </NavigationMenuItem>
+        
+        {!session && (
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6 font-semibold"
+              onClick={() => navigate("/register/service-provider")}
+            >
+              Become a Service Provider
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        )}
+
         {session && isServiceProvider && (
-          <>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
-                onClick={() => navigate("/dashboard")}
-              >
-                Provider Dashboard
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6"
-                onClick={() => navigate("/dashboard")}
-              >
-                Add Extra Service
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </>
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
+              onClick={() => navigate("/dashboard")}
+            >
+              Provider Dashboard
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        )}
+
+        {session && isAdmin && (
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
+              onClick={() => navigate("/admin")}
+            >
+              Admin Dashboard
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        )}
+
+        {session && isServiceProvider && (
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6"
+              onClick={() => navigate("/service/add")}
+            >
+              Add New Service
+            </NavigationMenuLink>
+          </NavigationMenuItem>
         )}
       </NavigationMenuList>
     </NavigationMenu>
@@ -112,13 +154,24 @@ const Navbar = () => {
     <div className="fixed top-0 left-0 right-0 z-50 bg-ceremonial-cream border-b border-ceremonial-gold/10">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
-          <Button 
-            variant="ghost" 
-            className="font-display text-2xl text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors p-0"
-            onClick={() => navigate("/")}
-          >
-            Subhakaryam
-          </Button>
+          <div className="flex items-center">
+            {showBackButton && (
+              <Button
+                variant="ghost"
+                className="mr-4 md:hidden"
+                onClick={() => navigate(-1)}
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            )}
+            <Button 
+              variant="ghost" 
+              className="font-display text-2xl text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors p-0"
+              onClick={() => navigate("/")}
+            >
+              Subhakaryam
+            </Button>
+          </div>
 
           <div className="flex items-center gap-8">
             <NavLinks />
@@ -173,23 +226,39 @@ const Navbar = () => {
                       onClick={() => navigate("/contact")} 
                     />
 
+                    {!session && (
+                      <MenuLink 
+                        icon={Briefcase}
+                        text="Become a Service Provider"
+                        onClick={() => navigate("/register/service-provider")}
+                        className="text-ceremonial-gold"
+                      />
+                    )}
+
                     {session && (
                       <>
                         <Separator className="my-4" />
-                        {isServiceProvider ? (
+                        {isServiceProvider && (
                           <>
                             <MenuLink 
-                              icon={HomeIcon}
+                              icon={Briefcase}
                               text="Provider Dashboard"
                               onClick={() => navigate("/dashboard")}
                               className="text-ceremonial-maroon"
                             />
+                            <MenuLink 
+                              icon={Plus}
+                              text="Add New Service"
+                              onClick={() => navigate("/service/add")}
+                              className="text-ceremonial-gold"
+                            />
                           </>
-                        ) : (
+                        )}
+                        {isAdmin && (
                           <MenuLink 
-                            icon={MessageSquare}
-                            text="My Chats"
-                            onClick={() => navigate("/profile")}
+                            icon={Briefcase}
+                            text="Admin Dashboard"
+                            onClick={() => navigate("/admin")}
                             className="text-ceremonial-maroon"
                           />
                         )}
