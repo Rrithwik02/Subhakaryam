@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Shield, UserCog, Plus, LogOut, Briefcase } from "lucide-react";
 import SuggestionForm from "@/components/suggestions/SuggestionForm";
+import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
 import Hero from "@/components/home/Hero";
 import Services from "@/components/home/Services";
 import HowItWorks from "@/components/home/HowItWorks";
@@ -27,7 +27,10 @@ import { useToast } from "@/hooks/use-toast";
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { session } = useSessionContext();
+  const { session, isLoading } = useSessionContext();
+  const [isAdmin, setIsAdmin] = React.useState(false);
+  const [isServiceProvider, setIsServiceProvider] = React.useState(false);
+  const [serviceProviderId, setServiceProviderId] = React.useState<string | null>(null);
 
   const { data: userProfile } = useQuery({
     queryKey: ["user-profile"],
@@ -60,26 +63,89 @@ const Index = () => {
         .eq("profile_id", session.user.id)
         .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching service provider:', error);
-        return null;
+      // Handle PGRST116 error (no rows found) silently
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return null;
+        }
+        throw error;
       }
       return data;
     },
     enabled: !!session?.user,
+    retry: false,
+    meta: {
+      onError: (error: any) => {
+        console.error('Error in service provider query:', error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to check service provider status",
+        });
+      },
+    },
   });
+
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      if (session?.user) {
+        try {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('user_type')
+            .eq('id', session.user.id)
+            .maybeSingle();
+          
+          if (profileError) {
+            console.error('Error checking user status:', profileError);
+            return;
+          }
+          
+          setIsAdmin(profileData?.user_type === 'admin');
+
+          const { data: providerData, error: providerError } = await supabase
+            .from('service_providers')
+            .select('id')
+            .eq('profile_id', session.user.id)
+            .maybeSingle();
+          
+          // Only log error if it's not a "no rows found" error
+          if (providerError && providerError.code !== 'PGRST116') {
+            console.error('Error checking provider status:', providerError);
+            return;
+          }
+          
+          setIsServiceProvider(!!providerData);
+          if (providerData) {
+            setServiceProviderId(providerData.id);
+          }
+        } catch (error) {
+          console.error('Error in checkUserStatus:', error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to check user status",
+          });
+        }
+      }
+    };
+
+    checkUserStatus();
+  }, [session, toast]);
 
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
+      localStorage.clear(); // Clear any stored auth data
+      
       toast({
         title: "Signed out successfully",
         description: "You have been signed out of your account.",
       });
       
-      navigate('/login', { replace: true });
+      navigate('/login', { replace: true }); // Redirect to login page and replace history
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
@@ -90,74 +156,44 @@ const Index = () => {
     }
   };
 
-  const renderDashboardButtons = () => {
-    if (!session) {
-      return (
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            className="shadow-lg border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
-            onClick={() => navigate("/login")}
-          >
-            Sign In
-          </Button>
-          <Button
-            className="shadow-lg bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
-            onClick={() => navigate("/register")}
-          >
-            Join Us
-          </Button>
-        </div>
-      );
-    }
-
+  if (isLoading) {
     return (
-      <div className="flex flex-wrap gap-4">
-        {userProfile?.user_type === 'admin' && (
-          <Button
-            className="shadow-lg bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white"
-            onClick={() => navigate('/admin')}
-          >
-            <Shield className="w-4 h-4 mr-2" />
-            Admin Dashboard
-          </Button>
-        )}
-        
-        {serviceProvider && (
-          <Button
-            className="shadow-lg bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
-            onClick={() => navigate('/dashboard')}
-          >
-            <Briefcase className="w-4 h-4 mr-2" />
-            Provider Dashboard
-          </Button>
-        )}
-        
-        <Button
-          variant="outline"
-          className="shadow-lg"
-          onClick={() => navigate('/profile')}
-        >
-          <UserCog className="w-4 h-4 mr-2" />
-          My Profile
-        </Button>
-
-        <Button
-          variant="destructive"
-          className="shadow-lg"
-          onClick={handleSignOut}
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          Sign Out
-        </Button>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
       </div>
     );
-  };
+  }
 
   return (
     <div className="min-h-screen pt-16">
-      <div className="absolute top-20 right-4 z-50">
-        {renderDashboardButtons()}
+      <div className="absolute top-20 right-4 flex gap-4 z-50">
+        <div className="flex gap-2">
+          {session ? (
+            <Button
+              className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md flex items-center gap-2"
+              onClick={handleSignOut}
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
+                onClick={() => navigate("/login")}
+              >
+                Sign In
+              </Button>
+              <Button
+                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
+                onClick={() => navigate("/register")}
+              >
+                Join Us
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       <Hero />
@@ -167,14 +203,13 @@ const Index = () => {
       <HowItWorks />
       <Testimonials />
       
-      {session && !serviceProvider && (
+      {session && !isServiceProvider && (
         <div className="max-w-md mx-auto px-4 py-12">
           <Dialog>
             <DialogTrigger asChild>
               <Button
-                className="w-full shadow-lg bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+                className="w-full shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90"
               >
-                <Plus className="w-4 h-4 mr-2" />
                 Suggest a Service
               </Button>
             </DialogTrigger>
