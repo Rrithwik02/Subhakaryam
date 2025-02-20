@@ -24,129 +24,59 @@ import AdvertCarousel from "@/components/home/AdvertCarousel";
 import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
 import { useToast } from "@/hooks/use-toast";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { session, isLoading } = useSessionContext();
-  const [isAdmin, setIsAdmin] = React.useState(false);
-  const [isServiceProvider, setIsServiceProvider] = React.useState(false);
-  const [serviceProviderId, setServiceProviderId] = React.useState<string | null>(null);
+  const { session } = useSessionContext();
 
-  const { data: userProfile } = useQuery({
-    queryKey: ["user-profile"],
+  const { data: userProfile, isLoading } = useQuery({
+    queryKey: ["user-profile", session?.user?.id],
     queryFn: async () => {
       if (!session?.user) return null;
       
-      try {
-        const { data: profile, error } = await supabase
-          .from("profiles")
-          .select("user_type")
-          .eq("id", session.user.id)
-          .maybeSingle();
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
 
-        if (error) {
-          console.error('Error fetching user profile:', error);
-          return null;
-        }
-
-        return profile;
-      } catch (error) {
-        console.error('Error in user profile query:', error);
-        return null;
+      if (error) {
+        console.error('Error fetching user profile:', error);
+        throw error;
       }
+
+      return profile;
     },
     enabled: !!session?.user,
-    retry: false
   });
 
   const { data: serviceProvider } = useQuery({
-    queryKey: ["service-provider"],
+    queryKey: ["service-provider", session?.user?.id],
     queryFn: async () => {
       if (!session?.user) return null;
       
-      try {
-        const { data, error } = await supabase
-          .from("service_providers")
-          .select("id")
-          .eq("profile_id", session.user.id)
-          .maybeSingle();
+      const { data, error } = await supabase
+        .from("service_providers")
+        .select("*")
+        .eq("profile_id", session.user.id)
+        .single();
 
-        if (error) {
-          // Don't throw for "no rows" error
-          if (error.code === 'PGRST116') {
-            return null;
-          }
-          throw error;
-        }
-
-        return data;
-      } catch (error) {
-        console.error('Error in service provider query:', error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to check service provider status",
-        });
-        return null;
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching service provider:', error);
+        throw error;
       }
+
+      return data;
     },
     enabled: !!session?.user,
-    retry: false
   });
-
-  useEffect(() => {
-    const checkUserStatus = async () => {
-      if (session?.user) {
-        try {
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('user_type')
-            .eq('id', session.user.id)
-            .maybeSingle();
-          
-          if (profileError) {
-            console.error('Error checking user status:', profileError);
-            return;
-          }
-          
-          setIsAdmin(profileData?.user_type === 'admin');
-
-          const { data: providerData, error: providerError } = await supabase
-            .from('service_providers')
-            .select('id')
-            .eq('profile_id', session.user.id)
-            .maybeSingle();
-          
-          if (providerError && providerError.code !== 'PGRST116') {
-            console.error('Error checking provider status:', providerError);
-            return;
-          }
-          
-          setIsServiceProvider(!!providerData);
-          if (providerData) {
-            setServiceProviderId(providerData.id);
-          }
-        } catch (error) {
-          console.error('Error in checkUserStatus:', error);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Failed to check user status",
-          });
-        }
-      }
-    };
-
-    checkUserStatus();
-  }, [session, toast]);
 
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
-      localStorage.clear();
       
       toast({
         title: "Signed out successfully",
@@ -164,6 +94,57 @@ const Index = () => {
     }
   };
 
+  const DashboardSection = () => {
+    if (!session) return null;
+
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <Card className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-ceremonial-maroon">Dashboard Access</h2>
+            <div className="flex flex-wrap gap-4">
+              {userProfile?.user_type === 'admin' && (
+                <Button
+                  className="bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white"
+                  onClick={() => navigate('/admin')}
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  Admin Dashboard
+                </Button>
+              )}
+              
+              {serviceProvider && (
+                <Button
+                  className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+                  onClick={() => navigate('/dashboard')}
+                >
+                  <Briefcase className="w-4 h-4 mr-2" />
+                  Provider Dashboard
+                </Button>
+              )}
+              
+              <Button
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800"
+                onClick={() => navigate('/profile')}
+              >
+                <UserCog className="w-4 h-4 mr-2" />
+                My Profile
+              </Button>
+
+              <Button
+                variant="destructive"
+                onClick={handleSignOut}
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -174,50 +155,22 @@ const Index = () => {
 
   return (
     <div className="min-h-screen pt-16">
-      <div className="absolute top-20 right-4 flex gap-4 z-50">
-        <div className="flex gap-2">
-          {session ? (
-            <Button
-              className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md flex items-center gap-2"
-              onClick={handleSignOut}
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </Button>
-          ) : (
-            <>
-              <Button
-                variant="outline"
-                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
-                onClick={() => navigate("/login")}
-              >
-                Sign In
-              </Button>
-              <Button
-                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
-                onClick={() => navigate("/register")}
-              >
-                Join Us
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
-
       <Hero />
+      <DashboardSection />
       <AdvertCarousel />
       <Services />
       <EssentialsPreview />
       <HowItWorks />
       <Testimonials />
       
-      {session && !isServiceProvider && (
+      {session && !serviceProvider && (
         <div className="max-w-md mx-auto px-4 py-12">
           <Dialog>
             <DialogTrigger asChild>
               <Button
                 className="w-full shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90"
               >
+                <Plus className="w-4 h-4 mr-2" />
                 Suggest a Service
               </Button>
             </DialogTrigger>
