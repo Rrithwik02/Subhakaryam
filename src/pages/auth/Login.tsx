@@ -3,7 +3,6 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
@@ -32,7 +31,7 @@ const Login = () => {
   if (!session) {
     return (
       <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
-        <Card className="w-full max-w-md p-6 space-y-6 bg-white">
+        <Card className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg">
           <div className="text-center">
             <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-2">
               Welcome Back
@@ -42,8 +41,12 @@ const Login = () => {
 
           <Tabs defaultValue="user" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="user">Regular User</TabsTrigger>
-              <TabsTrigger value="provider">Service Provider</TabsTrigger>
+              <TabsTrigger value="user" className="text-ceremonial-maroon data-[state=active]:bg-ceremonial-cream">
+                Regular User
+              </TabsTrigger>
+              <TabsTrigger value="provider" className="text-ceremonial-maroon data-[state=active]:bg-ceremonial-cream">
+                Service Provider
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="user">
@@ -68,7 +71,6 @@ const Login = () => {
                   }}
                   theme="light"
                   providers={["google"]}
-                  redirectTo={`https://subhakaryam.org/`}
                 />
               </div>
             </TabsContent>
@@ -95,7 +97,6 @@ const Login = () => {
                   }}
                   theme="light"
                   providers={["google"]}
-                  redirectTo={`https://subhakaryam.org/dashboard`}
                 />
                 <div className="mt-4 p-4 bg-ceremonial-cream/50 rounded-lg">
                   <p className="text-sm text-gray-600 text-center">

@@ -1,3 +1,4 @@
+
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
@@ -27,13 +28,14 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
-      <Card className="w-full max-w-md p-6 space-y-6 bg-white">
+      <Card className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg">
         <div className="text-center">
           <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-2">
             Create Account
           </h1>
           <p className="text-gray-600 mb-6">Join our community today</p>
         </div>
+        
         <Auth
           supabaseClient={supabase}
           appearance={{
@@ -45,14 +47,19 @@ const Register = () => {
                   brandAccent: '#966F08',
                 }
               }
+            },
+            className: {
+              container: 'w-full',
+              button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+              divider: 'my-6',
             }
           }}
           theme="light"
-          providers={[]}
+          providers={["google"]}
           view="sign_up"
-          redirectTo={`https://subhakaryam.org/`}
         />
-        <div className="text-center">
+
+        <div className="text-center pt-4 border-t">
           <span className="text-gray-600">Are you a service provider?</span>{" "}
           <Button
             variant="link"
