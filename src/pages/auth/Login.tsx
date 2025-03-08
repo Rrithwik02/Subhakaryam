@@ -19,15 +19,22 @@ const Login = () => {
       // Check the user type to redirect appropriately
       const checkUserTypeAndRedirect = async () => {
         try {
+          console.log("Checking user type for:", session.user.id);
           const { data: profile, error } = await supabase
             .from("profiles")
             .select("user_type")
             .eq("id", session.user.id)
             .single();
           
-          if (error) throw error;
+          if (error) {
+            console.error("Error fetching profile:", error);
+            throw error;
+          }
+          
+          console.log("User profile:", profile);
           
           if (profile?.user_type === 'admin') {
+            console.log("Redirecting to admin dashboard");
             navigate("/admin");
             toast({
               title: "Admin Login Successful",
@@ -35,23 +42,29 @@ const Login = () => {
             });
           } else {
             // Check if the user is a service provider
+            console.log("Checking if user is a service provider");
             const { data: provider, error: providerError } = await supabase
               .from("service_providers")
               .select("id")
               .eq("profile_id", session.user.id)
               .maybeSingle();
             
+            console.log("Provider check result:", provider, providerError);
+            
             if (providerError && providerError.code !== 'PGRST116') {
+              console.error("Error checking provider status:", providerError);
               throw providerError;
             }
             
             if (provider) {
+              console.log("Redirecting to provider dashboard");
               navigate("/dashboard");
               toast({
                 title: "Provider Login Successful",
                 description: "Welcome to your service provider dashboard"
               });
             } else {
+              console.log("Redirecting to home page");
               navigate("/");
               toast({
                 title: "Login Successful",

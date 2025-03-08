@@ -733,9 +733,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_admin: {
+      get_current_user_type: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      is_admin:
+        | {
+            Args: Record<PropertyKey, never>
+            Returns: boolean
+          }
+        | {
+            Args: {
+              user_id: string
+            }
+            Returns: boolean
+          }
+      is_provider_owner: {
         Args: {
-          user_id: string
+          provider_profile_id: string
         }
         Returns: boolean
       }

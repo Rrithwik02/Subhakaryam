@@ -18,11 +18,14 @@ const Register = () => {
         // Check if the user is a service provider
         const checkUserTypeAndRedirect = async () => {
           try {
+            console.log("Auth state changed. User signed in:", session?.user.id);
             const { data: profile, error } = await supabase
               .from("profiles")
               .select("user_type")
               .eq("id", session?.user.id)
               .single();
+            
+            console.log("Profile data:", profile, error);
             
             if (error) throw error;
             
@@ -39,6 +42,8 @@ const Register = () => {
                 .select("id")
                 .eq("profile_id", session?.user.id)
                 .maybeSingle();
+              
+              console.log("Provider data:", provider, providerError);
               
               if (providerError && providerError.code !== 'PGRST116') {
                 throw providerError;

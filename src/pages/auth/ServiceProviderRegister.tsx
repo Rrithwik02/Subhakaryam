@@ -43,40 +43,42 @@ const ServiceProviderRegister = () => {
       }
 
       const formData = new FormData(e.target as HTMLFormElement);
+      console.log("Form data collected:", Object.fromEntries(formData.entries()));
+      console.log("User ID:", user.id);
+      console.log("Selected service:", selectedService);
+      console.log("Primary location:", primaryLocation);
 
       // First check if the user already has a profile
-      const { data: existingProfile } = await supabase
+      const { data: existingProfile, error: profileError } = await supabase
         .from('profiles')
         .select('id')
         .eq('id', user.id)
         .maybeSingle();
 
-      if (!existingProfile) {
-        // Create profile if it doesn't exist
-        const { error: insertProfileError } = await supabase
-          .from('profiles')
-          .insert({
-            id: user.id,
-            user_type: 'service_provider',
-            full_name: formData.get('owner_name') as string,
-            email: formData.get('email') as string,
-            phone: formData.get('phone') as string
-          });
+      console.log("Existing profile check:", existingProfile, profileError);
 
-        if (insertProfileError) throw insertProfileError;
-      } else {
-        // Update existing profile
-        const { error: updateProfileError } = await supabase
-          .from('profiles')
-          .update({ 
-            user_type: 'service_provider',
-            full_name: formData.get('owner_name') as string,
-            email: formData.get('email') as string,
-            phone: formData.get('phone') as string
-          })
-          .eq('id', user.id);
+      if (profileError) {
+        console.error("Error checking for existing profile:", profileError);
+      }
 
-        if (updateProfileError) throw updateProfileError;
+      // Update the user profile to be a service provider
+      const profileData = {
+        user_type: 'service_provider',
+        full_name: formData.get('owner_name') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('phone') as string
+      };
+
+      console.log("Profile data to update:", profileData);
+
+      const { error: updateProfileError } = await supabase
+        .from('profiles')
+        .update(profileData)
+        .eq('id', user.id);
+
+      if (updateProfileError) {
+        console.error("Error updating profile:", updateProfileError);
+        throw updateProfileError;
       }
       
       // Then create the service provider record
@@ -91,11 +93,16 @@ const ServiceProviderRegister = () => {
         status: 'pending'
       };
 
+      console.log("Service provider data to insert:", serviceProviderData);
+
       const { error: providerError } = await supabase
         .from('service_providers')
         .insert(serviceProviderData);
 
-      if (providerError) throw providerError;
+      if (providerError) {
+        console.error("Error creating service provider:", providerError);
+        throw providerError;
+      }
 
       toast({
         title: "Success",
