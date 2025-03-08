@@ -13,13 +13,62 @@ const Register = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN") {
-        toast({
-          title: "Welcome!",
-          description: "Your account has been created successfully.",
-        });
-        navigate("/");
+        // Check if the user is a service provider
+        const checkUserTypeAndRedirect = async () => {
+          try {
+            const { data: profile, error } = await supabase
+              .from("profiles")
+              .select("user_type")
+              .eq("id", session?.user.id)
+              .single();
+            
+            if (error) throw error;
+            
+            if (profile?.user_type === 'admin') {
+              navigate("/admin");
+              toast({
+                title: "Admin Login Successful",
+                description: "Welcome to your admin dashboard"
+              });
+            } else {
+              // Check if the user is a service provider
+              const { data: provider, error: providerError } = await supabase
+                .from("service_providers")
+                .select("id")
+                .eq("profile_id", session?.user.id)
+                .maybeSingle();
+              
+              if (providerError && providerError.code !== 'PGRST116') {
+                throw providerError;
+              }
+              
+              if (provider) {
+                navigate("/dashboard");
+                toast({
+                  title: "Provider Registration Complete",
+                  description: "Welcome to your service provider dashboard"
+                });
+              } else {
+                toast({
+                  title: "Welcome!",
+                  description: "Your account has been created successfully.",
+                });
+                navigate("/");
+              }
+            }
+          } catch (error) {
+            console.error("Error checking user type:", error);
+            toast({
+              title: "Welcome!",
+              description: "Your account has been created successfully.",
+            });
+            navigate("/");
+          }
+        };
+        
+        checkUserTypeAndRedirect();
       }
     });
 

@@ -16,9 +16,58 @@ const Login = () => {
 
   useEffect(() => {
     if (session) {
-      navigate("/");
+      // Check the user type to redirect appropriately
+      const checkUserTypeAndRedirect = async () => {
+        try {
+          const { data: profile, error } = await supabase
+            .from("profiles")
+            .select("user_type")
+            .eq("id", session.user.id)
+            .single();
+          
+          if (error) throw error;
+          
+          if (profile?.user_type === 'admin') {
+            navigate("/admin");
+            toast({
+              title: "Admin Login Successful",
+              description: "Welcome to your admin dashboard"
+            });
+          } else {
+            // Check if the user is a service provider
+            const { data: provider, error: providerError } = await supabase
+              .from("service_providers")
+              .select("id")
+              .eq("profile_id", session.user.id)
+              .maybeSingle();
+            
+            if (providerError && providerError.code !== 'PGRST116') {
+              throw providerError;
+            }
+            
+            if (provider) {
+              navigate("/dashboard");
+              toast({
+                title: "Provider Login Successful",
+                description: "Welcome to your service provider dashboard"
+              });
+            } else {
+              navigate("/");
+              toast({
+                title: "Login Successful",
+                description: "Welcome back!"
+              });
+            }
+          }
+        } catch (error) {
+          console.error("Error checking user type:", error);
+          navigate("/");
+        }
+      };
+      
+      checkUserTypeAndRedirect();
     }
-  }, [session, navigate]);
+  }, [session, navigate, toast]);
 
   if (isLoading) {
     return (

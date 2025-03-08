@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import { SessionContextProvider, useSessionContext } from "@supabase/auth-helpers-react";
@@ -41,7 +42,7 @@ const AuthStateHandler = () => {
   const { session } = useSessionContext();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         queryClient.clear();
         navigate('/login');
@@ -50,10 +51,56 @@ const AuthStateHandler = () => {
           description: "You have been signed out of your account.",
         });
       } else if (event === 'SIGNED_IN') {
-        toast({
-          title: "Signed in",
-          description: "Welcome back!",
-        });
+        try {
+          // Check user type for proper redirection
+          const { data: profile, error } = await supabase
+            .from("profiles")
+            .select("user_type")
+            .eq("id", session?.user.id)
+            .single();
+          
+          if (error) throw error;
+          
+          if (profile?.user_type === 'admin') {
+            navigate("/admin");
+            toast({
+              title: "Admin Login Successful",
+              description: "Welcome to your admin dashboard"
+            });
+          } else {
+            // Check if the user is a service provider
+            const { data: provider, error: providerError } = await supabase
+              .from("service_providers")
+              .select("id")
+              .eq("profile_id", session?.user.id)
+              .maybeSingle();
+            
+            if (providerError && providerError.code !== 'PGRST116') {
+              throw providerError;
+            }
+            
+            if (provider) {
+              navigate("/dashboard");
+              toast({
+                title: "Provider Login Successful",
+                description: "Welcome to your service provider dashboard"
+              });
+            } else {
+              toast({
+                title: "Signed in",
+                description: "Welcome back!",
+              });
+              navigate("/");
+            }
+          }
+        } catch (error) {
+          console.error("Error handling auth state change:", error);
+          toast({
+            title: "Signed in",
+            description: "Welcome back!",
+          });
+          navigate("/");
+        }
       }
     });
 
