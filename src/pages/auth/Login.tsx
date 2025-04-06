@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 
@@ -13,73 +13,82 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { session, isLoading } = useSessionContext();
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
-    if (session) {
-      // Check the user type to redirect appropriately
-      const checkUserTypeAndRedirect = async () => {
-        try {
-          console.log("Checking user type for:", session.user.id);
-          const { data: profile, error } = await supabase
-            .from("profiles")
-            .select("user_type")
-            .eq("id", session.user.id)
-            .single();
-          
-          if (error) {
-            console.error("Error fetching profile:", error);
-            throw error;
-          }
-          
-          console.log("User profile:", profile);
-          
-          if (profile?.user_type === 'admin') {
-            console.log("Redirecting to admin dashboard");
-            navigate("/admin");
-            toast({
-              title: "Admin Login Successful",
-              description: "Welcome to your admin dashboard"
-            });
-          } else {
-            // Check if the user is a service provider
-            console.log("Checking if user is a service provider");
-            const { data: provider, error: providerError } = await supabase
-              .from("service_providers")
-              .select("id")
-              .eq("profile_id", session.user.id)
-              .maybeSingle();
-            
-            console.log("Provider check result:", provider, providerError);
-            
-            if (providerError && providerError.code !== 'PGRST116') {
-              console.error("Error checking provider status:", providerError);
-              throw providerError;
-            }
-            
-            if (provider) {
-              console.log("Redirecting to provider dashboard");
-              navigate("/dashboard");
-              toast({
-                title: "Provider Login Successful",
-                description: "Welcome to your service provider dashboard"
-              });
-            } else {
-              console.log("Redirecting to home page");
-              navigate("/");
-              toast({
-                title: "Login Successful",
-                description: "Welcome back!"
-              });
-            }
-          }
-        } catch (error) {
-          console.error("Error checking user type:", error);
-          navigate("/");
+    if (!session || redirecting) return;
+
+    const checkUserTypeAndRedirect = async () => {
+      try {
+        setRedirecting(true);
+        console.log("Checking user type for:", session.user.id);
+        
+        // First check user profile to determine user type
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("user_type")
+          .eq("id", session.user.id)
+          .single();
+        
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
+          throw profileError;
         }
-      };
-      
-      checkUserTypeAndRedirect();
-    }
+        
+        console.log("User profile:", profile);
+        
+        if (profile?.user_type === 'admin') {
+          console.log("User is admin - redirecting to /admin");
+          navigate("/admin");
+          toast({
+            title: "Admin Login Successful",
+            description: "Welcome to your admin dashboard"
+          });
+          return;
+        }
+        
+        // Check if user is a service provider
+        const { data: provider, error: providerError } = await supabase
+          .from("service_providers")
+          .select("id")
+          .eq("profile_id", session.user.id)
+          .maybeSingle();
+        
+        console.log("Provider check result:", provider, providerError);
+        
+        if (providerError && providerError.code !== 'PGRST116') {
+          console.error("Error checking provider status:", providerError);
+          throw providerError;
+        }
+        
+        if (provider) {
+          console.log("User is a service provider - redirecting to /dashboard");
+          navigate("/dashboard");
+          toast({
+            title: "Provider Login Successful",
+            description: "Welcome to your service provider dashboard"
+          });
+        } else {
+          console.log("User is a regular user - redirecting to /");
+          navigate("/");
+          toast({
+            title: "Login Successful",
+            description: "Welcome back!"
+          });
+        }
+      } catch (error) {
+        console.error("Error in checkUserTypeAndRedirect:", error);
+        navigate("/");
+        toast({
+          title: "Login Successful",
+          description: "Welcome back!"
+        });
+      } finally {
+        setRedirecting(false);
+      }
+    };
+    
+    checkUserTypeAndRedirect();
   }, [session, navigate, toast]);
 
   if (isLoading) {
@@ -173,7 +182,12 @@ const Login = () => {
     );
   }
 
-  return null;
+  // If session exists but we're not redirecting yet, show loading
+  return (
+    <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+    </div>
+  );
 };
 
 export default Login;

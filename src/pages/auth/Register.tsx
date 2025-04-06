@@ -5,20 +5,23 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
+      if (event === "SIGNED_IN" && !redirecting) {
         // Check if the user is a service provider
         const checkUserTypeAndRedirect = async () => {
           try {
+            setRedirecting(true);
             console.log("Auth state changed. User signed in:", session?.user.id);
+            
             const { data: profile, error } = await supabase
               .from("profiles")
               .select("user_type")
@@ -30,38 +33,42 @@ const Register = () => {
             if (error) throw error;
             
             if (profile?.user_type === 'admin') {
+              console.log("User is admin - redirecting to /admin");
               navigate("/admin");
               toast({
                 title: "Admin Login Successful",
                 description: "Welcome to your admin dashboard"
               });
+              return;
+            }
+            
+            // Check if the user is a service provider
+            const { data: provider, error: providerError } = await supabase
+              .from("service_providers")
+              .select("id")
+              .eq("profile_id", session?.user.id)
+              .maybeSingle();
+            
+            console.log("Provider data:", provider, providerError);
+            
+            if (providerError && providerError.code !== 'PGRST116') {
+              throw providerError;
+            }
+            
+            if (provider) {
+              console.log("User is service provider - redirecting to /dashboard");
+              navigate("/dashboard");
+              toast({
+                title: "Provider Registration Complete",
+                description: "Welcome to your service provider dashboard"
+              });
             } else {
-              // Check if the user is a service provider
-              const { data: provider, error: providerError } = await supabase
-                .from("service_providers")
-                .select("id")
-                .eq("profile_id", session?.user.id)
-                .maybeSingle();
-              
-              console.log("Provider data:", provider, providerError);
-              
-              if (providerError && providerError.code !== 'PGRST116') {
-                throw providerError;
-              }
-              
-              if (provider) {
-                navigate("/dashboard");
-                toast({
-                  title: "Provider Registration Complete",
-                  description: "Welcome to your service provider dashboard"
-                });
-              } else {
-                toast({
-                  title: "Welcome!",
-                  description: "Your account has been created successfully.",
-                });
-                navigate("/");
-              }
+              console.log("User is regular user - redirecting to /");
+              toast({
+                title: "Welcome!",
+                description: "Your account has been created successfully.",
+              });
+              navigate("/");
             }
           } catch (error) {
             console.error("Error checking user type:", error);
@@ -70,6 +77,8 @@ const Register = () => {
               description: "Your account has been created successfully.",
             });
             navigate("/");
+          } finally {
+            setRedirecting(false);
           }
         };
         

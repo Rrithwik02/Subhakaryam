@@ -1,3 +1,4 @@
+
 import { Navigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useToast } from "@/hooks/use-toast";
@@ -8,24 +9,33 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { session, isLoading } = useSessionContext();
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [checkingAdminStatus, setCheckingAdminStatus] = useState(true);
 
   useEffect(() => {
     const checkIsAdmin = async () => {
       if (!session?.user) {
+        console.log("No session, user is not admin");
         setIsAdmin(false);
+        setCheckingAdminStatus(false);
         return;
       }
       
       try {
+        console.log("Checking admin status for user:", session.user.id);
         const { data, error } = await supabase
           .from('profiles')
           .select('user_type')
           .eq('id', session.user.id)
           .maybeSingle();
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error checking admin status:', error);
+          throw error;
+        }
         
         const isUserAdmin = data?.user_type === 'admin';
+        console.log("Admin check result:", isUserAdmin, data);
+        
         setIsAdmin(isUserAdmin);
         
         if (!isUserAdmin) {
@@ -38,6 +48,8 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       } catch (error) {
         console.error('Error checking admin status:', error);
         setIsAdmin(false);
+      } finally {
+        setCheckingAdminStatus(false);
       }
     };
 
@@ -46,7 +58,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
   }, [session, isLoading, toast]);
 
-  if (isLoading || isAdmin === null) {
+  if (isLoading || checkingAdminStatus) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
@@ -55,9 +67,11 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (!session || !isAdmin) {
+    console.log("Access denied to admin route. Session:", !!session, "Is admin:", isAdmin);
     return <Navigate to="/login" replace />;
   }
 
+  console.log("Access granted to admin route");
   return <>{children}</>;
 };
 
