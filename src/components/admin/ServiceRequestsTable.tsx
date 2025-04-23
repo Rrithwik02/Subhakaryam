@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -22,26 +21,12 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Eye, Check, X } from "lucide-react";
-
-type ServiceRequest = {
-  id: string;
-  user_id: string;
-  service_type: string;
-  description: string | null;
-  city: string;
-  preferred_date: string | null;
-  preferred_time: string | null;
-  budget_range: string | null;
-  status: string;
-  created_at: string;
-  user_email?: string;
-  user_name?: string;
-};
+import { ExtendedServiceRequest } from "@/integrations/supabase/types/requests";
 
 const ServiceRequestsTable = () => {
-  const [requests, setRequests] = useState<ServiceRequest[]>([]);
+  const [requests, setRequests] = useState<ExtendedServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedRequest, setSelectedRequest] = useState<ServiceRequest | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<ExtendedServiceRequest | null>(null);
   const { toast } = useToast();
 
   const fetchRequests = async () => {
@@ -71,7 +56,7 @@ const ServiceRequestsTable = () => {
         budget_range: request.budget_range || null,
         user_email: request.profiles?.email,
         user_name: request.profiles?.full_name || "Unknown User",
-      })) as ServiceRequest[];
+      })) as ExtendedServiceRequest[];
 
       setRequests(formattedData || []);
     } catch (error) {
@@ -85,10 +70,6 @@ const ServiceRequestsTable = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchRequests();
-  }, []);
 
   const updateStatus = async (id: string, status: string) => {
     try {
@@ -181,7 +162,7 @@ const ServiceRequestsTable = () => {
                       "outline"
                     }
                   >
-                    {request.status.replace("_", " ")}
+                    {request.status?.replace("_", " ")}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
@@ -249,7 +230,7 @@ const ServiceRequestsTable = () => {
                                     "outline"
                                   }
                                 >
-                                  {selectedRequest.status.replace("_", " ")}
+                                  {selectedRequest.status?.replace("_", " ")}
                                 </Badge>
                               </div>
                             </div>
