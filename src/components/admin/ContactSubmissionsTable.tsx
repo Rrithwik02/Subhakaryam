@@ -27,7 +27,7 @@ type ContactSubmission = {
   id: string;
   name: string;
   email: string;
-  subject: string;
+  phone: string;
   message: string;
   status: string;
   created_at: string;
@@ -112,7 +112,7 @@ const ContactSubmissionsTable = () => {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Subject</TableHead>
+              <TableHead>Phone</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -123,7 +123,7 @@ const ContactSubmissionsTable = () => {
               <TableRow key={submission.id}>
                 <TableCell className="font-medium">{submission.name}</TableCell>
                 <TableCell>{submission.email}</TableCell>
-                <TableCell>{submission.subject}</TableCell>
+                <TableCell>{submission.phone}</TableCell>
                 <TableCell>
                   {format(new Date(submission.created_at), "MMM dd, yyyy")}
                 </TableCell>
@@ -160,10 +160,7 @@ const ContactSubmissionsTable = () => {
                               <p className="text-sm text-gray-500">From</p>
                               <p className="font-medium">{selectedSubmission.name}</p>
                               <p className="text-sm">{selectedSubmission.email}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm text-gray-500">Subject</p>
-                              <p className="font-medium">{selectedSubmission.subject}</p>
+                              <p className="text-sm">{selectedSubmission.phone}</p>
                             </div>
                             <div>
                               <p className="text-sm text-gray-500">Message</p>

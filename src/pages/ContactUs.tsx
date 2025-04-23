@@ -15,7 +15,6 @@ const ContactUs = () => {
     name: "",
     email: "",
     phone: "",
-    subject: "",
     message: ""
   });
 
@@ -30,7 +29,7 @@ const ContactUs = () => {
         .insert({
           name: formData.name,
           email: formData.email,
-          subject: formData.subject,
+          phone: formData.phone,
           message: formData.message
         });
 
@@ -42,7 +41,7 @@ const ContactUs = () => {
       });
       
       // Reset form after successful submission
-      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
       console.error("Error submitting contact form:", error);
       toast({
@@ -147,19 +146,6 @@ const ContactUs = () => {
                     name="phone"
                     type="tel"
                     value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
-                    Subject
-                  </label>
-                  <Input
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
                     onChange={handleChange}
                     required
                     className="w-full"

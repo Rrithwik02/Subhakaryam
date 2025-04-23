@@ -27,7 +27,7 @@ type ServiceRequest = {
   id: string;
   user_id: string;
   service_type: string;
-  description: string;
+  description: string | null;
   city: string;
   preferred_date: string | null;
   preferred_time: string | null;
@@ -63,13 +63,17 @@ const ServiceRequestsTable = () => {
       if (error) throw error;
 
       // Format the data to include user information
-      const formattedData = (requestsData?.map(request => ({
+      const formattedData = requestsData?.map(request => ({
         ...request,
+        city: request.city || "",
+        preferred_date: request.preferred_date || null,
+        preferred_time: request.preferred_time || null,
+        budget_range: request.budget_range || null,
         user_email: request.profiles?.email,
         user_name: request.profiles?.full_name || "Unknown User",
-      })) || []) as ServiceRequest[];
+      })) as ServiceRequest[];
 
-      setRequests(formattedData);
+      setRequests(formattedData || []);
     } catch (error) {
       console.error("Error fetching service requests:", error);
       toast({
@@ -164,7 +168,7 @@ const ServiceRequestsTable = () => {
               <TableRow key={request.id}>
                 <TableCell className="font-medium">{request.user_name}</TableCell>
                 <TableCell>{formatServiceType(request.service_type)}</TableCell>
-                <TableCell>{request.city.charAt(0).toUpperCase() + request.city.slice(1)}</TableCell>
+                <TableCell>{request.city && request.city.charAt(0).toUpperCase() + request.city.slice(1)}</TableCell>
                 <TableCell>
                   {format(new Date(request.created_at), "MMM dd, yyyy")}
                 </TableCell>
@@ -210,7 +214,10 @@ const ServiceRequestsTable = () => {
                               </div>
                               <div>
                                 <p className="text-sm text-gray-500">City</p>
-                                <p className="font-medium">{selectedRequest.city.charAt(0).toUpperCase() + selectedRequest.city.slice(1)}</p>
+                                <p className="font-medium">
+                                  {selectedRequest.city && 
+                                    selectedRequest.city.charAt(0).toUpperCase() + selectedRequest.city.slice(1)}
+                                </p>
                               </div>
                               <div>
                                 <p className="text-sm text-gray-500">Preferred Date</p>
