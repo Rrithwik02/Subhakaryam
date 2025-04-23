@@ -1,4 +1,3 @@
-
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
@@ -23,12 +22,12 @@ const Login = () => {
         setRedirecting(true);
         console.log("Checking user type for:", session.user.id);
         
-        // First check user profile to determine user type
+        // First check user profile to determine user type - using direct query instead of functions
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("user_type")
           .eq("id", session.user.id)
-          .single();
+          .maybeSingle();
         
         if (profileError) {
           console.error("Error fetching profile:", profileError);
@@ -47,12 +46,12 @@ const Login = () => {
           return;
         }
         
-        // Check if user is a service provider
+        // Check if user is a service provider - using direct query
         const { data: provider, error: providerError } = await supabase
           .from("service_providers")
           .select("id")
           .eq("profile_id", session.user.id)
-          .single();
+          .maybeSingle();
         
         console.log("Provider check result:", provider);
         
@@ -182,7 +181,6 @@ const Login = () => {
     );
   }
 
-  // If session exists but we're not redirecting yet, show loading
   return (
     <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>

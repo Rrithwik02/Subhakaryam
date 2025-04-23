@@ -21,6 +21,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       }
       
       try {
+        // Simple direct query without using functions that might cause recursion
         console.log("Checking admin status for user:", session.user.id);
         const { data, error } = await supabase
           .from('profiles')
