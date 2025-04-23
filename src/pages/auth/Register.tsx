@@ -3,7 +3,6 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -120,17 +119,13 @@ const Register = () => {
           theme="light"
           providers={["google"]}
           view="sign_up"
+          phoneAuth={true} // Enable phone authentication
         />
 
-        <div className="text-center pt-4 border-t">
-          <span className="text-gray-600">Are you a service provider?</span>{" "}
-          <Button
-            variant="link"
-            className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 p-0"
-            onClick={() => navigate("/register/service-provider")}
-          >
-            Register here
-          </Button>
+        <div className="mt-4 p-4 bg-ceremonial-cream/50 rounded-lg">
+          <p className="text-sm text-gray-600 text-center">
+            Note: You'll be redirected to complete your provider profile after authentication.
+          </p>
         </div>
       </Card>
     </div>

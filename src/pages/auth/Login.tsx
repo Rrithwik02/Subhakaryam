@@ -1,8 +1,8 @@
+
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -109,73 +109,50 @@ const Login = () => {
             <p className="text-gray-600 mb-6">Sign in to your account</p>
           </div>
 
-          <Tabs defaultValue="user" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="user" className="text-ceremonial-maroon data-[state=active]:bg-ceremonial-cream">
-                Regular User
-              </TabsTrigger>
-              <TabsTrigger value="provider" className="text-ceremonial-maroon data-[state=active]:bg-ceremonial-cream">
-                Service Provider
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="user">
-              <div className="space-y-4">
-                <Auth
-                  supabaseClient={supabase}
-                  appearance={{
-                    theme: ThemeSupa,
-                    variables: {
-                      default: {
-                        colors: {
-                          brand: '#B8860B',
-                          brandAccent: '#966F08',
-                        }
-                      }
-                    },
-                    className: {
-                      container: 'w-full',
-                      button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
-                      divider: 'my-4',
+          <div className="space-y-4">
+            <Auth
+              supabaseClient={supabase}
+              appearance={{
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: '#B8860B',
+                      brandAccent: '#966F08',
                     }
-                  }}
-                  theme="light"
-                  providers={["google"]}
-                />
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="provider">
-              <div className="space-y-4">
-                <Auth
-                  supabaseClient={supabase}
-                  appearance={{
-                    theme: ThemeSupa,
-                    variables: {
-                      default: {
-                        colors: {
-                          brand: '#B8860B',
-                          brandAccent: '#966F08',
-                        }
-                      }
-                    },
-                    className: {
-                      container: 'w-full',
-                      button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
-                      divider: 'my-4',
-                    }
-                  }}
-                  theme="light"
-                  providers={["google"]}
-                />
-                <div className="mt-4 p-4 bg-ceremonial-cream/50 rounded-lg">
-                  <p className="text-sm text-gray-600 text-center">
-                    Note: You'll be redirected to complete your provider profile after authentication.
-                  </p>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+                  }
+                },
+                className: {
+                  container: 'w-full',
+                  button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+                  divider: 'my-4',
+                }
+              }}
+              theme="light"
+              providers={["google"]}
+              view="sign_in"
+              localization={{
+                variables: {
+                  sign_in: {
+                    email_label: "Email address",
+                    password_label: "Password",
+                    phone_label: "Phone number",
+                    button_label: "Sign in",
+                    loading_button_label: "Signing in...",
+                    social_provider_text: "Sign in with {{provider}}",
+                    link_text: "Already have an account? Sign in"
+                  }
+                }
+              }}
+              phoneAuth={true} // Enable phone authentication
+            />
+          </div>
+
+          <div className="mt-4 p-4 bg-ceremonial-cream/50 rounded-lg">
+            <p className="text-sm text-gray-600 text-center">
+              Note: You'll be redirected to complete your provider profile after authentication.
+            </p>
+          </div>
         </Card>
       </div>
     );

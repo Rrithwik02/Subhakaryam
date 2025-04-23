@@ -25,6 +25,7 @@ import PrivacyPolicy from "./pages/policies/PrivacyPolicy";
 import TermsConditions from "./pages/policies/TermsConditions";
 import CancellationPolicy from "./pages/policies/CancellationPolicy";
 import RefundPolicy from "./pages/policies/RefundPolicy";
+import ServiceRequest from "./pages/ServiceRequest";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,6 +83,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Search />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/service-request" 
+              element={
+                <ProtectedRoute>
+                  <ServiceRequest />
                 </ProtectedRoute>
               } 
             />

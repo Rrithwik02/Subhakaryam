@@ -5,6 +5,8 @@ import UsersTable from "./UsersTable";
 import ReviewsTable from "./ReviewsTable";
 import DeletionRequestsTable from "./DeletionRequestsTable";
 import PaymentsTable from "./PaymentsTable";
+import ContactSubmissionsTable from "./ContactSubmissionsTable";
+import ServiceRequestsTable from "./ServiceRequestsTable";
 
 const AdminDashboard = () => {
   return (
@@ -20,12 +22,14 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="providers" className="space-y-6">
-          <TabsList>
+          <TabsList className="overflow-x-auto flex flex-nowrap w-full pb-1">
             <TabsTrigger value="providers">Service Providers</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
             <TabsTrigger value="payments">Payments</TabsTrigger>
             <TabsTrigger value="deletion-requests">Deletion Requests</TabsTrigger>
+            <TabsTrigger value="contacts">Contact Submissions</TabsTrigger>
+            <TabsTrigger value="service-requests">Service Requests</TabsTrigger>
           </TabsList>
 
           <TabsContent value="providers" className="bg-white rounded-lg shadow-lg p-6">
@@ -46,6 +50,14 @@ const AdminDashboard = () => {
 
           <TabsContent value="deletion-requests" className="bg-white rounded-lg shadow-lg p-6">
             <DeletionRequestsTable />
+          </TabsContent>
+
+          <TabsContent value="contacts" className="bg-white rounded-lg shadow-lg p-6">
+            <ContactSubmissionsTable />
+          </TabsContent>
+
+          <TabsContent value="service-requests" className="bg-white rounded-lg shadow-lg p-6">
+            <ServiceRequestsTable />
           </TabsContent>
         </Tabs>
       </div>

@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -5,25 +6,53 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const ContactUs = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
+    subject: "",
     message: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log("Form submitted:", formData);
-    toast({
-      title: "Message Sent",
-      description: "We'll get back to you as soon as possible.",
-    });
-    setFormData({ name: "", email: "", phone: "", message: "" });
+    setIsSubmitting(true);
+
+    try {
+      // Insert form data to contact_submissions table
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Message Sent",
+        description: "We'll get back to you as soon as possible.",
+      });
+      
+      // Reset form after successful submission
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast({
+        variant: "destructive",
+        title: "Submission Failed",
+        description: "There was an error sending your message. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -119,6 +148,19 @@ const ContactUs = () => {
                     type="tel"
                     value={formData.phone}
                     onChange={handleChange}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                    Subject
+                  </label>
+                  <Input
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
                     required
                     className="w-full"
                   />
@@ -141,8 +183,9 @@ const ContactUs = () => {
                 <Button 
                   type="submit"
                   className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+                  disabled={isSubmitting}
                 >
-                  Send Message
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </Card>
