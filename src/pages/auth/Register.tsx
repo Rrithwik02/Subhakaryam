@@ -98,29 +98,31 @@ const Register = () => {
           <p className="text-gray-600 mb-6">Join our community today</p>
         </div>
         
-        <Auth
-          supabaseClient={supabase}
-          appearance={{
-            theme: ThemeSupa,
-            variables: {
-              default: {
-                colors: {
-                  brand: '#B8860B',
-                  brandAccent: '#966F08',
+        <div className="space-y-6">
+          <Auth
+            supabaseClient={supabase}
+            appearance={{
+              theme: ThemeSupa,
+              variables: {
+                default: {
+                  colors: {
+                    brand: '#B8860B',
+                    brandAccent: '#966F08',
+                  }
                 }
+              },
+              className: {
+                container: 'w-full',
+                button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+                divider: 'my-6',
               }
-            },
-            className: {
-              container: 'w-full',
-              button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
-              divider: 'my-6',
-            }
-          }}
-          theme="light"
-          providers={["google"]}
-          view="sign_up"
-          phoneAuth={true} // Enable phone authentication
-        />
+            }}
+            theme="light"
+            providers={["google"]}
+            view="sign_up"
+            showLinks={false}
+          />
+        </div>
 
         <div className="mt-4 p-4 bg-ceremonial-cream/50 rounded-lg">
           <p className="text-sm text-gray-600 text-center">

@@ -136,7 +136,6 @@ const Login = () => {
                   sign_in: {
                     email_label: "Email address",
                     password_label: "Password",
-                    phone_label: "Phone number",
                     button_label: "Sign in",
                     loading_button_label: "Signing in...",
                     social_provider_text: "Sign in with {{provider}}",
@@ -144,7 +143,7 @@ const Login = () => {
                   }
                 }
               }}
-              phoneAuth={true} // Enable phone authentication
+              showLinks={false}
             />
           </div>
 

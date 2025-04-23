@@ -11,13 +11,13 @@ import ServiceRequestsTable from "./ServiceRequestsTable";
 const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white pt-24">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 pb-16">
         <div className="mb-8">
           <h1 className="text-4xl font-display font-bold text-ceremonial-maroon">
             Admin Dashboard
           </h1>
           <p className="text-gray-600 mt-2">
-            Manage service providers, users, reviews, payments, and account deletion requests
+            Manage service providers, users, reviews, payments, service requests, and more
           </p>
         </div>
 

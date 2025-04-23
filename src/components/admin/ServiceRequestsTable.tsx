@@ -63,11 +63,11 @@ const ServiceRequestsTable = () => {
       if (error) throw error;
 
       // Format the data to include user information
-      const formattedData = requestsData?.map(request => ({
+      const formattedData = (requestsData?.map(request => ({
         ...request,
         user_email: request.profiles?.email,
         user_name: request.profiles?.full_name || "Unknown User",
-      })) || [];
+      })) || []) as ServiceRequest[];
 
       setRequests(formattedData);
     } catch (error) {
