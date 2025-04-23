@@ -52,13 +52,13 @@ const Login = () => {
           .from("service_providers")
           .select("id")
           .eq("profile_id", session.user.id)
-          .maybeSingle();
+          .single();
         
-        console.log("Provider check result:", provider, providerError);
+        console.log("Provider check result:", provider);
         
         if (providerError && providerError.code !== 'PGRST116') {
           console.error("Error checking provider status:", providerError);
-          throw providerError;
+          // Continue with regular user flow even if there's an error
         }
         
         if (provider) {

@@ -13,6 +13,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
       setVerifyingSession(false);
     }, 500);
     
+    console.log("ProtectedRoute: Checking session:", session?.user?.id);
+    
     return () => clearTimeout(timer);
   }, [session, isLoading]);
 

@@ -26,7 +26,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           .from('profiles')
           .select('user_type')
           .eq('id', session.user.id)
-          .maybeSingle();
+          .single();
         
         if (error) {
           console.error('Error checking admin status:', error);
