@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -50,10 +51,10 @@ const ServiceRequestsTable = () => {
       // Format the data to include user information
       const formattedData = requestsData?.map(request => ({
         ...request,
-        city: request.city || "",
-        preferred_date: request.preferred_date || null,
-        preferred_time: request.preferred_time || null,
-        budget_range: request.budget_range || null,
+        city: "",  // Default empty value since it doesn't exist in the database
+        preferred_date: null,  // Default null value
+        preferred_time: null,  // Default null value
+        budget_range: null,    // Default null value
         user_email: request.profiles?.email,
         user_name: request.profiles?.full_name || "Unknown User",
       })) as ExtendedServiceRequest[];
@@ -70,6 +71,10 @@ const ServiceRequestsTable = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
 
   const updateStatus = async (id: string, status: string) => {
     try {
