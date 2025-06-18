@@ -21,25 +21,21 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       }
       
       try {
-        // Simple direct query without using functions that might cause recursion
         console.log("Checking admin status for user:", session.user.id);
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('user_type')
-          .eq('id', session.user.id)
-          .single();
+        
+        // Use the new admin function to avoid RLS recursion
+        const { data: isAdminResult, error } = await supabase
+          .rpc('is_user_admin', { user_id: session.user.id });
         
         if (error) {
           console.error('Error checking admin status:', error);
           throw error;
         }
         
-        const isUserAdmin = data?.user_type === 'admin';
-        console.log("Admin check result:", isUserAdmin, data);
+        console.log("Admin check result:", isAdminResult);
+        setIsAdmin(isAdminResult || false);
         
-        setIsAdmin(isUserAdmin);
-        
-        if (!isUserAdmin) {
+        if (!isAdminResult) {
           toast({
             variant: "destructive",
             title: "Access Denied",

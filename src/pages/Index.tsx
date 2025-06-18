@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -11,9 +12,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Shield, UserCog, Plus, LogOut, Briefcase } from "lucide-react";
+import { LogOut } from "lucide-react";
 import SuggestionForm from "@/components/suggestions/SuggestionForm";
-import AdditionalServiceForm from "@/components/service-provider/AdditionalServiceForm";
 import Hero from "@/components/home/Hero";
 import Services from "@/components/home/Services";
 import HowItWorks from "@/components/home/HowItWorks";
@@ -31,26 +31,6 @@ const Index = () => {
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [isServiceProvider, setIsServiceProvider] = React.useState(false);
   const [serviceProviderId, setServiceProviderId] = React.useState<string | null>(null);
-
-  const { data: userProfile } = useQuery({
-    queryKey: ["user-profile"],
-    queryFn: async () => {
-      if (!session?.user) return null;
-      
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("user_type")
-        .eq("id", session.user.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching user profile:', error);
-        return null;
-      }
-      return profile;
-    },
-    enabled: !!session?.user,
-  });
 
   const { data: serviceProvider } = useQuery({
     queryKey: ["service-provider"],
@@ -90,18 +70,15 @@ const Index = () => {
     const checkUserStatus = async () => {
       if (session?.user) {
         try {
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('user_type')
-            .eq('id', session.user.id)
-            .maybeSingle();
+          // Use the new admin function to avoid RLS recursion
+          const { data: isAdminResult, error: adminError } = await supabase
+            .rpc('is_user_admin', { user_id: session.user.id });
           
-          if (profileError) {
-            console.error('Error checking user status:', profileError);
-            return;
+          if (adminError) {
+            console.error('Error checking admin status:', adminError);
+          } else {
+            setIsAdmin(isAdminResult || false);
           }
-          
-          setIsAdmin(profileData?.user_type === 'admin');
 
           const { data: providerData, error: providerError } = await supabase
             .from('service_providers')

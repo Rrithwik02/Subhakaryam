@@ -1,4 +1,3 @@
-
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
@@ -22,21 +21,16 @@ const Login = () => {
         setRedirecting(true);
         console.log("Checking user type for:", session.user.id);
         
-        // First check user profile to determine user type - using direct query instead of functions
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("user_type")
-          .eq("id", session.user.id)
-          .maybeSingle();
+        // Use the new admin function to avoid RLS recursion
+        const { data: isAdminResult, error: adminError } = await supabase
+          .rpc('is_user_admin', { user_id: session.user.id });
         
-        if (profileError) {
-          console.error("Error fetching profile:", profileError);
-          throw profileError;
-        }
+        console.log("Admin check result:", isAdminResult);
         
-        console.log("User profile:", profile);
-        
-        if (profile?.user_type === 'admin') {
+        if (adminError) {
+          console.error("Error checking admin status:", adminError);
+          // Continue with non-admin flow if admin check fails
+        } else if (isAdminResult) {
           console.log("User is admin - redirecting to /admin");
           navigate("/admin");
           toast({
@@ -46,7 +40,7 @@ const Login = () => {
           return;
         }
         
-        // Check if user is a service provider - using direct query
+        // Check if user is a service provider - using direct query with error handling
         const { data: provider, error: providerError } = await supabase
           .from("service_providers")
           .select("id")
