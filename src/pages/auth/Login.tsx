@@ -23,14 +23,14 @@ const Login = () => {
         
         // Use the new admin function to avoid RLS recursion
         const { data: isAdminResult, error: adminError } = await supabase
-          .rpc('is_user_admin', { user_id: session.user.id });
+          .rpc('is_user_admin' as any, { user_id: session.user.id });
         
         console.log("Admin check result:", isAdminResult);
         
         if (adminError) {
           console.error("Error checking admin status:", adminError);
           // Continue with non-admin flow if admin check fails
-        } else if (isAdminResult) {
+        } else if (Boolean(isAdminResult)) {
           console.log("User is admin - redirecting to /admin");
           navigate("/admin");
           toast({

@@ -25,7 +25,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         
         // Use the new admin function to avoid RLS recursion
         const { data: isAdminResult, error } = await supabase
-          .rpc('is_user_admin', { user_id: session.user.id });
+          .rpc('is_user_admin' as any, { user_id: session.user.id });
         
         if (error) {
           console.error('Error checking admin status:', error);
@@ -33,7 +33,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         }
         
         console.log("Admin check result:", isAdminResult);
-        setIsAdmin(isAdminResult || false);
+        setIsAdmin(Boolean(isAdminResult));
         
         if (!isAdminResult) {
           toast({

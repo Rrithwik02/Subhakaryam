@@ -72,12 +72,12 @@ const Index = () => {
         try {
           // Use the new admin function to avoid RLS recursion
           const { data: isAdminResult, error: adminError } = await supabase
-            .rpc('is_user_admin', { user_id: session.user.id });
+            .rpc('is_user_admin' as any, { user_id: session.user.id });
           
           if (adminError) {
             console.error('Error checking admin status:', adminError);
           } else {
-            setIsAdmin(isAdminResult || false);
+            setIsAdmin(Boolean(isAdminResult));
           }
 
           const { data: providerData, error: providerError } = await supabase
