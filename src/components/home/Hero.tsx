@@ -80,7 +80,17 @@ const Hero = () => {
             <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto font-body text-white/90 drop-shadow-lg">
               Connect with expert ceremonial service providers for your most important occasions
             </p>
-            {!session ? (
+            {session && serviceProvider ? (
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  size="lg"
+                  className="w-full sm:w-auto bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-black font-semibold transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-xl"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  Service Provider Dashboard
+                </Button>
+              </div>
+            ) : (
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg"
@@ -98,7 +108,7 @@ const Hero = () => {
                   Become a Provider
                 </Button>
               </div>
-            ) : null}
+            )}
           </div>
         </div>
 
