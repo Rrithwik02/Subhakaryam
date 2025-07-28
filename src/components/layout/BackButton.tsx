@@ -10,11 +10,8 @@ const BackButton = () => {
   if (location.pathname === "/") return null;
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate("/");
-    }
+    // Always try to go back first
+    navigate(-1);
   };
 
   return (
