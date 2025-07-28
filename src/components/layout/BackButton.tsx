@@ -9,13 +9,21 @@ const BackButton = () => {
   // Don't show back button on home page
   if (location.pathname === "/") return null;
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <div className="sticky top-16 z-40 bg-white/80 backdrop-blur-sm border-b">
       <div className="container mx-auto px-4">
         <Button
           variant="ghost"
           className="my-2"
-          onClick={() => navigate(-1)}
+          onClick={handleBack}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back

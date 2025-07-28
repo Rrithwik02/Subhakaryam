@@ -61,24 +61,26 @@ const ServiceProviderRegister = () => {
         console.error("Error checking for existing profile:", profileError);
       }
 
-      // Update the user profile to be a service provider
+      // Upsert the user profile to be a service provider (handles both insert and update)
       const profileData = {
+        id: user.id,
         user_type: 'service_provider',
         full_name: formData.get('owner_name') as string,
         email: formData.get('email') as string,
-        phone: formData.get('phone') as string
+        phone: formData.get('phone') as string,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
 
-      console.log("Profile data to update:", profileData);
+      console.log("Profile data to upsert:", profileData);
 
-      const { error: updateProfileError } = await supabase
+      const { error: upsertProfileError } = await supabase
         .from('profiles')
-        .update(profileData)
-        .eq('id', user.id);
+        .upsert(profileData, { onConflict: 'id' });
 
-      if (updateProfileError) {
-        console.error("Error updating profile:", updateProfileError);
-        throw updateProfileError;
+      if (upsertProfileError) {
+        console.error("Error upserting profile:", upsertProfileError);
+        throw upsertProfileError;
       }
       
       // Then create the service provider record
