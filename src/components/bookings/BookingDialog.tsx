@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar";
@@ -26,14 +25,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { format, addDays, differenceInDays } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DateRange } from "react-day-picker";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -47,13 +51,11 @@ interface BookingDialogProps {
 }
 
 type FormData = {
-  date: Date;
-  endDate?: Date;
+  checkInDate: Date;
+  checkOutDate: Date | undefined;
   timeSlot: string;
   specialRequirements: string;
   paymentPreference: 'pay_now' | 'pay_on_delivery';
-  isMultiDay: boolean;
-  totalDays: number;
 };
 
 const timeSlots = [
@@ -72,29 +74,31 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
   const { session } = useSessionContext();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showProviderContact, setShowProviderContact] = useState(false);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
   const form = useForm<FormData>({
     defaultValues: {
       specialRequirements: "",
       paymentPreference: 'pay_now',
-      isMultiDay: false,
-      totalDays: 1,
     },
   });
 
-  const watchIsMultiDay = form.watch("isMultiDay");
-  const watchTotalDays = form.watch("totalDays");
-  const watchDate = form.watch("date");
+  const watchCheckInDate = form.watch("checkInDate");
+  const watchCheckOutDate = form.watch("checkOutDate");
 
-  // Calculate total price based on days
-  const totalPrice = provider.base_price * watchTotalDays;
+  // Calculate total days and price
+  const totalDays = watchCheckInDate && watchCheckOutDate 
+    ? differenceInDays(watchCheckOutDate, watchCheckInDate) + 1 
+    : 1;
+  const totalPrice = provider.base_price * totalDays;
 
-  // Check availability for multiple days
-  const checkMultiDayAvailability = async (startDate: Date, totalDays: number, timeSlot: string) => {
-    if (!startDate || !timeSlot || totalDays < 1) return true;
+  // Check availability for date range
+  const checkDateRangeAvailability = async (startDate: Date, endDate: Date, timeSlot: string) => {
+    if (!startDate || !endDate || !timeSlot) return true;
 
     try {
+      const totalDays = differenceInDays(endDate, startDate) + 1;
+      
       for (let i = 0; i < totalDays; i++) {
         const currentDate = addDays(startDate, i);
         const dayOfWeek = currentDate.getDay();
@@ -153,7 +157,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
       return true;
     } catch (error) {
-      console.error('Error checking multi-day availability:', error);
+      console.error('Error checking availability:', error);
       return false;
     }
   };
@@ -168,33 +172,33 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
       return;
     }
 
-    if (!data.date || !data.timeSlot) {
+    if (!data.checkInDate || !data.timeSlot) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Please select both date and time slot",
+        description: "Please select check-in date and time slot",
       });
       return;
     }
 
+    const endDate = data.checkOutDate || data.checkInDate;
+
     // Check availability before proceeding
-    const isAvailable = await checkMultiDayAvailability(data.date, data.totalDays, data.timeSlot);
+    const isAvailable = await checkDateRangeAvailability(data.checkInDate, endDate, data.timeSlot);
     if (!isAvailable) return;
 
     setIsSubmitting(true);
     try {
-      const endDate = addDays(data.date, data.totalDays - 1);
-      
-      // First create the booking with multi-day support
+      // Create the booking with date range support
       const { data: booking, error: bookingError } = await supabase
         .from("bookings")
         .insert({
           user_id: session.user.id,
           provider_id: provider.id,
-          service_date: format(data.date, "yyyy-MM-dd"), // Keep for backward compatibility
-          start_date: format(data.date, "yyyy-MM-dd"),
+          service_date: format(data.checkInDate, "yyyy-MM-dd"),
+          start_date: format(data.checkInDate, "yyyy-MM-dd"),
           end_date: format(endDate, "yyyy-MM-dd"),
-          total_days: data.totalDays,
+          total_days: totalDays,
           total_amount: totalPrice,
           time_slot: data.timeSlot,
           special_requirements: data.specialRequirements,
@@ -227,11 +231,11 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
           title: "Redirecting to Payment",
           description: "You will be redirected to complete the payment.",
         });
-        // Implement payment redirection here
       }
 
       onClose();
       form.reset();
+      setDateRange(undefined);
     } catch (error: any) {
       console.error("Error creating booking:", error);
       toast({
@@ -246,7 +250,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>Book Service with {provider.business_name}</DialogTitle>
         </DialogHeader>
@@ -254,173 +258,251 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
         <div className="flex-1 overflow-y-auto pr-2">
           <Form {...form}>
             <form id="booking-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="isMultiDay"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Multi-day booking</FormLabel>
-                    <div className="text-sm text-muted-foreground">
-                      Book this service for multiple consecutive days
+              
+              {/* Date Range Selection - AbhiBus Style */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Select Dates</h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Check-in Date */}
+                  <FormField
+                    control={form.control}
+                    name="checkInDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Check-in Date</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "MMM dd, yyyy")
+                                ) : (
+                                  <span>Pick check-in date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => {
+                                field.onChange(date);
+                                if (date && (!watchCheckOutDate || date >= watchCheckOutDate)) {
+                                  form.setValue("checkOutDate", addDays(date, 1));
+                                }
+                              }}
+                              disabled={(date) => date < new Date()}
+                              initialFocus
+                              className="pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Check-out Date */}
+                  <FormField
+                    control={form.control}
+                    name="checkOutDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Check-out Date</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "MMM dd, yyyy")
+                                ) : (
+                                  <span>Pick check-out date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) => 
+                                date < new Date() || 
+                                (watchCheckInDate && date <= watchCheckInDate)
+                              }
+                              initialFocus
+                              className="pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Duration Display */}
+                {watchCheckInDate && watchCheckOutDate && (
+                  <div className="bg-primary/10 rounded-lg p-3 text-center">
+                    <div className="text-sm text-muted-foreground">Duration</div>
+                    <div className="font-semibold text-lg">
+                      {totalDays} {totalDays === 1 ? 'day' : 'days'}
+                      {totalDays > 1 && `, ${totalDays - 1} ${totalDays - 1 === 1 ? 'night' : 'nights'}`}
                     </div>
                   </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                )}
 
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>
-                    {watchIsMultiDay ? "Start Date" : "Select Date"}
-                  </FormLabel>
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date < new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                    className="rounded-md border pointer-events-auto"
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                {/* Quick Selection Buttons */}
+                <div className="flex gap-2 flex-wrap">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (watchCheckInDate) {
+                        form.setValue("checkOutDate", addDays(watchCheckInDate, 1));
+                      }
+                    }}
+                  >
+                    1 Day
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (watchCheckInDate) {
+                        form.setValue("checkOutDate", addDays(watchCheckInDate, 2));
+                      }
+                    }}
+                  >
+                    3 Days
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (watchCheckInDate) {
+                        form.setValue("checkOutDate", addDays(watchCheckInDate, 6));
+                      }
+                    }}
+                  >
+                    1 Week
+                  </Button>
+                </div>
+              </div>
 
-            {watchIsMultiDay && (
               <FormField
                 control={form.control}
-                name="totalDays"
+                name="timeSlot"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Number of Days: {field.value}</FormLabel>
-                    <FormControl>
-                      <Slider
-                        min={1}
-                        max={30}
-                        step={1}
-                        value={[field.value]}
-                        onValueChange={(value) => field.onChange(value[0])}
-                        className="w-full"
-                      />
-                    </FormControl>
-                    {watchDate && (
-                      <div className="text-sm text-muted-foreground">
-                        Service period: {format(watchDate, "MMM dd")} - {format(addDays(watchDate, watchTotalDays - 1), "MMM dd, yyyy")}
-                      </div>
-                    )}
+                    <FormLabel>Select Time</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a time slot" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {timeSlots.map((slot) => (
+                          <SelectItem key={slot} value={slot}>
+                            {slot}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            )}
 
-            <FormField
-              control={form.control}
-              name="timeSlot"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Select Time</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormField
+                control={form.control}
+                name="specialRequirements"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Special Requirements</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a time slot" />
-                      </SelectTrigger>
+                      <Textarea
+                        placeholder="Any special requirements or notes..."
+                        {...field}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      {timeSlots.map((slot) => (
-                        <SelectItem key={slot} value={slot}>
-                          {slot}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="specialRequirements"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Special Requirements</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Any special requirements or notes..."
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="paymentPreference"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Method</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="pay_now" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            Pay Now (Online Payment)
+                          </FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="pay_on_delivery" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            Pay on Delivery (Cash)
+                          </FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="paymentPreference"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Payment Method</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-1"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="pay_now" />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          Pay Now (Online Payment)
-                        </FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="pay_on_delivery" />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          Pay on Delivery (Cash)
-                        </FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="rounded-lg border p-4 bg-muted/50">
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Base price per day:</span>
-                  <span className="text-sm">₹{provider.base_price.toFixed(2)}</span>
-                </div>
-                {watchIsMultiDay && (
+              {/* Pricing Breakdown */}
+              <div className="rounded-lg border p-4 bg-muted/50">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Base price per day:</span>
+                    <span className="text-sm">₹{provider.base_price.toFixed(2)}</span>
+                  </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Number of days:</span>
-                    <span className="text-sm">{watchTotalDays}</span>
+                    <span className="text-sm">{totalDays}</span>
                   </div>
-                )}
-                <div className="flex justify-between items-center font-semibold border-t pt-2">
-                  <span>Total Price:</span>
-                  <span>₹{totalPrice.toFixed(2)}</span>
+                  <div className="flex justify-between items-center font-semibold border-t pt-2 text-lg">
+                    <span>Total Price:</span>
+                    <span className="text-primary">₹{totalPrice.toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
             </form>
           </Form>
@@ -433,7 +515,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
             className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Processing..." : "Book Service"}
+            {isSubmitting ? "Processing..." : `Book Service - ₹${totalPrice.toFixed(2)}`}
           </Button>
         </DialogFooter>
       </DialogContent>
