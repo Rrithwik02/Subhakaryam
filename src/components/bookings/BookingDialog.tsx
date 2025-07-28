@@ -26,11 +26,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionContext } from "@supabase/auth-helpers-react";
-import { format } from "date-fns";
+import { format, addDays, differenceInDays } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { DateRange } from "react-day-picker";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -45,9 +48,12 @@ interface BookingDialogProps {
 
 type FormData = {
   date: Date;
+  endDate?: Date;
   timeSlot: string;
   specialRequirements: string;
   paymentPreference: 'pay_now' | 'pay_on_delivery';
+  isMultiDay: boolean;
+  totalDays: number;
 };
 
 const timeSlots = [
@@ -72,69 +78,82 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
     defaultValues: {
       specialRequirements: "",
       paymentPreference: 'pay_now',
+      isMultiDay: false,
+      totalDays: 1,
     },
   });
 
-  // Check for booking clashes
-  const checkAvailability = async (date: Date, timeSlot: string) => {
-    if (!date || !timeSlot) return true;
+  const watchIsMultiDay = form.watch("isMultiDay");
+  const watchTotalDays = form.watch("totalDays");
+  const watchDate = form.watch("date");
+
+  // Calculate total price based on days
+  const totalPrice = provider.base_price * watchTotalDays;
+
+  // Check availability for multiple days
+  const checkMultiDayAvailability = async (startDate: Date, totalDays: number, timeSlot: string) => {
+    if (!startDate || !timeSlot || totalDays < 1) return true;
 
     try {
-      // First check if the provider is available on this day of week
-      const dayOfWeek = date.getDay();
-      const { data: availabilityData, error: availabilityError } = await supabase
-        .from('service_provider_availability')
-        .select('*')
-        .eq('provider_id', provider.id)
-        .eq('day_of_week', dayOfWeek)
-        .single();
+      for (let i = 0; i < totalDays; i++) {
+        const currentDate = addDays(startDate, i);
+        const dayOfWeek = currentDate.getDay();
 
-      if (availabilityError || !availabilityData) {
-        toast({
-          variant: "destructive",
-          title: "Provider Unavailable",
-          description: "The provider is not available on this day.",
-        });
-        return false;
-      }
+        // Check provider availability for this day of week
+        const { data: availabilityData, error: availabilityError } = await supabase
+          .from('service_provider_availability')
+          .select('*')
+          .eq('provider_id', provider.id)
+          .eq('day_of_week', dayOfWeek)
+          .single();
 
-      // Check if the time slot falls within provider's available hours
-      const requestedTime = new Date(`2000-01-01T${timeSlot}`);
-      const startTime = new Date(`2000-01-01T${availabilityData.start_time}`);
-      const endTime = new Date(`2000-01-01T${availabilityData.end_time}`);
+        if (availabilityError || !availabilityData) {
+          toast({
+            variant: "destructive",
+            title: "Provider Unavailable",
+            description: `The provider is not available on ${format(currentDate, "MMM dd")}.`,
+          });
+          return false;
+        }
 
-      if (requestedTime < startTime || requestedTime > endTime) {
-        toast({
-          variant: "destructive",
-          title: "Time Slot Unavailable",
-          description: `Provider is only available between ${availabilityData.start_time} and ${availabilityData.end_time} on this day.`,
-        });
-        return false;
-      }
+        // Check time slot within available hours
+        const requestedTime = new Date(`2000-01-01T${timeSlot}`);
+        const startTime = new Date(`2000-01-01T${availabilityData.start_time}`);
+        const endTime = new Date(`2000-01-01T${availabilityData.end_time}`);
 
-      // Check for existing bookings
-      const { data: existingBookings, error: bookingsError } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('provider_id', provider.id)
-        .eq('service_date', format(date, "yyyy-MM-dd"))
-        .eq('time_slot', timeSlot)
-        .neq('status', 'rejected');
+        if (requestedTime < startTime || requestedTime > endTime) {
+          toast({
+            variant: "destructive",
+            title: "Time Slot Unavailable",
+            description: `Provider is only available between ${availabilityData.start_time} and ${availabilityData.end_time} on ${format(currentDate, "MMM dd")}.`,
+          });
+          return false;
+        }
 
-      if (bookingsError) throw bookingsError;
+        // Check for existing bookings on this date
+        const { data: existingBookings, error: bookingsError } = await supabase
+          .from('bookings')
+          .select('*')
+          .eq('provider_id', provider.id)
+          .eq('service_date', format(currentDate, "yyyy-MM-dd"))
+          .eq('time_slot', timeSlot)
+          .neq('status', 'rejected');
 
-      if (existingBookings && existingBookings.length > 0) {
-        toast({
-          variant: "destructive",
-          title: "Time Slot Unavailable",
-          description: "This time slot is already booked. Please select another time.",
-        });
-        return false;
+        if (bookingsError) throw bookingsError;
+
+        if (existingBookings && existingBookings.length > 0) {
+          toast({
+            variant: "destructive",
+            title: "Time Slot Unavailable",
+            description: `This time slot is already booked on ${format(currentDate, "MMM dd")}. Please select different dates or time.`,
+          });
+          return false;
+        }
       }
 
       return true;
     } catch (error) {
-      console.error('Error checking availability:', error);
+      console.error('Error checking multi-day availability:', error);
       return false;
     }
   };
@@ -159,18 +178,24 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
     }
 
     // Check availability before proceeding
-    const isAvailable = await checkAvailability(data.date, data.timeSlot);
+    const isAvailable = await checkMultiDayAvailability(data.date, data.totalDays, data.timeSlot);
     if (!isAvailable) return;
 
     setIsSubmitting(true);
     try {
-      // First create the booking
+      const endDate = addDays(data.date, data.totalDays - 1);
+      
+      // First create the booking with multi-day support
       const { data: booking, error: bookingError } = await supabase
         .from("bookings")
         .insert({
           user_id: session.user.id,
           provider_id: provider.id,
-          service_date: format(data.date, "yyyy-MM-dd"),
+          service_date: format(data.date, "yyyy-MM-dd"), // Keep for backward compatibility
+          start_date: format(data.date, "yyyy-MM-dd"),
+          end_date: format(endDate, "yyyy-MM-dd"),
+          total_days: data.totalDays,
+          total_amount: totalPrice,
           time_slot: data.timeSlot,
           special_requirements: data.specialRequirements,
           payment_preference: data.paymentPreference,
@@ -230,10 +255,33 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
+              name="isMultiDay"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">Multi-day booking</FormLabel>
+                    <div className="text-sm text-muted-foreground">
+                      Book this service for multiple consecutive days
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Select Date</FormLabel>
+                  <FormLabel>
+                    {watchIsMultiDay ? "Start Date" : "Select Date"}
+                  </FormLabel>
                   <Calendar
                     mode="single"
                     selected={field.value}
@@ -242,12 +290,40 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                       date < new Date() || date < new Date("1900-01-01")
                     }
                     initialFocus
-                    className="rounded-md border"
+                    className="rounded-md border pointer-events-auto"
                   />
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {watchIsMultiDay && (
+              <FormField
+                control={form.control}
+                name="totalDays"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Number of Days: {field.value}</FormLabel>
+                    <FormControl>
+                      <Slider
+                        min={1}
+                        max={30}
+                        step={1}
+                        value={[field.value]}
+                        onValueChange={(value) => field.onChange(value[0])}
+                        className="w-full"
+                      />
+                    </FormControl>
+                    {watchDate && (
+                      <div className="text-sm text-muted-foreground">
+                        Service period: {format(watchDate, "MMM dd")} - {format(addDays(watchDate, watchTotalDays - 1), "MMM dd, yyyy")}
+                      </div>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
@@ -326,8 +402,23 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
               )}
             />
 
-            <div className="text-sm text-gray-500">
-              <p>Total Price: ₹{provider.base_price.toFixed(2)}</p>
+            <div className="rounded-lg border p-4 bg-muted/50">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Base price per day:</span>
+                  <span className="text-sm">₹{provider.base_price.toFixed(2)}</span>
+                </div>
+                {watchIsMultiDay && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Number of days:</span>
+                    <span className="text-sm">{watchTotalDays}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center font-semibold border-t pt-2">
+                  <span>Total Price:</span>
+                  <span>₹{totalPrice.toFixed(2)}</span>
+                </div>
+              </div>
             </div>
 
             <DialogFooter>

@@ -95,14 +95,18 @@ export type Database = {
           completion_confirmed_by_provider: boolean | null
           completion_status: string | null
           created_at: string | null
+          end_date: string | null
           id: string
           payment_preference: string | null
           provider_id: string
           refund_amount: number | null
           service_date: string
           special_requirements: string | null
+          start_date: string | null
           status: string | null
           time_slot: string
+          total_amount: number | null
+          total_days: number | null
           updated_at: string | null
           user_id: string
         }
@@ -113,14 +117,18 @@ export type Database = {
           completion_confirmed_by_provider?: boolean | null
           completion_status?: string | null
           created_at?: string | null
+          end_date?: string | null
           id?: string
           payment_preference?: string | null
           provider_id: string
           refund_amount?: number | null
           service_date: string
           special_requirements?: string | null
+          start_date?: string | null
           status?: string | null
           time_slot: string
+          total_amount?: number | null
+          total_days?: number | null
           updated_at?: string | null
           user_id: string
         }
@@ -131,14 +139,18 @@ export type Database = {
           completion_confirmed_by_provider?: boolean | null
           completion_status?: string | null
           created_at?: string | null
+          end_date?: string | null
           id?: string
           payment_preference?: string | null
           provider_id?: string
           refund_amount?: number | null
           service_date?: string
           special_requirements?: string | null
+          start_date?: string | null
           status?: string | null
           time_slot?: string
+          total_amount?: number | null
+          total_days?: number | null
           updated_at?: string | null
           user_id?: string
         }
