@@ -246,13 +246,14 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>Book Service with {provider.business_name}</DialogTitle>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="flex-1 overflow-y-auto pr-2">
+          <Form {...form}>
+            <form id="booking-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="isMultiDay"
@@ -421,17 +422,20 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
               </div>
             </div>
 
-            <DialogFooter>
-              <Button
-                type="submit"
-                className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Processing..." : "Book Service"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </div>
+
+        <DialogFooter className="flex-shrink-0 mt-4">
+          <Button
+            type="submit"
+            form="booking-form"
+            className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Processing..." : "Book Service"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
