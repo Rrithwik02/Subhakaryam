@@ -14,14 +14,12 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     const checkIsAdmin = async () => {
       if (!session?.user) {
-        console.log("No session, user is not admin");
         setIsAdmin(false);
         setCheckingAdminStatus(false);
         return;
       }
       
       try {
-        console.log("Checking admin status for user:", session.user.id);
         
         // Use the new admin function to avoid RLS recursion
         const { data: isAdminResult, error } = await supabase
@@ -32,7 +30,6 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           throw error;
         }
         
-        console.log("Admin check result:", isAdminResult);
         setIsAdmin(Boolean(isAdminResult));
         
         if (!isAdminResult) {
@@ -64,11 +61,9 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (!session || !isAdmin) {
-    console.log("Access denied to admin route. Session:", !!session, "Is admin:", isAdmin);
     return <Navigate to="/login" replace />;
   }
 
-  console.log("Access granted to admin route");
   return <>{children}</>;
 };
 

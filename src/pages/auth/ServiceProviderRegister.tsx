@@ -43,10 +43,6 @@ const ServiceProviderRegister = () => {
       }
 
       const formData = new FormData(e.target as HTMLFormElement);
-      console.log("Form data collected:", Object.fromEntries(formData.entries()));
-      console.log("User ID:", user.id);
-      console.log("Selected service:", selectedService);
-      console.log("Primary location:", primaryLocation);
 
       // First check if the user already has a profile
       const { data: existingProfile, error: profileError } = await supabase
@@ -55,10 +51,9 @@ const ServiceProviderRegister = () => {
         .eq('id', user.id)
         .maybeSingle();
 
-      console.log("Existing profile check:", existingProfile, profileError);
 
       if (profileError) {
-        console.error("Error checking for existing profile:", profileError);
+        // Continue with registration process
       }
 
       // Upsert the user profile to be a service provider (handles both insert and update)
@@ -72,14 +67,12 @@ const ServiceProviderRegister = () => {
         updated_at: new Date().toISOString()
       };
 
-      console.log("Profile data to upsert:", profileData);
 
       const { error: upsertProfileError } = await supabase
         .from('profiles')
         .upsert(profileData, { onConflict: 'id' });
 
       if (upsertProfileError) {
-        console.error("Error upserting profile:", upsertProfileError);
         throw upsertProfileError;
       }
       
@@ -95,14 +88,12 @@ const ServiceProviderRegister = () => {
         status: 'pending'
       };
 
-      console.log("Service provider data to insert:", serviceProviderData);
 
       const { error: providerError } = await supabase
         .from('service_providers')
         .insert(serviceProviderData);
 
       if (providerError) {
-        console.error("Error creating service provider:", providerError);
         throw providerError;
       }
 
@@ -113,7 +104,6 @@ const ServiceProviderRegister = () => {
       
       navigate("/dashboard");
     } catch (error: any) {
-      console.error('Error registering service provider:', error);
       toast({
         variant: "destructive",
         title: "Error",

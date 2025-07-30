@@ -19,19 +19,14 @@ const Login = () => {
     const checkUserTypeAndRedirect = async () => {
       try {
         setRedirecting(true);
-        console.log("Checking user type for:", session.user.id);
         
         // Use the new admin function to avoid RLS recursion
         const { data: isAdminResult, error: adminError } = await supabase
           .rpc('is_user_admin' as any, { user_id: session.user.id });
         
-        console.log("Admin check result:", isAdminResult);
-        
         if (adminError) {
-          console.error("Error checking admin status:", adminError);
           // Continue with non-admin flow if admin check fails
         } else if (Boolean(isAdminResult)) {
-          console.log("User is admin - redirecting to /admin");
           navigate("/admin");
           toast({
             title: "Admin Login Successful",
@@ -47,22 +42,17 @@ const Login = () => {
           .eq("profile_id", session.user.id)
           .maybeSingle();
         
-        console.log("Provider check result:", provider);
-        
         if (providerError && providerError.code !== 'PGRST116') {
-          console.error("Error checking provider status:", providerError);
           // Continue with regular user flow even if there's an error
         }
         
         if (provider) {
-          console.log("User is a service provider - redirecting to /dashboard");
           navigate("/dashboard");
           toast({
             title: "Provider Login Successful",
             description: "Welcome to your service provider dashboard"
           });
         } else {
-          console.log("User is a regular user - redirecting to /");
           navigate("/");
           toast({
             title: "Login Successful",
@@ -70,7 +60,6 @@ const Login = () => {
           });
         }
       } catch (error) {
-        console.error("Error in checkUserTypeAndRedirect:", error);
         navigate("/");
         toast({
           title: "Login Successful",

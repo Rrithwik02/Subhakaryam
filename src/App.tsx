@@ -26,6 +26,9 @@ import TermsConditions from "./pages/policies/TermsConditions";
 import CancellationPolicy from "./pages/policies/CancellationPolicy";
 import RefundPolicy from "./pages/policies/RefundPolicy";
 import ServiceRequest from "./pages/ServiceRequest";
+import AddService from "./pages/auth/AddService";
+import NotFound from "./pages/NotFound";
+import ErrorBoundary from "./components/error/ErrorBoundary";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,83 +41,94 @@ const queryClient = new QueryClient({
 
 const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <SessionContextProvider supabaseClient={supabase}>
-        <Router>
-          <Navbar />
-          <BackButton />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="/contact" element={<ContactUs />} />
-            <Route path="/services" element={<ServicesPage />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-conditions" element={<TermsConditions />} />
-            <Route path="/cancellation-policy" element={<CancellationPolicy />} />
-            <Route path="/refund-policy" element={<RefundPolicy />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route 
-              path="/profile" 
-              element={
-                <ProtectedRoute>
-                  <UserProfile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/provider/profile" 
-              element={
-                <ProtectedRoute>
-                  <ServiceProviderProfile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/register/service-provider" 
-              element={
-                <ProtectedRoute>
-                  <ServiceProviderRegister />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/search" 
-              element={
-                <ProtectedRoute>
-                  <Search />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/service-request" 
-              element={
-                <ProtectedRoute>
-                  <ServiceRequest />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <ServiceDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin" 
-              element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              } 
-            />
-          </Routes>
-          <Toaster />
-        </Router>
-      </SessionContextProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <SessionContextProvider supabaseClient={supabase}>
+          <Router>
+            <Navbar />
+            <BackButton />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-conditions" element={<TermsConditions />} />
+              <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/provider/profile" 
+                element={
+                  <ProtectedRoute>
+                    <ServiceProviderProfile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/register/service-provider" 
+                element={
+                  <ProtectedRoute>
+                    <ServiceProviderRegister />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/search" 
+                element={
+                  <ProtectedRoute>
+                    <Search />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/service-request" 
+                element={
+                  <ProtectedRoute>
+                    <ServiceRequest />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/service/add" 
+                element={
+                  <ProtectedRoute>
+                    <AddService />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <ServiceDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin" 
+                element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                } 
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <Toaster />
+          </Router>
+        </SessionContextProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 

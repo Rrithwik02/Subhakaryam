@@ -23,8 +23,6 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
       }
     }, 500);
     
-    console.log("ProtectedRoute: Checking session:", session?.user?.id);
-    
     return () => clearTimeout(timer);
   }, [session, isLoading, toast]);
 
@@ -37,11 +35,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   }
 
   if (!session) {
-    console.log("No session found, redirecting to login");
     return <Navigate to="/login" replace />;
   }
 
-  console.log("Session verified, rendering protected content");
   return <>{children}</>;
 };
 

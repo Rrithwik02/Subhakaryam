@@ -19,7 +19,6 @@ const Register = () => {
         const checkUserTypeAndRedirect = async () => {
           try {
             setRedirecting(true);
-            console.log("Auth state changed. User signed in:", session?.user.id);
             
             const { data: profile, error } = await supabase
               .from("profiles")
@@ -27,12 +26,9 @@ const Register = () => {
               .eq("id", session?.user.id)
               .single();
             
-            console.log("Profile data:", profile, error);
-            
             if (error) throw error;
             
             if (profile?.user_type === 'admin') {
-              console.log("User is admin - redirecting to /admin");
               navigate("/admin");
               toast({
                 title: "Admin Login Successful",
@@ -48,21 +44,17 @@ const Register = () => {
               .eq("profile_id", session?.user.id)
               .maybeSingle();
             
-            console.log("Provider data:", provider, providerError);
-            
             if (providerError && providerError.code !== 'PGRST116') {
               throw providerError;
             }
             
             if (provider) {
-              console.log("User is service provider - redirecting to /dashboard");
               navigate("/dashboard");
               toast({
                 title: "Provider Registration Complete",
                 description: "Welcome to your service provider dashboard"
               });
             } else {
-              console.log("User is regular user - redirecting to /");
               toast({
                 title: "Welcome!",
                 description: "Your account has been created successfully.",
@@ -70,7 +62,6 @@ const Register = () => {
               navigate("/");
             }
           } catch (error) {
-            console.error("Error checking user type:", error);
             toast({
               title: "Welcome!",
               description: "Your account has been created successfully.",
