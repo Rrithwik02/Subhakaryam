@@ -297,26 +297,49 @@ const ServiceProvidersTable = () => {
             </TabsContent>
 
             <TabsContent value="portfolio">
-              <div className="space-y-4">
-                <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
-                  Portfolio Images
-                </h3>
-                {selectedProvider?.portfolio_images && selectedProvider.portfolio_images.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {selectedProvider.portfolio_images.map((image: string, index: number) => (
-                      <div key={index} className="relative aspect-square">
-                        <img
-                          src={image}
-                          alt={`Portfolio ${index + 1}`}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-500 py-4">No portfolio images provided</p>
-                )}
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-ceremonial-maroon flex items-center gap-2">
+                    <MapPin className="h-5 w-5" />
+                    Portfolio Images
+                  </h3>
+                  {selectedProvider?.portfolio_images && selectedProvider.portfolio_images.length > 0 ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {selectedProvider.portfolio_images.map((image: string, index: number) => (
+                        <div key={index} className="relative aspect-square">
+                          <img
+                            src={image}
+                            alt={`Portfolio ${index + 1}`}
+                            className="w-full h-full object-cover rounded-lg border shadow-sm"
+                            loading="lazy"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 py-4">No portfolio images provided</p>
+                  )}
+                </div>
+                
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-ceremonial-maroon">
+                    Portfolio Link
+                  </h3>
+                  {selectedProvider?.portfolio_link ? (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <a 
+                        href={selectedProvider.portfolio_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-ceremonial-gold hover:underline font-medium break-all"
+                      >
+                        {selectedProvider.portfolio_link}
+                      </a>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 py-4">No portfolio link provided</p>
+                  )}
+                </div>
               </div>
             </TabsContent>
 

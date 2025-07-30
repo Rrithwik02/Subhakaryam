@@ -44,6 +44,11 @@ const ServiceProviderRegister = () => {
 
       const formData = new FormData(e.target as HTMLFormElement);
 
+      // Extract portfolio data from form
+      const portfolioImagesStr = formData.get('portfolio_images') as string;
+      const portfolioImages = portfolioImagesStr ? JSON.parse(portfolioImagesStr) : [];
+      const portfolioLink = formData.get('portfolio_link') as string || '';
+
       // First check if the user already has a profile
       const { data: existingProfile, error: profileError } = await supabase
         .from('profiles')
@@ -85,6 +90,8 @@ const ServiceProviderRegister = () => {
         city: primaryLocation,
         secondary_city: secondaryLocation || null,
         base_price: parseFloat(formData.get('base_price') as string),
+        portfolio_images: portfolioImages,
+        portfolio_link: portfolioLink,
         status: 'pending'
       };
 
