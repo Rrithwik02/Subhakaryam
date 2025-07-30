@@ -7,6 +7,8 @@ import DeletionRequestsTable from "./DeletionRequestsTable";
 import PaymentsTable from "./PaymentsTable";
 import ContactSubmissionsTable from "./ContactSubmissionsTable";
 import ServiceRequestsTable from "./ServiceRequestsTable";
+import CommissionDashboard from "./CommissionDashboard";
+import PayoutManagement from "./PayoutManagement";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -27,7 +29,7 @@ const AdminDashboard = () => {
 
         <Tabs defaultValue="providers" className="space-y-6">
           <div className={`${isMobile ? "overflow-x-auto" : ""}`}>
-            <TabsList className={`${isMobile ? "flex min-w-max" : "grid"} ${isMobile ? "" : "w-full grid-cols-7"} h-auto ${isMobile ? "p-1" : ""}`}>
+            <TabsList className={`${isMobile ? "flex min-w-max" : "grid"} ${isMobile ? "" : "w-full grid-cols-9"} h-auto ${isMobile ? "p-1" : ""}`}>
               <TabsTrigger value="providers" className={`${isMobile ? "whitespace-nowrap px-3 py-2 text-xs" : ""}`}>
                 {isMobile ? "Providers" : "Service Providers"}
               </TabsTrigger>
@@ -39,6 +41,12 @@ const AdminDashboard = () => {
               </TabsTrigger>
               <TabsTrigger value="payments" className={`${isMobile ? "whitespace-nowrap px-3 py-2 text-xs" : ""}`}>
                 Payments
+              </TabsTrigger>
+              <TabsTrigger value="commissions" className={`${isMobile ? "whitespace-nowrap px-3 py-2 text-xs" : ""}`}>
+                Commissions
+              </TabsTrigger>
+              <TabsTrigger value="payouts" className={`${isMobile ? "whitespace-nowrap px-3 py-2 text-xs" : ""}`}>
+                Payouts
               </TabsTrigger>
               <TabsTrigger value="deletion-requests" className={`${isMobile ? "whitespace-nowrap px-3 py-2 text-xs" : ""}`}>
                 {isMobile ? "Deletions" : "Deletion Requests"}
@@ -89,6 +97,26 @@ const AdminDashboard = () => {
               </ScrollArea>
             ) : (
               <PaymentsTable />
+            )}
+          </TabsContent>
+
+          <TabsContent value="commissions" className={`bg-white rounded-lg shadow-lg ${isMobile ? "p-2" : "p-6"}`}>
+            {isMobile ? (
+              <ScrollArea className="h-[calc(100vh-300px)]">
+                <CommissionDashboard />
+              </ScrollArea>
+            ) : (
+              <CommissionDashboard />
+            )}
+          </TabsContent>
+
+          <TabsContent value="payouts" className={`bg-white rounded-lg shadow-lg ${isMobile ? "p-2" : "p-6"}`}>
+            {isMobile ? (
+              <ScrollArea className="h-[calc(100vh-300px)]">
+                <PayoutManagement />
+              </ScrollArea>
+            ) : (
+              <PayoutManagement />
             )}
           </TabsContent>
 

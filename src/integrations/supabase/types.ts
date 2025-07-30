@@ -301,6 +301,69 @@ export type Database = {
         }
         Relationships: []
       }
+      escrow_payments: {
+        Row: {
+          amount: number
+          auto_release_date: string | null
+          booking_id: string
+          created_at: string
+          dispute_reason: string | null
+          held_at: string
+          id: string
+          payment_id: string
+          release_condition: string
+          released_at: string | null
+          released_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          auto_release_date?: string | null
+          booking_id: string
+          created_at?: string
+          dispute_reason?: string | null
+          held_at?: string
+          id?: string
+          payment_id: string
+          release_condition?: string
+          released_at?: string | null
+          released_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          auto_release_date?: string | null
+          booking_id?: string
+          created_at?: string
+          dispute_reason?: string | null
+          held_at?: string
+          id?: string
+          payment_id?: string
+          release_condition?: string
+          released_at?: string | null
+          released_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_payments_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escrow_payments_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           created_at: string | null
@@ -375,42 +438,148 @@ export type Database = {
           },
         ]
       }
+      payment_schedules: {
+        Row: {
+          booking_id: string
+          created_at: string
+          current_milestone: number | null
+          id: string
+          milestones: Json
+          payment_plan: string
+          total_milestones: number | null
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          current_milestone?: number | null
+          id?: string
+          milestones?: Json
+          payment_plan?: string
+          total_milestones?: number | null
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          current_milestone?: number | null
+          id?: string
+          milestones?: Json
+          payment_plan?: string
+          total_milestones?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_schedules_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_verification_logs: {
+        Row: {
+          created_at: string
+          fraud_score: number | null
+          id: string
+          payment_id: string
+          status: string
+          verification_data: Json | null
+          verification_notes: string | null
+          verification_type: string
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          fraud_score?: number | null
+          id?: string
+          payment_id: string
+          status: string
+          verification_data?: Json | null
+          verification_notes?: string | null
+          verification_type: string
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          fraud_score?: number | null
+          id?: string
+          payment_id?: string
+          status?: string
+          verification_data?: Json | null
+          verification_notes?: string | null
+          verification_type?: string
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_verification_logs_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           admin_verified: boolean | null
           amount: number
           booking_id: string
+          commission_amount: number | null
+          commission_rate: number | null
           created_at: string | null
+          escrow_status: string | null
+          fraud_score: number | null
           id: string
+          milestone_number: number | null
+          net_amount: number | null
           payment_type: string
           status: string | null
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
           updated_at: string | null
+          verification_status: string | null
         }
         Insert: {
           admin_verified?: boolean | null
           amount: number
           booking_id: string
+          commission_amount?: number | null
+          commission_rate?: number | null
           created_at?: string | null
+          escrow_status?: string | null
+          fraud_score?: number | null
           id?: string
+          milestone_number?: number | null
+          net_amount?: number | null
           payment_type: string
           status?: string | null
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           updated_at?: string | null
+          verification_status?: string | null
         }
         Update: {
           admin_verified?: boolean | null
           amount?: number
           booking_id?: string
+          commission_amount?: number | null
+          commission_rate?: number | null
           created_at?: string | null
+          escrow_status?: string | null
+          fraud_score?: number | null
           id?: string
+          milestone_number?: number | null
+          net_amount?: number | null
           payment_type?: string
           status?: string | null
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           updated_at?: string | null
+          verification_status?: string | null
         }
         Relationships: [
           {
@@ -418,6 +587,62 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: false
             referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payouts: {
+        Row: {
+          amount: number
+          commission_amount: number
+          created_at: string
+          id: string
+          net_amount: number
+          notes: string | null
+          payout_date: string | null
+          payout_method: string
+          payout_reference: string | null
+          processed_at: string | null
+          provider_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          commission_amount: number
+          created_at?: string
+          id?: string
+          net_amount: number
+          notes?: string | null
+          payout_date?: string | null
+          payout_method?: string
+          payout_reference?: string | null
+          processed_at?: string | null
+          provider_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          commission_amount?: number
+          created_at?: string
+          id?: string
+          net_amount?: number
+          notes?: string | null
+          payout_date?: string | null
+          payout_method?: string
+          payout_reference?: string | null
+          processed_at?: string | null
+          provider_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payouts_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
         ]
@@ -597,6 +822,47 @@ export type Database = {
           },
         ]
       }
+      service_provider_commissions: {
+        Row: {
+          commission_rate: number
+          created_at: string
+          id: string
+          provider_id: string
+          tier: string
+          total_commission_paid: number | null
+          total_earnings: number | null
+          updated_at: string
+        }
+        Insert: {
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          provider_id: string
+          tier?: string
+          total_commission_paid?: number | null
+          total_earnings?: number | null
+          updated_at?: string
+        }
+        Update: {
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          provider_id?: string
+          tier?: string
+          total_commission_paid?: number | null
+          total_earnings?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_provider_commissions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_providers: {
         Row: {
           base_price: number
@@ -750,6 +1016,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_commission_rate: {
+        Args: { provider_tier: string }
+        Returns: number
+      }
       get_current_user_type: {
         Args: Record<PropertyKey, never>
         Returns: string

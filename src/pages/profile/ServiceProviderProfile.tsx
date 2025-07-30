@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import BookingsList from "@/components/profile/BookingsList";
 import ChatInterface from "@/components/chat/ChatInterface";
+import EarningsDashboard from "@/components/service-provider/EarningsDashboard";
 import { X } from "lucide-react";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import { useLocation } from 'react-router-dom';
@@ -213,6 +214,7 @@ const ServiceProviderProfile = () => {
                 <TabsList className="w-full">
                   <TabsTrigger value="bookings">Bookings</TabsTrigger>
                   <TabsTrigger value="messages">Messages</TabsTrigger>
+                  {isOwnProfile && <TabsTrigger value="earnings">Earnings</TabsTrigger>}
                 </TabsList>
                 
                 <TabsContent value="bookings">
@@ -232,6 +234,12 @@ const ServiceProviderProfile = () => {
                     ))}
                   </div>
                 </TabsContent>
+
+                {isOwnProfile && (
+                  <TabsContent value="earnings">
+                    <EarningsDashboard />
+                  </TabsContent>
+                )}
               </Tabs>
             </CardContent>
           </Card>
