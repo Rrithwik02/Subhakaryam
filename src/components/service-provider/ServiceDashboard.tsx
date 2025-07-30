@@ -20,12 +20,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import ChatInterface from "@/components/chat/ChatInterface";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   const { data: provider, isError: isProviderError } = useQuery({
     queryKey: ["service-provider"],
@@ -157,7 +160,7 @@ const ServiceDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white pt-24">
       <div className="max-w-7xl mx-auto px-4 space-y-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-display font-bold text-ceremonial-maroon">
+          <h1 className={`${isMobile ? "text-2xl" : "text-4xl"} font-display font-bold text-ceremonial-maroon`}>
             Service Provider Dashboard
           </h1>
           <p className="text-gray-600 mt-2">
@@ -165,98 +168,174 @@ const ServiceDashboard = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
+        <div className={`grid grid-cols-1 ${isMobile ? "" : "md:grid-cols-3"} gap-8`}>
+          <div className={`${isMobile ? "" : "md:col-span-2"}`}>
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl font-display text-ceremonial-maroon">
+                <CardTitle className={`${isMobile ? "text-lg" : "text-2xl"} font-display text-ceremonial-maroon`}>
                   Service Requests
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className={`${isMobile ? "p-2" : ""}`}>
                 {requests && requests.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Client Name</TableHead>
-                        <TableHead>Contact</TableHead>
-                        <TableHead>Service Type</TableHead>
-                        <TableHead>Special Requirements</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Requested On</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {requests.map((request) => (
-                        <TableRow key={request.id}>
-                          <TableCell>{request.profiles?.full_name}</TableCell>
-                          <TableCell>{request.profiles?.email}</TableCell>
-                          <TableCell className="capitalize">
-                            {request.service_providers?.service_type}
-                          </TableCell>
-                          <TableCell>{request.special_requirements}</TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                request.status === "pending"
-                                  ? "default"
-                                  : request.status === "accepted"
-                                  ? "secondary"
-                                  : "destructive"
-                              }
-                            >
-                              {request.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {format(new Date(request.created_at), "PPp")}
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-x-2">
-                              {request.status === "pending" && (
-                                <>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                                    onClick={() =>
-                                      updateBookingStatus.mutate({
-                                        bookingId: request.id,
-                                        status: "accepted",
-                                      })
-                                    }
-                                  >
-                                    Accept
-                                  </Button>
-                                  <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() =>
-                                      updateBookingStatus.mutate({
-                                        bookingId: request.id,
-                                        status: "rejected",
-                                      })
-                                    }
-                                  >
-                                    Decline
-                                  </Button>
-                                </>
+                  isMobile ? (
+                    <ScrollArea className="h-[400px]">
+                      <div className="space-y-4">
+                        {requests.map((request) => (
+                          <Card key={request.id} className="p-4">
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-start">
+                                <h4 className="font-semibold">{request.profiles?.full_name}</h4>
+                                <Badge
+                                  variant={
+                                    request.status === "pending"
+                                      ? "default"
+                                      : request.status === "accepted"
+                                      ? "secondary"
+                                      : "destructive"
+                                  }
+                                >
+                                  {request.status}
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-gray-600">{request.profiles?.email}</p>
+                              <p className="text-sm capitalize">{request.service_providers?.service_type}</p>
+                              {request.special_requirements && (
+                                <p className="text-sm">{request.special_requirements}</p>
                               )}
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setSelectedChat(request.id)}
-                                disabled={new Date(request.service_date) < new Date()}
-                              >
-                                Chat
-                              </Button>
+                              <p className="text-xs text-gray-500">
+                                {format(new Date(request.created_at), "PPp")}
+                              </p>
+                              <div className="flex flex-wrap gap-2 pt-2">
+                                {request.status === "pending" && (
+                                  <>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="flex-1 hover:bg-ceremonial-gold hover:text-white transition-colors"
+                                      onClick={() =>
+                                        updateBookingStatus.mutate({
+                                          bookingId: request.id,
+                                          status: "accepted",
+                                        })
+                                      }
+                                    >
+                                      Accept
+                                    </Button>
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      className="flex-1"
+                                      onClick={() =>
+                                        updateBookingStatus.mutate({
+                                          bookingId: request.id,
+                                          status: "rejected",
+                                        })
+                                      }
+                                    >
+                                      Decline
+                                    </Button>
+                                  </>
+                                )}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="flex-1"
+                                  onClick={() => setSelectedChat(request.id)}
+                                  disabled={new Date(request.service_date) < new Date()}
+                                >
+                                  Chat
+                                </Button>
+                              </div>
                             </div>
-                          </TableCell>
+                          </Card>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  ) : (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Client Name</TableHead>
+                          <TableHead>Contact</TableHead>
+                          <TableHead>Service Type</TableHead>
+                          <TableHead>Special Requirements</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Requested On</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {requests.map((request) => (
+                          <TableRow key={request.id}>
+                            <TableCell>{request.profiles?.full_name}</TableCell>
+                            <TableCell>{request.profiles?.email}</TableCell>
+                            <TableCell className="capitalize">
+                              {request.service_providers?.service_type}
+                            </TableCell>
+                            <TableCell>{request.special_requirements}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  request.status === "pending"
+                                    ? "default"
+                                    : request.status === "accepted"
+                                    ? "secondary"
+                                    : "destructive"
+                                }
+                              >
+                                {request.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {format(new Date(request.created_at), "PPp")}
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-x-2">
+                                {request.status === "pending" && (
+                                  <>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="hover:bg-ceremonial-gold hover:text-white transition-colors"
+                                      onClick={() =>
+                                        updateBookingStatus.mutate({
+                                          bookingId: request.id,
+                                          status: "accepted",
+                                        })
+                                      }
+                                    >
+                                      Accept
+                                    </Button>
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      onClick={() =>
+                                        updateBookingStatus.mutate({
+                                          bookingId: request.id,
+                                          status: "rejected",
+                                        })
+                                      }
+                                    >
+                                      Decline
+                                    </Button>
+                                  </>
+                                )}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setSelectedChat(request.id)}
+                                  disabled={new Date(request.service_date) < new Date()}
+                                >
+                                  Chat
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )
                 ) : (
                   <EmptyState />
                 )}
@@ -267,11 +346,11 @@ const ServiceDashboard = () => {
           <div>
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl font-display text-ceremonial-maroon">
+                <CardTitle className={`${isMobile ? "text-lg" : "text-2xl"} font-display text-ceremonial-maroon`}>
                   {selectedChat ? "Chat" : "Availability"}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className={`${isMobile ? "p-2" : ""}`}>
                 {selectedChat ? (
                   <ChatInterface
                     bookingId={selectedChat}
