@@ -34,11 +34,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trash2, Building2, User, MapPin, CreditCard } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
 
 const ServiceProvidersTable = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
+  const isMobile = useIsMobile();
 
   const { data: providers, isLoading } = useQuery({
     queryKey: ["service-providers"],
@@ -141,94 +145,174 @@ const ServiceProvidersTable = () => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Business Name</TableHead>
-            <TableHead>Service Type</TableHead>
-            <TableHead>Contact Details</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {providers?.map((provider) => (
-            <TableRow key={provider.id}>
-              <TableCell className="font-medium">
-                {provider.business_name}
-              </TableCell>
-              <TableCell className="capitalize">{provider.service_type}</TableCell>
-              <TableCell>
-                <div className="space-y-1">
-                  <p className="font-medium">{provider.profiles?.full_name}</p>
-                  <p className="text-sm text-gray-500">{provider.profiles?.email}</p>
-                  <p className="text-sm text-gray-500">{provider.profiles?.phone}</p>
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    provider.status === "approved"
-                      ? "secondary"
-                      : provider.status === "rejected"
-                      ? "destructive"
-                      : "default"
-                  }
-                >
-                  {provider.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <div className="space-x-2">
-                  {provider.status === "pending" && (
-                    <Button
-                      size="sm"
-                      onClick={() => setSelectedProvider(provider)}
-                      className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+    <div>
+      {isMobile ? (
+        <ScrollArea className="h-[500px]">
+          <div className="space-y-4">
+            {providers?.map((provider) => (
+              <Card key={provider.id} className="p-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-semibold">{provider.business_name}</h4>
+                      <p className="text-sm text-gray-600 capitalize">{provider.service_type}</p>
+                    </div>
+                    <Badge
+                      variant={
+                        provider.status === "approved"
+                          ? "secondary"
+                          : provider.status === "rejected"
+                          ? "destructive"
+                          : "default"
+                      }
                     >
-                      Review
-                    </Button>
-                  )}
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
+                      {provider.status}
+                    </Badge>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">{provider.profiles?.full_name}</p>
+                    <p className="text-xs text-gray-500">{provider.profiles?.email}</p>
+                    <p className="text-xs text-gray-500">{provider.profiles?.phone}</p>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {provider.status === "pending" && (
                       <Button
-                        variant="destructive"
                         size="sm"
-                        className="flex items-center gap-1"
+                        onClick={() => setSelectedProvider(provider)}
+                        className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 flex-1"
                       >
-                        <Trash2 className="h-4 w-4" />
-                        Delete
+                        Review
                       </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete the service
-                          provider account and all associated data.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => deleteProvider.mutate(provider.id)}
-                          className="bg-red-600 hover:bg-red-700"
+                    )}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="flex items-center gap-1 flex-1"
                         >
+                          <Trash2 className="h-3 w-3" />
                           Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the service
+                            provider account and all associated data.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteProvider.mutate(provider.id)}
+                            className="bg-red-600 hover:bg-red-700"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+              </Card>
+            ))}
+          </div>
+        </ScrollArea>
+      ) : (
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Business Name</TableHead>
+                <TableHead>Service Type</TableHead>
+                <TableHead>Contact Details</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {providers?.map((provider) => (
+                <TableRow key={provider.id}>
+                  <TableCell className="font-medium">
+                    {provider.business_name}
+                  </TableCell>
+                  <TableCell className="capitalize">{provider.service_type}</TableCell>
+                  <TableCell>
+                    <div className="space-y-1">
+                      <p className="font-medium">{provider.profiles?.full_name}</p>
+                      <p className="text-sm text-gray-500">{provider.profiles?.email}</p>
+                      <p className="text-sm text-gray-500">{provider.profiles?.phone}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        provider.status === "approved"
+                          ? "secondary"
+                          : provider.status === "rejected"
+                          ? "destructive"
+                          : "default"
+                      }
+                    >
+                      {provider.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-x-2">
+                      {provider.status === "pending" && (
+                        <Button
+                          size="sm"
+                          onClick={() => setSelectedProvider(provider)}
+                          className="bg-ceremonial-gold hover:bg-ceremonial-gold/90"
+                        >
+                          Review
+                        </Button>
+                      )}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="flex items-center gap-1"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Delete
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete the service
+                              provider account and all associated data.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deleteProvider.mutate(provider.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
       <Dialog open={!!selectedProvider} onOpenChange={() => setSelectedProvider(null)}>
-        <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
+        <DialogContent className={`${isMobile ? "sm:max-w-[95vw] h-[90vh]" : "sm:max-w-[800px] max-h-[80vh]"} overflow-y-auto`}>
           <DialogHeader>
             <DialogTitle className="text-2xl font-display text-ceremonial-maroon">
               Review Service Provider Application

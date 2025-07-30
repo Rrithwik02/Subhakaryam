@@ -31,6 +31,24 @@ const Navbar = () => {
     enabled: !!session?.user,
   });
 
+  // Check if user is an approved service provider
+  const { data: serviceProvider } = useQuery({
+    queryKey: ["service-provider-status"],
+    queryFn: async () => {
+      if (!session?.user || userProfile?.user_type !== "service_provider") return null;
+      
+      const { data, error } = await supabase
+        .from("service_providers")
+        .select("status")
+        .eq("profile_id", session.user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!session?.user && userProfile?.user_type === "service_provider",
+  });
+
   const handleProfileClick = () => {
     if (!session) {
       navigate("/login");
@@ -44,7 +62,7 @@ const Navbar = () => {
     }
   };
 
-  const isServiceProvider = userProfile?.user_type === "service_provider";
+  const isServiceProvider = userProfile?.user_type === "service_provider" && serviceProvider?.status === "approved";
   const isAdmin = userProfile?.user_type === "admin";
   const isGuest = userProfile?.user_type === "guest" || !userProfile?.user_type;
 
