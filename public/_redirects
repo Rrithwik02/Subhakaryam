@@ -1,0 +1,10 @@
+# Netlify SPA redirect rules
+# Handle client-side routing by redirecting all routes to index.html
+/*    /index.html   200
+
+# API routes (if any) should be handled before the catch-all
+/api/*  /api/:splat  200
+
+# Static assets should be served directly
+/assets/*  /assets/:splat  200
+/lovable-uploads/*  /lovable-uploads/:splat  200
