@@ -136,9 +136,8 @@ const PayoutManagement = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Provider</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Commission</TableHead>
-                <TableHead>Net Amount</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Net Amount</TableHead>
                 <TableHead>Method</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Date</TableHead>

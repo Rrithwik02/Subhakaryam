@@ -267,10 +267,57 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
           description: "Your booking has been confirmed! You can now chat with the service provider.",
         });
       } else {
-        toast({
-          title: "Redirecting to Payment",
-          description: "You will be redirected to complete the payment.",
-        });
+        // Handle payment flow
+        const paymentAmount = providerAdvanceSettings.requiresAdvance ? advanceAmount : totalPrice;
+        const paymentType = providerAdvanceSettings.requiresAdvance ? 'advance' : 'final';
+        
+        try {
+          const { data, error } = await supabase.functions.invoke('create-razorpay-checkout', {
+            body: {
+              bookingId: booking.id,
+              paymentType,
+              amount: paymentAmount,
+            },
+          });
+
+          if (error) throw error;
+
+          // Open Razorpay checkout
+          const options = {
+            key: data.key,
+            amount: data.amount,
+            currency: data.currency,
+            order_id: data.orderId,
+            name: "Service Booking",
+            description: `${paymentType === 'advance' ? 'Advance' : 'Final'} payment for booking`,
+            handler: function (response: any) {
+              toast({
+                title: "Payment Successful",
+                description: "Your payment has been processed successfully.",
+              });
+              onClose();
+              form.reset();
+              setDateRange(undefined);
+            },
+            modal: {
+              ondismiss: function() {
+                // Payment was cancelled
+              }
+            }
+          };
+
+          // @ts-ignore - Razorpay is loaded via script
+          const rzp = new window.Razorpay(options);
+          rzp.open();
+          return; // Don't close dialog yet
+        } catch (paymentError) {
+          console.error('Payment error:', paymentError);
+          toast({
+            title: "Payment Error",
+            description: "Failed to create payment session. Please try again.",
+            variant: "destructive",
+          });
+        }
       }
 
       onClose();

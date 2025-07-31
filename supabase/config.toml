@@ -2,3 +2,9 @@ project_id = "eldgizccualhhhaczooa"
 
 [functions.generate-logo]
 verify_jwt = false
+
+[functions.create-razorpay-checkout]
+verify_jwt = false
+
+[functions.razorpay-webhook]
+verify_jwt = false

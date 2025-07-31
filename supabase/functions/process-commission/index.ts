@@ -21,79 +21,27 @@ serve(async (req) => {
     const { paymentId, action } = await req.json();
 
     if (action === "verify_payment") {
-      // Enhanced verification for large payments
+      // Simple payment verification (no commission calculation)
       const { data: payment, error: paymentError } = await supabaseAdmin
         .from("payments")
-        .select(`
-          *,
-          bookings!inner(
-            id,
-            provider_id,
-            service_providers!inner(
-              id,
-              profile_id,
-              is_premium
-            )
-          )
-        `)
+        .select("*")
         .eq("id", paymentId)
         .single();
 
       if (paymentError) throw paymentError;
 
-      // Calculate fraud score based on various factors
-      let fraudScore = 0;
-      
-      // Check payment amount (higher amounts get higher score)
-      if (payment.amount > 50000) fraudScore += 30;
-      else if (payment.amount > 20000) fraudScore += 20;
-      else if (payment.amount > 10000) fraudScore += 10;
-
-      // Check payment frequency for this user
-      const { data: recentPayments } = await supabaseAdmin
-        .from("payments")
-        .select("id")
-        .eq("booking_id", payment.booking_id)
-        .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
-
-      if (recentPayments && recentPayments.length > 3) {
-        fraudScore += 25; // Multiple payments in 24h
-      }
-
-      // Determine verification status
-      let verificationStatus = "verified";
-      if (fraudScore >= 50) verificationStatus = "flagged";
-      else if (fraudScore >= 30) verificationStatus = "requires_review";
-
-      // Update payment with verification info
+      // Update payment as verified
       await supabaseAdmin
         .from("payments")
         .update({
-          fraud_score: fraudScore,
-          verification_status: verificationStatus,
+          admin_verified: true,
         })
         .eq("id", paymentId);
-
-      // Log verification
-      await supabaseAdmin
-        .from("payment_verification_logs")
-        .insert({
-          payment_id: paymentId,
-          verification_type: "automated",
-          status: verificationStatus === "verified" ? "approved" : "flagged",
-          fraud_score: fraudScore,
-          verification_data: {
-            amount_check: payment.amount,
-            frequency_check: recentPayments?.length || 0,
-            timestamp: new Date().toISOString(),
-          },
-        });
 
       return new Response(
         JSON.stringify({
           success: true,
-          verification_status: verificationStatus,
-          fraud_score: fraudScore,
+          message: "Payment verified successfully",
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -105,27 +53,13 @@ serve(async (req) => {
     if (action === "process_payout") {
       const { providerId, amount } = await req.json();
 
-      // Get provider commission info
-      const { data: commission, error: commissionError } = await supabaseAdmin
-        .from("service_provider_commissions")
-        .select("*")
-        .eq("provider_id", providerId)
-        .single();
-
-      if (commissionError) throw commissionError;
-
-      // Calculate commission and net amount
-      const commissionAmount = amount * (commission.commission_rate / 100);
-      const netAmount = amount - commissionAmount;
-
-      // Create payout record
+      // Create payout record (no commission deduction)
       const { data: payout, error: payoutError } = await supabaseAdmin
         .from("payouts")
         .insert({
           provider_id: providerId,
           amount: amount,
-          commission_amount: commissionAmount,
-          net_amount: netAmount,
+          net_amount: amount, // No commission, so net amount equals amount
           status: "pending",
           payout_date: new Date().toISOString().split('T')[0],
         })
@@ -138,8 +72,7 @@ serve(async (req) => {
         JSON.stringify({
           success: true,
           payout_id: payout.id,
-          net_amount: netAmount,
-          commission_amount: commissionAmount,
+          net_amount: amount,
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -156,7 +89,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error("Commission processing error:", error);
+    console.error("Payment processing error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
