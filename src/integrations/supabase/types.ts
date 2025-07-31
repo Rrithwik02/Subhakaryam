@@ -865,6 +865,7 @@ export type Database = {
       }
       service_providers: {
         Row: {
+          advance_payment_percentage: number | null
           base_price: number
           business_name: string
           city: string
@@ -877,12 +878,14 @@ export type Database = {
           profile_id: string | null
           profile_image: string | null
           rating: number | null
+          requires_advance_payment: boolean | null
           secondary_city: string | null
           service_type: string
           specializations: string[] | null
           status: string | null
         }
         Insert: {
+          advance_payment_percentage?: number | null
           base_price: number
           business_name: string
           city: string
@@ -895,12 +898,14 @@ export type Database = {
           profile_id?: string | null
           profile_image?: string | null
           rating?: number | null
+          requires_advance_payment?: boolean | null
           secondary_city?: string | null
           service_type: string
           specializations?: string[] | null
           status?: string | null
         }
         Update: {
+          advance_payment_percentage?: number | null
           base_price?: number
           business_name?: string
           city?: string
@@ -913,6 +918,7 @@ export type Database = {
           profile_id?: string | null
           profile_image?: string | null
           rating?: number | null
+          requires_advance_payment?: boolean | null
           secondary_city?: string | null
           service_type?: string
           specializations?: string[] | null

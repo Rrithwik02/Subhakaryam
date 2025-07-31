@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -31,13 +31,14 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { format, addDays, differenceInDays } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DateRange } from "react-day-picker";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -47,6 +48,8 @@ interface BookingDialogProps {
     business_name: string;
     base_price: number;
     portfolio_images?: string[];
+    requires_advance_payment?: boolean;
+    advance_payment_percentage?: number;
   };
 }
 
@@ -75,6 +78,10 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [providerAdvanceSettings, setProviderAdvanceSettings] = useState<{
+    requiresAdvance: boolean;
+    percentage: number;
+  }>({ requiresAdvance: false, percentage: 0 });
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -85,12 +92,45 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
   const watchCheckInDate = form.watch("checkInDate");
   const watchCheckOutDate = form.watch("checkOutDate");
+  const watchPaymentPreference = form.watch("paymentPreference");
+
+  // Load provider advance payment settings
+  useEffect(() => {
+    const loadProviderSettings = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('service_providers')
+          .select('requires_advance_payment, advance_payment_percentage')
+          .eq('id', provider.id)
+          .single();
+
+        if (error) throw error;
+
+        setProviderAdvanceSettings({
+          requiresAdvance: data?.requires_advance_payment || false,
+          percentage: data?.advance_payment_percentage || 0,
+        });
+      } catch (error) {
+        console.error('Error loading provider settings:', error);
+      }
+    };
+
+    if (provider.id && isOpen) {
+      loadProviderSettings();
+    }
+  }, [provider.id, isOpen]);
 
   // Calculate total days and price
   const totalDays = watchCheckInDate && watchCheckOutDate 
     ? differenceInDays(watchCheckOutDate, watchCheckInDate) + 1 
     : 1;
   const totalPrice = provider.base_price * totalDays;
+  
+  // Calculate advance payment amounts
+  const advanceAmount = providerAdvanceSettings.requiresAdvance 
+    ? Math.round((totalPrice * providerAdvanceSettings.percentage) / 100)
+    : 0;
+  const finalAmount = totalPrice - advanceAmount;
 
   // Check availability for date range
   const checkDateRangeAvailability = async (startDate: Date, endDate: Date, timeSlot: string) => {
@@ -486,6 +526,33 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                 )}
               />
 
+              {/* Advance Payment Info */}
+              {providerAdvanceSettings.requiresAdvance && (
+                <Alert className="border-ceremonial-gold/20 bg-ceremonial-cream/30">
+                  <AlertCircle className="h-4 w-4 text-ceremonial-maroon" />
+                  <AlertDescription className="text-ceremonial-maroon">
+                    <div className="space-y-2">
+                      <p className="font-medium">This provider requires advance payment</p>
+                      <div className="text-sm space-y-1">
+                        {watchPaymentPreference === 'pay_now' ? (
+                          <>
+                            <p>• You will pay {providerAdvanceSettings.percentage}% advance now (₹{advanceAmount})</p>
+                            <p>• Remaining {100 - providerAdvanceSettings.percentage}% (₹{finalAmount}) will be charged later</p>
+                            <p className="text-xs text-muted-foreground">Advance payment is non-refundable as per cancellation policy</p>
+                          </>
+                        ) : (
+                          <>
+                            <p>• Customer should prepare {providerAdvanceSettings.percentage}% advance (₹{advanceAmount})</p>
+                            <p>• Remaining {100 - providerAdvanceSettings.percentage}% (₹{finalAmount}) can be paid on completion</p>
+                            <p className="text-xs text-muted-foreground">Advance payment will be non-refundable</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+
               {/* Pricing Breakdown */}
               <div className="rounded-lg border p-4 bg-muted/50">
                 <div className="space-y-2">
@@ -497,10 +564,28 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                     <span className="text-sm">Number of days:</span>
                     <span className="text-sm">{totalDays}</span>
                   </div>
-                  <div className="flex justify-between items-center font-semibold border-t pt-2 text-lg">
-                    <span>Total Price:</span>
-                    <span className="text-primary">₹{totalPrice.toFixed(2)}</span>
-                  </div>
+                  
+                  {providerAdvanceSettings.requiresAdvance && watchPaymentPreference === 'pay_now' ? (
+                    <>
+                      <div className="flex justify-between items-center border-t pt-2">
+                        <span className="text-sm font-medium">Advance Payment ({providerAdvanceSettings.percentage}%):</span>
+                        <span className="text-sm font-medium text-ceremonial-maroon">₹{advanceAmount.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-muted-foreground">Remaining amount:</span>
+                        <span className="text-xs text-muted-foreground">₹{finalAmount.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center font-semibold border-t pt-2 text-lg">
+                        <span>Pay Now:</span>
+                        <span className="text-primary">₹{advanceAmount.toFixed(2)}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex justify-between items-center font-semibold border-t pt-2 text-lg">
+                      <span>Total Price:</span>
+                      <span className="text-primary">₹{totalPrice.toFixed(2)}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -515,7 +600,11 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
             className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Processing..." : `Book Service - ₹${totalPrice.toFixed(2)}`}
+            {isSubmitting ? "Processing..." : 
+              providerAdvanceSettings.requiresAdvance && watchPaymentPreference === 'pay_now' 
+                ? `Pay Advance - ₹${advanceAmount.toFixed(2)}`
+                : `Book Service - ₹${totalPrice.toFixed(2)}`
+            }
           </Button>
         </DialogFooter>
       </DialogContent>

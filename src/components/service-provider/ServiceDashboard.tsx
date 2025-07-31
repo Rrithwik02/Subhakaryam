@@ -2,14 +2,6 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
@@ -22,6 +14,8 @@ import ChatInterface from "@/components/chat/ChatInterface";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PaymentSettings } from "./PaymentSettings";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
@@ -106,265 +100,161 @@ const ServiceDashboard = () => {
     },
   });
 
-  if (isProviderError) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white pt-24">
-        <div className="max-w-7xl mx-auto px-4">
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              Failed to load service provider information. Please try again later.
-            </AlertDescription>
-          </Alert>
-        </div>
-      </div>
-    );
-  }
-
-  if (!provider) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white pt-24">
-        <div className="max-w-7xl mx-auto px-4">
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Not Found</AlertTitle>
-            <AlertDescription>
-              No service provider profile found. Please complete your registration first.
-            </AlertDescription>
-          </Alert>
-        </div>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
-      </div>
-    );
-  }
-
-  const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-      <Inbox className="h-16 w-16 mb-4" />
-      <h3 className="text-lg font-semibold mb-2">No Service Requests Yet</h3>
-      <p className="text-sm text-center max-w-md">
-        When customers request your services, they will appear here. Make sure your profile is complete to attract more customers.
-      </p>
-    </div>
-  );
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white pt-24">
-      <div className="max-w-7xl mx-auto px-4 space-y-8">
-        <div className="mb-8">
-          <h1 className={`${isMobile ? "text-2xl" : "text-4xl"} font-display font-bold text-ceremonial-maroon`}>
-            Service Provider Dashboard
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Manage your bookings and availability
-          </p>
-        </div>
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Service Provider Dashboard</h1>
+      
+      {isProviderError && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Provider Not Found</AlertTitle>
+          <AlertDescription>
+            You are not registered as a service provider. Please register first.
+          </AlertDescription>
+        </Alert>
+      )}
 
-        <div className={`grid grid-cols-1 ${isMobile ? "" : "md:grid-cols-3"} gap-8`}>
-          <div className={`${isMobile ? "" : "md:col-span-2"}`}>
+      {!isProviderError && provider && (
+        <Tabs defaultValue="bookings" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="bookings">Bookings</TabsTrigger>
+            <TabsTrigger value="availability">Availability</TabsTrigger>
+            <TabsTrigger value="payment">Payment Settings</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="bookings">
             <Card>
               <CardHeader>
-                <CardTitle className={`${isMobile ? "text-lg" : "text-2xl"} font-display text-ceremonial-maroon`}>
-                  Service Requests
-                </CardTitle>
+                <CardTitle>Service Requests</CardTitle>
               </CardHeader>
-              <CardContent className={`${isMobile ? "p-2" : ""}`}>
-                {requests && requests.length > 0 ? (
-                  isMobile ? (
-                    <ScrollArea className="h-[400px]">
-                      <div className="space-y-4">
-                        {requests.map((request) => (
-                          <Card key={request.id} className="p-4">
-                            <div className="space-y-2">
-                              <div className="flex justify-between items-start">
-                                <h4 className="font-semibold">{request.profiles?.full_name}</h4>
-                                <Badge
-                                  variant={
-                                    request.status === "pending"
-                                      ? "default"
-                                      : request.status === "accepted"
-                                      ? "secondary"
-                                      : "destructive"
-                                  }
-                                >
-                                  {request.status}
-                                </Badge>
-                              </div>
-                              <p className="text-sm text-gray-600">{request.profiles?.email}</p>
-                              <p className="text-sm capitalize">{request.service_providers?.service_type}</p>
-                              {request.special_requirements && (
-                                <p className="text-sm">{request.special_requirements}</p>
+              <CardContent>
+                {isLoading ? (
+                  <p>Loading requests...</p>
+                ) : !requests || requests.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Inbox className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No requests yet</h3>
+                    <p className="text-gray-500">When customers book your services, they'll appear here.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {requests.map((request: any) => {
+                      const profile = request.profiles;
+                      return (
+                        <div key={request.id} className="border rounded-lg p-4">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h4 className="font-semibold">{profile?.full_name}</h4>
+                              <p className="text-sm text-gray-600">{profile?.email}</p>
+                              {profile?.phone && (
+                                <p className="text-sm text-gray-600">{profile.phone}</p>
                               )}
-                              <p className="text-xs text-gray-500">
-                                {format(new Date(request.created_at), "PPp")}
-                              </p>
-                              <div className="flex flex-wrap gap-2 pt-2">
-                                {request.status === "pending" && (
-                                  <>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="flex-1 hover:bg-ceremonial-gold hover:text-white transition-colors"
-                                      onClick={() =>
-                                        updateBookingStatus.mutate({
-                                          bookingId: request.id,
-                                          status: "accepted",
-                                        })
-                                      }
-                                    >
-                                      Accept
-                                    </Button>
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      className="flex-1"
-                                      onClick={() =>
-                                        updateBookingStatus.mutate({
-                                          bookingId: request.id,
-                                          status: "rejected",
-                                        })
-                                      }
-                                    >
-                                      Decline
-                                    </Button>
-                                  </>
-                                )}
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="flex-1"
-                                  onClick={() => setSelectedChat(request.id)}
-                                  disabled={new Date(request.service_date) < new Date()}
-                                >
-                                  Chat
-                                </Button>
-                              </div>
                             </div>
-                          </Card>
-                        ))}
-                      </div>
-                    </ScrollArea>
-                  ) : (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Client Name</TableHead>
-                          <TableHead>Contact</TableHead>
-                          <TableHead>Service Type</TableHead>
-                          <TableHead>Special Requirements</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Requested On</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {requests.map((request) => (
-                          <TableRow key={request.id}>
-                            <TableCell>{request.profiles?.full_name}</TableCell>
-                            <TableCell>{request.profiles?.email}</TableCell>
-                            <TableCell className="capitalize">
-                              {request.service_providers?.service_type}
-                            </TableCell>
-                            <TableCell>{request.special_requirements}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  request.status === "pending"
-                                    ? "default"
-                                    : request.status === "accepted"
-                                    ? "secondary"
-                                    : "destructive"
-                                }
-                              >
-                                {request.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              {format(new Date(request.created_at), "PPp")}
-                            </TableCell>
-                            <TableCell>
-                              <div className="space-x-2">
-                                {request.status === "pending" && (
-                                  <>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="hover:bg-ceremonial-gold hover:text-white transition-colors"
-                                      onClick={() =>
-                                        updateBookingStatus.mutate({
-                                          bookingId: request.id,
-                                          status: "accepted",
-                                        })
-                                      }
-                                    >
-                                      Accept
-                                    </Button>
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      onClick={() =>
-                                        updateBookingStatus.mutate({
-                                          bookingId: request.id,
-                                          status: "rejected",
-                                        })
-                                      }
-                                    >
-                                      Decline
-                                    </Button>
-                                  </>
-                                )}
+                            <Badge variant={
+                              request.status === 'confirmed' ? 'default' :
+                              request.status === 'pending' ? 'secondary' :
+                              request.status === 'cancelled' ? 'destructive' :
+                              'outline'
+                            }>
+                              {request.status}
+                            </Badge>
+                          </div>
+                          
+                          <div className="text-sm text-gray-600 mb-3">
+                            <p>Service Date: {format(new Date(request.service_date), "PPP")}</p>
+                            <p>Time: {request.time_slot}</p>
+                            {request.special_requirements && (
+                              <p>Requirements: {request.special_requirements}</p>
+                            )}
+                            <p>Total Amount: ₹{request.total_amount}</p>
+                            {request.total_days > 1 && (
+                              <p>Duration: {request.total_days} days</p>
+                            )}
+                          </div>
+
+                          <div className="flex gap-2">
+                            {request.status === 'pending' && (
+                              <>
                                 <Button
-                                  variant="outline"
                                   size="sm"
-                                  onClick={() => setSelectedChat(request.id)}
-                                  disabled={new Date(request.service_date) < new Date()}
+                                  onClick={() => updateBookingStatus.mutate({ 
+                                    bookingId: request.id, 
+                                    status: 'confirmed' 
+                                  })}
+                                  disabled={updateBookingStatus.isPending}
                                 >
-                                  Chat
+                                  Accept
                                 </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )
-                ) : (
-                  <EmptyState />
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => updateBookingStatus.mutate({ 
+                                    bookingId: request.id, 
+                                    status: 'rejected' 
+                                  })}
+                                  disabled={updateBookingStatus.isPending}
+                                >
+                                  Reject
+                                </Button>
+                              </>
+                            )}
+                            
+                            {request.status === 'confirmed' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setSelectedChat(request.id)}
+                              >
+                                Chat with Customer
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
               </CardContent>
             </Card>
-          </div>
-          
-          <div>
+          </TabsContent>
+
+          <TabsContent value="availability">
             <Card>
               <CardHeader>
-                <CardTitle className={`${isMobile ? "text-lg" : "text-2xl"} font-display text-ceremonial-maroon`}>
-                  {selectedChat ? "Chat" : "Availability"}
-                </CardTitle>
+                <CardTitle>Manage Availability</CardTitle>
               </CardHeader>
-              <CardContent className={`${isMobile ? "p-2" : ""}`}>
-                {selectedChat ? (
-                  <ChatInterface
-                    bookingId={selectedChat}
-                    receiverId={requests?.find(r => r.id === selectedChat)?.user_id || ""}
-                    isDisabled={requests?.find(r => r.id === selectedChat)?.service_date < new Date().toISOString()}
-                  />
-                ) : (
-                  <AvailabilityCalendar providerId={provider?.id} />
-                )}
+              <CardContent>
+                <AvailabilityCalendar providerId={provider.id} />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="payment">
+            <PaymentSettings />
+          </TabsContent>
+        </Tabs>
+      )}
+
+      {/* Chat Interface Modal */}
+      {selectedChat && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-full max-w-2xl h-3/4 flex flex-col">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h3 className="font-semibold">Customer Chat</h3>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setSelectedChat(null)}
+              >
+                ×
+              </Button>
+            </div>
+            <div className="flex-1">
+              <ChatInterface bookingId={selectedChat} receiverId={session?.user?.id || ""} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
