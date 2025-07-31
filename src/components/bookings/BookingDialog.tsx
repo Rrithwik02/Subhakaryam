@@ -174,14 +174,14 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
           return false;
         }
 
-        // Check for existing bookings on this date
+        // Check for existing bookings on this date (only confirmed/accepted bookings block availability)
         const { data: existingBookings, error: bookingsError } = await supabase
           .from('bookings')
           .select('*')
           .eq('provider_id', provider.id)
           .eq('service_date', format(currentDate, "yyyy-MM-dd"))
           .eq('time_slot', timeSlot)
-          .neq('status', 'rejected');
+          .in('status', ['confirmed', 'accepted', 'completed']);
 
         if (bookingsError) throw bookingsError;
 
@@ -243,93 +243,28 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
           time_slot: data.timeSlot,
           special_requirements: data.specialRequirements,
           payment_preference: data.paymentPreference,
-          status: data.paymentPreference === 'pay_now' ? 'pending_payment' : 'pending',
+          status: 'pending',
         })
         .select()
         .single();
 
       if (bookingError) throw bookingError;
 
-      if (data.paymentPreference === 'pay_on_delivery') {
-        // Create chat connection for pay on delivery
-        const { error: chatError } = await supabase
-          .from("chat_connections")
-          .insert({
-            booking_id: booking.id,
-            user_id: session.user.id,
-            provider_id: provider.id,
-          });
-
-        if (chatError) throw chatError;
-
-        toast({
-          title: "Booking Confirmed",
-          description: "Your booking has been confirmed! You can now chat with the service provider.",
+      // Create chat connection for both payment types
+      const { error: chatError } = await supabase
+        .from("chat_connections")
+        .insert({
+          booking_id: booking.id,
+          user_id: session.user.id,
+          provider_id: provider.id,
         });
-      } else {
-        // Handle payment flow
-        const paymentAmount = providerAdvanceSettings.requiresAdvance ? advanceAmount : totalPrice;
-        const paymentType = providerAdvanceSettings.requiresAdvance ? 'advance' : 'final';
-        
-        try {
-          console.log('Creating Razorpay checkout with:', {
-            bookingId: booking.id,
-            paymentType,
-            amount: paymentAmount,
-          });
 
-          const { data, error } = await supabase.functions.invoke('create-razorpay-checkout', {
-            body: {
-              bookingId: booking.id,
-              paymentType,
-              amount: paymentAmount,
-            },
-          });
+      if (chatError) throw chatError;
 
-          console.log('Razorpay checkout response:', { data, error });
-
-          if (error) {
-            console.error('Razorpay checkout error:', error);
-            throw error;
-          }
-
-          // Open Razorpay checkout
-          const options = {
-            key: data.key,
-            amount: data.amount,
-            currency: data.currency,
-            order_id: data.orderId,
-            name: "Service Booking",
-            description: `${paymentType === 'advance' ? 'Advance' : 'Final'} payment for booking`,
-            handler: function (response: any) {
-              toast({
-                title: "Payment Successful",
-                description: "Your payment has been processed successfully.",
-              });
-              onClose();
-              form.reset();
-              setDateRange(undefined);
-            },
-            modal: {
-              ondismiss: function() {
-                // Payment was cancelled
-              }
-            }
-          };
-
-          // @ts-ignore - Razorpay is loaded via script
-          const rzp = new window.Razorpay(options);
-          rzp.open();
-          return; // Don't close dialog yet
-        } catch (paymentError) {
-          console.error('Payment error:', paymentError);
-          toast({
-            title: "Payment Error",
-            description: "Failed to create payment session. Please try again.",
-            variant: "destructive",
-          });
-        }
-      }
+      toast({
+        title: "Booking Request Sent",
+        description: "Your booking request has been sent to the service provider. Payment will be processed after they accept your request.",
+      });
 
       onClose();
       form.reset();

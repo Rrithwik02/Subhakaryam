@@ -84,19 +84,72 @@ const ServiceDashboard = () => {
 
   const updateBookingStatus = useMutation({
     mutationFn: async ({ bookingId, status }: { bookingId: string; status: string }) => {
+      // First, get the booking details
+      const { data: booking, error: fetchError } = await supabase
+        .from("bookings")
+        .select("*")
+        .eq("id", bookingId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Update the booking status
       const { error } = await supabase
         .from("bookings")
         .update({ status })
         .eq("id", bookingId);
 
       if (error) throw error;
+
+      // If booking is being confirmed and payment preference is pay_now, trigger payment
+      if (status === 'confirmed' && booking.payment_preference === 'pay_now') {
+        // Get provider advance payment settings
+        const { data: providerData, error: providerError } = await supabase
+          .from("service_providers")
+          .select("requires_advance_payment, advance_payment_percentage")
+          .eq("id", booking.provider_id)
+          .single();
+
+        if (providerError) throw providerError;
+
+        const paymentAmount = providerData.requires_advance_payment 
+          ? Math.round((booking.total_amount * providerData.advance_payment_percentage) / 100)
+          : booking.total_amount;
+        const paymentType = providerData.requires_advance_payment ? 'advance' : 'final';
+
+        // Create payment session
+        const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-razorpay-checkout', {
+          body: {
+            bookingId: booking.id,
+            paymentType,
+            amount: paymentAmount,
+          },
+        });
+
+        if (paymentError) {
+          console.error('Payment creation error:', paymentError);
+          // Don't throw here - booking is confirmed, payment can be retried
+        }
+
+        return { booking, paymentData };
+      }
+
+      return { booking };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["service-requests"] });
-      toast({
-        title: "Success",
-        description: "Booking status updated successfully",
-      });
+      
+      if (data.paymentData) {
+        toast({
+          title: "Booking Confirmed",
+          description: "Booking confirmed! Payment session has been created for the customer.",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Booking status updated successfully",
+        });
+      }
     },
   });
 
