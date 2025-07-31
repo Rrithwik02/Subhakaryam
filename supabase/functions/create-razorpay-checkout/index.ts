@@ -12,7 +12,11 @@ serve(async (req) => {
   }
 
   try {
-    const { bookingId, paymentType, amount } = await req.json();
+    console.log("Starting Razorpay checkout creation...");
+    const requestBody = await req.json();
+    const { bookingId, paymentType, amount } = requestBody;
+    
+    console.log("Request data:", { bookingId, paymentType, amount });
 
     // Create Supabase client
     const supabaseClient = createClient(
@@ -21,15 +25,32 @@ serve(async (req) => {
     );
 
     // Get user from auth header
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user } } = await supabaseClient.auth.getUser(token);
-
-    if (!user) {
-      throw new Error("Unauthorized");
+    const authHeader = req.headers.get("Authorization");
+    console.log("Auth header present:", !!authHeader);
+    
+    if (!authHeader) {
+      throw new Error("No authorization header found");
     }
 
-    // Verify booking belongs to user
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+
+    console.log("Auth result:", { user: !!user, authError });
+
+    if (authError) {
+      console.error("Auth error:", authError);
+      throw new Error(`Authentication failed: ${authError.message}`);
+    }
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    console.log("User authenticated:", user.id);
+
+    // Verify booking belongs to user with detailed logging
+    console.log("Looking for booking:", { bookingId, userId: user.id });
+    
     const { data: booking, error: bookingError } = await supabaseClient
       .from("bookings")
       .select("*")
@@ -37,9 +58,19 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .single();
 
-    if (bookingError || !booking) {
-      throw new Error("Booking not found");
+    console.log("Booking query result:", { booking: !!booking, bookingError });
+
+    if (bookingError) {
+      console.error("Booking error:", bookingError);
+      throw new Error(`Booking lookup failed: ${bookingError.message}`);
     }
+
+    if (!booking) {
+      console.error("No booking found for:", { bookingId, userId: user.id });
+      throw new Error("Booking not found for this user");
+    }
+
+    console.log("Booking found:", booking.id);
 
     // Create Razorpay order
     const razorpayKeyId = Deno.env.get("RAZORPAY_KEY_ID");
@@ -87,8 +118,11 @@ serve(async (req) => {
       });
 
     if (paymentError) {
-      throw new Error("Failed to create payment record");
+      console.error("Payment record error:", paymentError);
+      throw new Error(`Failed to create payment record: ${paymentError.message}`);
     }
+
+    console.log("Payment record created successfully");
 
     return new Response(
       JSON.stringify({

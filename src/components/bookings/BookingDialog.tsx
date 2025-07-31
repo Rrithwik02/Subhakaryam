@@ -272,6 +272,12 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
         const paymentType = providerAdvanceSettings.requiresAdvance ? 'advance' : 'final';
         
         try {
+          console.log('Creating Razorpay checkout with:', {
+            bookingId: booking.id,
+            paymentType,
+            amount: paymentAmount,
+          });
+
           const { data, error } = await supabase.functions.invoke('create-razorpay-checkout', {
             body: {
               bookingId: booking.id,
@@ -280,7 +286,12 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
             },
           });
 
-          if (error) throw error;
+          console.log('Razorpay checkout response:', { data, error });
+
+          if (error) {
+            console.error('Razorpay checkout error:', error);
+            throw error;
+          }
 
           // Open Razorpay checkout
           const options = {
