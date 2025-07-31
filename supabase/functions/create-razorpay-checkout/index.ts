@@ -18,19 +18,26 @@ serve(async (req) => {
     
     console.log("Request data:", { bookingId, paymentType, amount });
 
-    // Create Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-    );
-
-    // Get user from auth header
+    // Get user from auth header first
     const authHeader = req.headers.get("Authorization");
     console.log("Auth header present:", !!authHeader);
     
     if (!authHeader) {
       throw new Error("No authorization header found");
     }
+
+    // Create Supabase client with proper auth context
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      {
+        global: {
+          headers: {
+            Authorization: authHeader,
+          },
+        },
+      }
+    );
 
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
