@@ -55,14 +55,17 @@ serve(async (req) => {
 
     console.log("User authenticated:", user.id);
 
-    // Verify booking belongs to user with detailed logging
+    // Verify booking exists and user has access (either as customer or provider)
     console.log("Looking for booking:", { bookingId, userId: user.id });
     
     const { data: booking, error: bookingError } = await supabaseClient
       .from("bookings")
-      .select("*")
+      .select(`
+        *,
+        service_providers!inner(profile_id)
+      `)
       .eq("id", bookingId)
-      .eq("user_id", user.id)
+      .or(`user_id.eq.${user.id},service_providers.profile_id.eq.${user.id}`)
       .single();
 
     console.log("Booking query result:", { booking: !!booking, bookingError });
