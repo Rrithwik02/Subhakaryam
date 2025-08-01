@@ -409,7 +409,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                     size="sm"
                     onClick={() => {
                       if (watchCheckInDate) {
-                        form.setValue("checkOutDate", addDays(watchCheckInDate, 1));
+                        form.setValue("checkOutDate", watchCheckInDate);
                       }
                     }}
                   >
