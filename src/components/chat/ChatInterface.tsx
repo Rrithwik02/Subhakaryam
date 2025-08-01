@@ -18,45 +18,69 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isInitialized, setIsInitialized] = useState(false);
-  const { session } = useSessionContext();
+  const [isLoading, setIsLoading] = useState(true);
+  const { session, isLoading: sessionLoading } = useSessionContext();
   const { toast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // First, verify that both sender and receiver exist in profiles table
+  // Wait for session to load before initializing
   useEffect(() => {
-    const verifyProfiles = async () => {
+    const initializeChat = async () => {
+      console.log('ChatInterface: Starting initialization', { 
+        sessionLoading, 
+        sessionUserId: session?.user?.id, 
+        receiverId, 
+        bookingId 
+      });
+
+      // Wait for session to load
+      if (sessionLoading) {
+        console.log('ChatInterface: Session still loading...');
+        return;
+      }
+
       if (!session?.user?.id || !receiverId) {
+        console.log('ChatInterface: Missing required data', { 
+          userId: session?.user?.id, 
+          receiverId 
+        });
         setIsInitialized(false);
+        setIsLoading(false);
         return;
       }
 
       try {
-        
+        console.log('ChatInterface: Verifying profiles...');
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, email, user_type')
+          .select('id, full_name, user_type')
           .in('id', [session.user.id, receiverId]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('ChatInterface: Profile query error:', error);
+          throw error;
+        }
         
-        if (!data || data.length !== 2) {
-          console.error('Profile verification failed: Not all profiles found', {
-            foundProfiles: data?.length,
-            profiles: data
-          });
+        console.log('ChatInterface: Profile verification result:', { 
+          foundProfiles: data?.length, 
+          profiles: data 
+        });
+        
+        if (!data || data.length < 1) {
+          console.error('ChatInterface: No profiles found');
           setIsInitialized(false);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Unable to initialize chat - invalid user profiles",
-          });
+          setIsLoading(false);
           return;
         }
 
+        // Initialize chat even if only one profile found (more lenient)
+        console.log('ChatInterface: Profiles verified, initializing chat');
         setIsInitialized(true);
+        setIsLoading(false);
       } catch (error) {
-        console.error('Profile verification failed:', error);
+        console.error('ChatInterface: Profile verification failed:', error);
         setIsInitialized(false);
+        setIsLoading(false);
         toast({
           variant: "destructive",
           title: "Error",
@@ -65,36 +89,48 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
       }
     };
 
-    verifyProfiles();
-  }, [session?.user?.id, receiverId, toast]);
+    initializeChat();
+  }, [sessionLoading, session?.user?.id, receiverId, bookingId, toast]);
 
   useEffect(() => {
     const fetchMessages = async () => {
-      if (!isInitialized) return;
-
-      const { data, error } = await supabase
-        .from("chat_messages")
-        .select("*")
-        .eq("booking_id", bookingId)
-        .order("created_at", { ascending: true });
-
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to load chat messages",
-        });
+      if (!isInitialized) {
+        console.log('ChatInterface: Not initialized, skipping message fetch');
         return;
       }
 
-      setMessages(data || []);
+      console.log('ChatInterface: Fetching messages for booking:', bookingId);
+      
+      try {
+        const { data, error } = await supabase
+          .from("chat_messages")
+          .select("*")
+          .eq("booking_id", bookingId)
+          .order("created_at", { ascending: true });
+
+        if (error) {
+          console.error('ChatInterface: Error fetching messages:', error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to load chat messages",
+          });
+          return;
+        }
+
+        console.log('ChatInterface: Messages fetched successfully:', data?.length || 0);
+        setMessages(data || []);
+      } catch (error) {
+        console.error('ChatInterface: Unexpected error fetching messages:', error);
+      }
     };
 
     fetchMessages();
 
     // Subscribe to new messages
+    console.log('ChatInterface: Setting up realtime subscription for booking:', bookingId);
     const channel = supabase
-      .channel("chat-messages")
+      .channel(`chat-messages-${bookingId}`)
       .on(
         "postgres_changes",
         {
@@ -104,12 +140,16 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
           filter: `booking_id=eq.${bookingId}`,
         },
         (payload) => {
+          console.log('ChatInterface: New message received via realtime:', payload.new);
           setMessages((current) => [...current, payload.new]);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('ChatInterface: Realtime subscription status:', status);
+      });
 
     return () => {
+      console.log('ChatInterface: Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
   }, [bookingId, isInitialized, toast]);
@@ -121,32 +161,9 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
   const sendMessage = async () => {
     if (!newMessage.trim() || !session?.user || !isInitialized) return;
 
+    console.log('ChatInterface: Sending message...', { bookingId, receiverId });
+
     try {
-
-      // Verify sender profile exists
-      const { data: senderProfile, error: senderError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', session.user.id)
-        .maybeSingle();
-
-      if (senderError || !senderProfile) {
-        console.error('Sender profile not found:', senderError);
-        throw new Error('Sender profile not found');
-      }
-
-      // Verify receiver profile exists
-      const { data: receiverProfile, error: receiverError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', receiverId)
-        .maybeSingle();
-
-      if (receiverError || !receiverProfile) {
-        console.error('Receiver profile not found:', receiverError);
-        throw new Error('Receiver profile not found');
-      }
-
       const { error: insertError } = await supabase.from("chat_messages").insert({
         booking_id: bookingId,
         sender_id: session.user.id,
@@ -154,11 +171,15 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
         message: newMessage.trim(),
       });
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error('ChatInterface: Error inserting message:', insertError);
+        throw insertError;
+      }
 
+      console.log('ChatInterface: Message sent successfully');
       setNewMessage("");
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('ChatInterface: Error sending message:', error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -167,6 +188,21 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
     }
   };
 
+  if (isLoading || sessionLoading) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Chat</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center text-muted-foreground py-4">
+            Loading chat...
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (!isInitialized) {
     return (
       <Card className="w-full">
@@ -174,8 +210,8 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
           <CardTitle>Chat</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center text-gray-500 py-4">
-            Unable to initialize chat. Please try again later.
+          <div className="text-center text-muted-foreground py-4">
+            Unable to initialize chat. Please try refreshing the page.
           </div>
         </CardContent>
       </Card>
