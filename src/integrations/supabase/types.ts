@@ -99,6 +99,7 @@ export type Database = {
           id: string
           payment_preference: string | null
           provider_id: string
+          provider_payment_requested: boolean | null
           refund_amount: number | null
           service_date: string
           special_requirements: string | null
@@ -121,6 +122,7 @@ export type Database = {
           id?: string
           payment_preference?: string | null
           provider_id: string
+          provider_payment_requested?: boolean | null
           refund_amount?: number | null
           service_date: string
           special_requirements?: string | null
@@ -143,6 +145,7 @@ export type Database = {
           id?: string
           payment_preference?: string | null
           provider_id?: string
+          provider_payment_requested?: boolean | null
           refund_amount?: number | null
           service_date?: string
           special_requirements?: string | null
@@ -487,8 +490,11 @@ export type Database = {
           created_at: string | null
           escrow_status: string | null
           id: string
+          is_provider_requested: boolean | null
           milestone_number: number | null
+          payment_description: string | null
           payment_type: string
+          provider_requested_amount: number | null
           razorpay_order_id: string | null
           razorpay_payment_id: string | null
           status: string | null
@@ -501,8 +507,11 @@ export type Database = {
           created_at?: string | null
           escrow_status?: string | null
           id?: string
+          is_provider_requested?: boolean | null
           milestone_number?: number | null
+          payment_description?: string | null
           payment_type: string
+          provider_requested_amount?: number | null
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
           status?: string | null
@@ -515,8 +524,11 @@ export type Database = {
           created_at?: string | null
           escrow_status?: string | null
           id?: string
+          is_provider_requested?: boolean | null
           milestone_number?: number | null
+          payment_description?: string | null
           payment_type?: string
+          provider_requested_amount?: number | null
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
           status?: string | null

@@ -113,20 +113,43 @@ serve(async (req) => {
 
     const orderData = await razorpayOrder.json();
 
-    // Store payment record in database
-    const { error: paymentError } = await supabaseClient
+    // Check if payment record already exists (for provider-requested payments)
+    const { data: existingPayment } = await supabaseClient
       .from("payments")
-      .insert({
-        booking_id: bookingId,
-        amount: amount,
-        payment_type: paymentType,
-        status: "pending",
-        razorpay_order_id: orderData.id,
-      });
+      .select("id")
+      .eq("booking_id", bookingId)
+      .eq("amount", amount)
+      .eq("payment_type", paymentType)
+      .eq("status", "pending")
+      .single();
 
-    if (paymentError) {
-      console.error("Payment record error:", paymentError);
-      throw new Error(`Failed to create payment record: ${paymentError.message}`);
+    if (existingPayment) {
+      // Update existing payment record with Razorpay order ID
+      const { error: updateError } = await supabaseClient
+        .from("payments")
+        .update({ razorpay_order_id: orderData.id })
+        .eq("id", existingPayment.id);
+
+      if (updateError) {
+        console.error("Payment update error:", updateError);
+        throw new Error(`Failed to update payment record: ${updateError.message}`);
+      }
+    } else {
+      // Create new payment record
+      const { error: paymentError } = await supabaseClient
+        .from("payments")
+        .insert({
+          booking_id: bookingId,
+          amount: amount,
+          payment_type: paymentType,
+          status: "pending",
+          razorpay_order_id: orderData.id,
+        });
+
+      if (paymentError) {
+        console.error("Payment record error:", paymentError);
+        throw new Error(`Failed to create payment record: ${paymentError.message}`);
+      }
     }
 
     console.log("Payment record created successfully");

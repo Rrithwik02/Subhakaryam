@@ -16,6 +16,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaymentSettings } from "./PaymentSettings";
+import { PaymentRequestDialog } from "./PaymentRequestDialog";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
@@ -253,13 +254,21 @@ const ServiceDashboard = () => {
                             )}
                             
                             {request.status === 'confirmed' && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setSelectedChat(request.id)}
-                              >
-                                Chat with Customer
-                              </Button>
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setSelectedChat(request.id)}
+                                >
+                                  Chat with Customer
+                                </Button>
+                                
+                                <PaymentRequestDialog booking={request}>
+                                  <Button size="sm">
+                                    Request Payment
+                                  </Button>
+                                </PaymentRequestDialog>
+                              </>
                             )}
                           </div>
                         </div>
@@ -303,7 +312,10 @@ const ServiceDashboard = () => {
               </Button>
             </div>
             <div className="flex-1">
-              <ChatInterface bookingId={selectedChat} receiverId={session?.user?.id || ""} />
+              <ChatInterface 
+                bookingId={selectedChat} 
+                receiverId={requests?.find(r => r.id === selectedChat)?.user_id || ""} 
+              />
             </div>
           </div>
         </div>
