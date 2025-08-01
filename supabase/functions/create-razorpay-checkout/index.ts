@@ -112,6 +112,16 @@ serve(async (req) => {
       throw new Error("Razorpay credentials not configured");
     }
 
+    console.log("Creating Razorpay order with:", {
+      amount: amount * 100,
+      currency: "INR",
+      receipt: `booking_${bookingId}_${paymentType}`,
+      hasKeyId: !!razorpayKeyId,
+      hasKeySecret: !!razorpayKeySecret,
+      bookingId,
+      paymentType
+    });
+
     const auth = btoa(`${razorpayKeyId}:${razorpayKeySecret}`);
     
     const razorpayOrder = await fetch("https://api.razorpay.com/v1/orders", {
@@ -133,7 +143,13 @@ serve(async (req) => {
     });
 
     if (!razorpayOrder.ok) {
-      throw new Error("Failed to create Razorpay order");
+      const errorText = await razorpayOrder.text();
+      console.error("Razorpay API Error:", {
+        status: razorpayOrder.status,
+        statusText: razorpayOrder.statusText,
+        response: errorText
+      });
+      throw new Error(`Failed to create Razorpay order: ${razorpayOrder.status} - ${errorText}`);
     }
 
     const orderData = await razorpayOrder.json();
