@@ -161,15 +161,24 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
   const sendMessage = async () => {
     if (!newMessage.trim() || !session?.user || !isInitialized) return;
 
-    console.log('ChatInterface: Sending message...', { bookingId, receiverId });
+    console.log('ChatInterface: Sending message...', { 
+      bookingId, 
+      receiverId, 
+      senderId: session.user.id,
+      messageContent: newMessage.trim() 
+    });
 
     try {
-      const { error: insertError } = await supabase.from("chat_messages").insert({
+      const messageData = {
         booking_id: bookingId,
         sender_id: session.user.id,
         receiver_id: receiverId,
         message: newMessage.trim(),
-      });
+      };
+
+      console.log('ChatInterface: Inserting message with data:', messageData);
+
+      const { error: insertError } = await supabase.from("chat_messages").insert(messageData);
 
       if (insertError) {
         console.error('ChatInterface: Error inserting message:', insertError);

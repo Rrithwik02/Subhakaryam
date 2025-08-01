@@ -258,7 +258,15 @@ const ServiceDashboard = () => {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => setSelectedChat(request.id)}
+                                  onClick={() => {
+                                    console.log('ServiceDashboard: Opening chat for request:', {
+                                      requestId: request.id,
+                                      userId: request.user_id,
+                                      profileData: request.profiles,
+                                      fullRequest: request
+                                    });
+                                    setSelectedChat(request.id);
+                                  }}
                                 >
                                   Chat with Customer
                                 </Button>
