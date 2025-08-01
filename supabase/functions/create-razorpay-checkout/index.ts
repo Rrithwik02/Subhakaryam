@@ -58,17 +58,39 @@ serve(async (req) => {
     // Verify booking exists and user has access (either as customer or provider)
     console.log("Looking for booking:", { bookingId, userId: user.id });
     
-    const { data: booking, error: bookingError } = await supabaseClient
+    // First try to find booking where user is the customer
+    let { data: booking, error: bookingError } = await supabaseClient
       .from("bookings")
-      .select(`
-        *,
-        service_providers!inner(profile_id)
-      `)
+      .select("*")
       .eq("id", bookingId)
-      .or(`user_id.eq.${user.id},service_providers.profile_id.eq.${user.id}`)
+      .eq("user_id", user.id)
       .single();
 
-    console.log("Booking query result:", { booking: !!booking, bookingError });
+    console.log("Customer booking query result:", { booking: !!booking, bookingError });
+
+    // If not found as customer, try as service provider
+    if (bookingError || !booking) {
+      console.log("Not found as customer, checking as service provider...");
+      
+      const { data: providerBooking, error: providerError } = await supabaseClient
+        .from("bookings")
+        .select(`
+          *,
+          service_providers!inner(profile_id)
+        `)
+        .eq("id", bookingId)
+        .eq("service_providers.profile_id", user.id)
+        .single();
+
+      console.log("Provider booking query result:", { booking: !!providerBooking, providerError });
+
+      if (!providerError && providerBooking) {
+        booking = providerBooking;
+        bookingError = null;
+      } else {
+        bookingError = providerError;
+      }
+    }
 
     if (bookingError) {
       console.error("Booking error:", bookingError);
