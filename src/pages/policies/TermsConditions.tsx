@@ -32,6 +32,25 @@ const TermsConditions = () => {
             <li>Honor bookings and pricing</li>
             <li>Communicate changes promptly</li>
           </ul>
+
+          <h2>4. Bookings and Payments</h2>
+          <ul>
+            <li>All payments are processed securely through Razorpay</li>
+            <li>Booking confirmations are sent via email</li>
+            <li>Payment is required to confirm your booking</li>
+          </ul>
+
+          <h2>5. Cancellation and Refunds</h2>
+          <ul>
+            <li>Cancellations more than 48 hours before service: Full refund</li>
+            <li>Cancellations 24-48 hours before service: 50% refund</li>
+            <li>Cancellations less than 24 hours before service: No refund</li>
+            <li>Service provider cancellations: Full refund and assistance finding alternatives</li>
+            <li>Refunds are processed within 5-7 business days to the original payment method</li>
+          </ul>
+
+          <h2>6. Limitation of Liability</h2>
+          <p>Subhakaryam acts as a platform connecting users with service providers. We are not responsible for the quality of services provided by third-party vendors.</p>
         </div>
       </div>
     </div>

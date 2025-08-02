@@ -54,22 +54,6 @@ const Footer = () => {
                 Terms & Conditions
               </Link>
             </li>
-            <li>
-              <Link 
-                to="/policies/cancellation-policy" 
-                className="hover:text-ceremonial-gold transition-colors"
-              >
-                Cancellation Policy
-              </Link>
-            </li>
-            <li>
-              <Link 
-                to="/policies/refund-policy" 
-                className="hover:text-ceremonial-gold transition-colors"
-              >
-                Refund Policy
-              </Link>
-            </li>
           </ul>
         </div>
         <div>
