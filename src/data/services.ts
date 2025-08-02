@@ -55,7 +55,7 @@ export const serviceCategories: ServiceCategory[] = [
   },
   {
     id: "function_hall",
-    name: "Function Hall (Coming Soon)",
+    name: "Function Hall",
     description: "Spacious venues for your special occasions",
     icon: Building2,
     basePrice: 50000,

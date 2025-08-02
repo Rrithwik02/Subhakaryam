@@ -26,31 +26,18 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
   // Wait for session to load before initializing
   useEffect(() => {
     const initializeChat = async () => {
-      console.log('ChatInterface: Starting initialization', { 
-        sessionLoading, 
-        sessionUserId: session?.user?.id, 
-        receiverId, 
-        bookingId 
-      });
-
       // Wait for session to load
       if (sessionLoading) {
-        console.log('ChatInterface: Session still loading...');
         return;
       }
 
       if (!session?.user?.id || !receiverId) {
-        console.log('ChatInterface: Missing required data', { 
-          userId: session?.user?.id, 
-          receiverId 
-        });
         setIsInitialized(false);
         setIsLoading(false);
         return;
       }
 
       try {
-        console.log('ChatInterface: Verifying profiles...');
         const { data, error } = await supabase
           .from('profiles')
           .select('id, full_name, user_type')
@@ -61,11 +48,6 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
           throw error;
         }
         
-        console.log('ChatInterface: Profile verification result:', { 
-          foundProfiles: data?.length, 
-          profiles: data 
-        });
-        
         if (!data || data.length < 1) {
           console.error('ChatInterface: No profiles found');
           setIsInitialized(false);
@@ -73,8 +55,6 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
           return;
         }
 
-        // Initialize chat even if only one profile found (more lenient)
-        console.log('ChatInterface: Profiles verified, initializing chat');
         setIsInitialized(true);
         setIsLoading(false);
       } catch (error) {
@@ -95,11 +75,8 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
   useEffect(() => {
     const fetchMessages = async () => {
       if (!isInitialized) {
-        console.log('ChatInterface: Not initialized, skipping message fetch');
         return;
       }
-
-      console.log('ChatInterface: Fetching messages for booking:', bookingId);
       
       try {
         const { data, error } = await supabase
@@ -118,7 +95,6 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
           return;
         }
 
-        console.log('ChatInterface: Messages fetched successfully:', data?.length || 0);
         setMessages(data || []);
       } catch (error) {
         console.error('ChatInterface: Unexpected error fetching messages:', error);
@@ -128,7 +104,6 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
     fetchMessages();
 
     // Subscribe to new messages
-    console.log('ChatInterface: Setting up realtime subscription for booking:', bookingId);
     const channel = supabase
       .channel(`chat-messages-${bookingId}`)
       .on(
@@ -140,16 +115,12 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
           filter: `booking_id=eq.${bookingId}`,
         },
         (payload) => {
-          console.log('ChatInterface: New message received via realtime:', payload.new);
           setMessages((current) => [...current, payload.new]);
         }
       )
-      .subscribe((status) => {
-        console.log('ChatInterface: Realtime subscription status:', status);
-      });
+      .subscribe();
 
     return () => {
-      console.log('ChatInterface: Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
   }, [bookingId, isInitialized, toast]);
@@ -161,13 +132,6 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
   const sendMessage = async () => {
     if (!newMessage.trim() || !session?.user || !isInitialized) return;
 
-    console.log('ChatInterface: Sending message...', { 
-      bookingId, 
-      receiverId, 
-      senderId: session.user.id,
-      messageContent: newMessage.trim() 
-    });
-
     try {
       const messageData = {
         booking_id: bookingId,
@@ -176,8 +140,6 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
         message: newMessage.trim(),
       };
 
-      console.log('ChatInterface: Inserting message with data:', messageData);
-
       const { error: insertError } = await supabase.from("chat_messages").insert(messageData);
 
       if (insertError) {
@@ -185,7 +147,6 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
         throw insertError;
       }
 
-      console.log('ChatInterface: Message sent successfully');
       setNewMessage("");
     } catch (error) {
       console.error('ChatInterface: Error sending message:', error);

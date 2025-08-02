@@ -4,6 +4,7 @@ import { PhotoFields } from "./service-fields/PhotoFields";
 import { CateringFields } from "./service-fields/CateringFields";
 import { MusicFields } from "./service-fields/MusicFields";
 import { DecorationFields } from "./service-fields/DecorationFields";
+import { FunctionHallFields } from "./service-fields/FunctionHallFields";
 
 interface ServiceDetailsProps {
   selectedService: string;
@@ -25,6 +26,8 @@ export function ServiceDetails({ selectedService, className }: ServiceDetailsPro
         return <MusicFields />;
       case "decoration":
         return <DecorationFields />;
+      case "function_hall":
+        return <FunctionHallFields />;
       default:
         return null;
     }
