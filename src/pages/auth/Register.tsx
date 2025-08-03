@@ -6,14 +6,30 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { EmailConfirmationStatus } from "@/components/auth/EmailConfirmationStatus";
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [redirecting, setRedirecting] = useState(false);
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const [isResending, setIsResending] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth event:", event, session?.user?.email_confirmed_at);
+      
+      if (event === "SIGNED_IN" && session && !session.user.email_confirmed_at) {
+        setUserEmail(session?.user?.email || "");
+        setShowEmailConfirmation(true);
+        toast({
+          title: "Registration Successful!",
+          description: "Please check your email to confirm your account.",
+        });
+        return;
+      }
+      
       if (event === "SIGNED_IN" && !redirecting) {
         // Check if the user is a service provider
         const checkUserTypeAndRedirect = async () => {
@@ -79,6 +95,51 @@ const Register = () => {
     return () => subscription.unsubscribe();
   }, [navigate, toast]);
 
+  const handleResendEmail = async () => {
+    try {
+      setIsResending(true);
+      
+      // Try to resend using custom edge function first
+      const { error: customError } = await supabase.functions.invoke('send-confirmation-email', {
+        body: {
+          email: userEmail,
+          confirmationUrl: `${window.location.origin}/auth/callback`,
+          type: 'confirmation'
+        }
+      });
+
+      if (customError) {
+        // Fallback to Supabase built-in resend
+        const { error } = await supabase.auth.resend({
+          type: 'signup',
+          email: userEmail,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`
+          }
+        });
+        
+        if (error) throw error;
+      }
+    } catch (error: any) {
+      console.error("Resend error:", error);
+      throw error;
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  if (showEmailConfirmation) {
+    return (
+      <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
+        <EmailConfirmationStatus
+          userEmail={userEmail}
+          onResendEmail={handleResendEmail}
+          isResending={isResending}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
       <Card className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg">
@@ -90,29 +151,30 @@ const Register = () => {
         </div>
         
         <div className="space-y-6">
-          <Auth
-            supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: '#B8860B',
-                    brandAccent: '#966F08',
+            <Auth
+              supabaseClient={supabase}
+              appearance={{
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: '#B8860B',
+                      brandAccent: '#966F08',
+                    }
                   }
+                },
+                className: {
+                  container: 'w-full',
+                  button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+                  divider: 'my-6',
                 }
-              },
-              className: {
-                container: 'w-full',
-                button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
-                divider: 'my-6',
-              }
-            }}
-            theme="light"
-            providers={["google"]}
-            view="sign_up"
-            showLinks={false}
-          />
+              }}
+              theme="light"
+              providers={["google"]}
+              view="sign_up"
+              showLinks={false}
+              redirectTo={`${window.location.origin}/auth/callback`}
+            />
         </div>
 
         <div className="mt-4 p-4 bg-ceremonial-cream/50 rounded-lg">

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import AuthCallback from "./pages/auth/AuthCallback";
 import ServiceProviderRegister from "./pages/auth/ServiceProviderRegister";
 import Search from "./pages/search/Search";
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -54,6 +55,7 @@ const App: React.FC = () => {
               <Route path="/policies/terms-conditions" element={<TermsConditions />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route 
                 path="/profile" 
                 element={
