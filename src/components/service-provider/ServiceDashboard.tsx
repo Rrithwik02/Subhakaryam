@@ -155,8 +155,8 @@ const ServiceDashboard = () => {
   });
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Service Provider Dashboard</h1>
+    <div className={`container mx-auto ${isMobile ? 'p-4' : 'p-6'}`}>
+      <h1 className={`font-bold mb-6 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>Service Provider Dashboard</h1>
       
       {isProviderError && (
         <Alert variant="destructive" className="mb-6">
@@ -170,10 +170,16 @@ const ServiceDashboard = () => {
 
       {!isProviderError && provider && (
         <Tabs defaultValue="bookings" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="bookings">Bookings</TabsTrigger>
-            <TabsTrigger value="availability">Availability</TabsTrigger>
-            <TabsTrigger value="payment">Payment Settings</TabsTrigger>
+          <TabsList className={`grid w-full grid-cols-3 ${isMobile ? 'h-12' : ''}`}>
+            <TabsTrigger value="bookings" className={isMobile ? 'text-sm' : ''}>
+              {isMobile ? 'Bookings' : 'Bookings'}
+            </TabsTrigger>
+            <TabsTrigger value="availability" className={isMobile ? 'text-sm' : ''}>
+              {isMobile ? 'Schedule' : 'Availability'}
+            </TabsTrigger>
+            <TabsTrigger value="payment" className={isMobile ? 'text-sm' : ''}>
+              {isMobile ? 'Payment' : 'Payment Settings'}
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="bookings">
@@ -195,8 +201,8 @@ const ServiceDashboard = () => {
                     {requests.map((request: any) => {
                       const profile = request.profiles;
                       return (
-                        <div key={request.id} className="border rounded-lg p-4">
-                          <div className="flex justify-between items-start mb-2">
+                        <div key={request.id} className={`border rounded-lg ${isMobile ? 'p-3' : 'p-4'}`}>
+                          <div className={`flex items-start mb-2 ${isMobile ? 'flex-col space-y-2' : 'justify-between'}`}>
                             <div>
                               <h4 className="font-semibold">{profile?.full_name}</h4>
                               <p className="text-sm text-gray-600">{profile?.email}</p>
@@ -226,27 +232,29 @@ const ServiceDashboard = () => {
                             )}
                           </div>
 
-                          <div className="flex gap-2">
+                          <div className={`gap-2 ${isMobile ? 'grid grid-cols-1 space-y-2' : 'flex'}`}>
                             {request.status === 'pending' && (
                               <>
                                 <Button
-                                  size="sm"
+                                  size={isMobile ? 'default' : 'sm'}
                                   onClick={() => updateBookingStatus.mutate({ 
                                     bookingId: request.id, 
                                     status: 'confirmed' 
                                   })}
                                   disabled={updateBookingStatus.isPending}
+                                  className={isMobile ? 'w-full' : ''}
                                 >
                                   Accept
                                 </Button>
                                 <Button
-                                  size="sm"
+                                  size={isMobile ? 'default' : 'sm'}
                                   variant="destructive"
                                   onClick={() => updateBookingStatus.mutate({ 
                                     bookingId: request.id, 
                                     status: 'rejected' 
                                   })}
                                   disabled={updateBookingStatus.isPending}
+                                  className={isMobile ? 'w-full' : ''}
                                 >
                                   Reject
                                 </Button>
@@ -256,18 +264,22 @@ const ServiceDashboard = () => {
                             {request.status === 'confirmed' && (
                               <>
                                 <Button
-                                  size="sm"
+                                  size={isMobile ? 'default' : 'sm'}
                                   variant="outline"
                                   onClick={() => {
                                     setSelectedChat(request.id);
                                   }}
+                                  className={isMobile ? 'w-full' : ''}
                                 >
-                                  Chat with Customer
+                                  {isMobile ? 'Chat' : 'Chat with Customer'}
                                 </Button>
                                 
                                 <PaymentRequestDialog booking={request}>
-                                  <Button size="sm">
-                                    Request Payment
+                                  <Button 
+                                    size={isMobile ? 'default' : 'sm'}
+                                    className={isMobile ? 'w-full' : ''}
+                                  >
+                                    {isMobile ? 'Payment' : 'Request Payment'}
                                   </Button>
                                 </PaymentRequestDialog>
                               </>
@@ -302,9 +314,15 @@ const ServiceDashboard = () => {
       {/* Chat Interface Modal */}
       {selectedChat && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-full max-w-2xl h-3/4 flex flex-col">
-            <div className="p-4 border-b flex justify-between items-center">
-              <h3 className="font-semibold">Customer Chat</h3>
+          <div className={`bg-white rounded-lg flex flex-col ${
+            isMobile 
+              ? 'w-full h-full rounded-none' 
+              : 'w-full max-w-2xl h-3/4'
+          }`}>
+            <div className={`border-b flex justify-between items-center ${isMobile ? 'p-3' : 'p-4'}`}>
+              <h3 className={`font-semibold ${isMobile ? 'text-base' : ''}`}>
+                {isMobile ? 'Chat' : 'Customer Chat'}
+              </h3>
               <Button 
                 variant="ghost" 
                 size="sm" 

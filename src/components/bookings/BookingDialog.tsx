@@ -39,6 +39,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { MobileOptimizedDialogContent } from "@/components/ui/mobile-optimized-dialog";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -283,9 +284,11 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col">
+      <MobileOptimizedDialogContent>
         <DialogHeader className="flex-shrink-0">
-          <DialogTitle>Book Service with {provider.business_name}</DialogTitle>
+          <DialogTitle>
+            Book Service with {provider.business_name}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto pr-2">
@@ -296,7 +299,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Select Dates</h3>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                   {/* Check-in Date */}
                   <FormField
                     control={form.control}
@@ -323,21 +326,24 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={(date) => {
-                                field.onChange(date);
-                                if (date && (!watchCheckOutDate || date >= watchCheckOutDate)) {
-                                  form.setValue("checkOutDate", addDays(date, 1));
-                                }
-                              }}
-                              disabled={(date) => date < new Date()}
-                              initialFocus
-                              className="pointer-events-auto"
-                            />
-                          </PopoverContent>
+                           <PopoverContent 
+                             className="w-auto p-0 max-w-[350px]" 
+                             align="start"
+                           >
+                             <Calendar
+                               mode="single"
+                               selected={field.value}
+                               onSelect={(date) => {
+                                 field.onChange(date);
+                                 if (date && (!watchCheckOutDate || date >= watchCheckOutDate)) {
+                                   form.setValue("checkOutDate", addDays(date, 1));
+                                 }
+                               }}
+                               disabled={(date) => date < new Date()}
+                               initialFocus
+                               className="pointer-events-auto"
+                             />
+                           </PopoverContent>
                         </Popover>
                         <FormMessage />
                       </FormItem>
@@ -370,19 +376,22 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => 
-                                date < new Date() || 
-                                (watchCheckInDate && date <= watchCheckInDate)
-                              }
-                              initialFocus
-                              className="pointer-events-auto"
-                            />
-                          </PopoverContent>
+                           <PopoverContent 
+                             className="w-auto p-0 max-w-[350px]" 
+                             align="start"
+                           >
+                             <Calendar
+                               mode="single"
+                               selected={field.value}
+                               onSelect={field.onChange}
+                               disabled={(date) => 
+                                 date < new Date() || 
+                                 (watchCheckInDate && date <= watchCheckInDate)
+                               }
+                               initialFocus
+                               className="pointer-events-auto"
+                             />
+                           </PopoverContent>
                         </Popover>
                         <FormMessage />
                       </FormItem>
@@ -402,7 +411,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                 )}
 
                 {/* Quick Selection Buttons */}
-                <div className="flex gap-2 flex-wrap">
+                <div className="grid grid-cols-3 gap-2 md:flex md:flex-wrap">
                   <Button
                     type="button"
                     variant="outline"
@@ -412,6 +421,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                         form.setValue("checkOutDate", watchCheckInDate);
                       }
                     }}
+                    className="w-full md:w-auto"
                   >
                     1 Day
                   </Button>
@@ -424,6 +434,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                         form.setValue("checkOutDate", addDays(watchCheckInDate, 2));
                       }
                     }}
+                    className="w-full md:w-auto"
                   >
                     3 Days
                   </Button>
@@ -436,6 +447,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
                         form.setValue("checkOutDate", addDays(watchCheckInDate, 6));
                       }
                     }}
+                    className="w-full md:w-auto"
                   >
                     1 Week
                   </Button>
@@ -600,7 +612,7 @@ const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
             }
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </MobileOptimizedDialogContent>
     </Dialog>
   );
 };

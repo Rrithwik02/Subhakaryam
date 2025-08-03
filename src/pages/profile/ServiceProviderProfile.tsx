@@ -148,15 +148,15 @@ const ServiceProviderProfile = () => {
   const isOwnProfile = provider?.profile_id === session?.user?.id;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-4 md:p-8">
+      <div className="mx-auto space-y-6 max-w-none md:max-w-6xl md:space-y-8">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl font-display text-ceremonial-maroon">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="text-xl md:text-2xl font-display text-ceremonial-maroon">
               Service Provider Profile
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 p-4 pt-0 md:p-6 md:pt-0">
             <ProfileHeader
               businessName={provider?.business_name}
               rating={provider?.rating}

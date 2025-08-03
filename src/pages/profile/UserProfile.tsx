@@ -90,14 +90,16 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-display text-ceremonial-maroon">Your Profile</h1>
+    <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white p-4 md:p-8">
+      <div className="mx-auto space-y-6 max-w-none md:max-w-6xl md:space-y-8">
+        <div className="flex flex-col md:flex-row md:justify-between items-center space-y-4 md:space-y-0">
+          <h1 className="text-2xl md:text-3xl font-display text-ceremonial-maroon text-center md:text-left">
+            Your Profile
+          </h1>
           <Button 
             variant="outline" 
             onClick={handleLogout}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full md:w-auto"
           >
             <LogOut className="w-4 h-4" />
             Sign Out
@@ -105,12 +107,12 @@ const UserProfile = () => {
         </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl font-display text-ceremonial-maroon">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="text-xl md:text-2xl font-display text-ceremonial-maroon">
               Profile Information
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 pt-0 md:p-6 md:pt-0">
             <ProfileHeader
               businessName={profile?.full_name}
               email={profile?.email}

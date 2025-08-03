@@ -9,6 +9,8 @@ import FavoriteButton from "@/components/favorites/FavoriteButton";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface ServiceCardProps {
   service: {
@@ -31,6 +33,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
   const [showBookingDialog, setShowBookingDialog] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleShowPhone = () => {
     setShowPhone(true);
@@ -47,9 +50,14 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <div className="p-4 md:p-6">
+      <div className={cn(
+        isMobile ? "p-3" : "p-4 md:p-6"
+      )}>
         {service.portfolio_images && service.portfolio_images.length > 0 && (
-          <div className="mb-4 -mx-4 md:-mx-6">
+          <div className={cn(
+            "mb-4",
+            isMobile ? "-mx-3" : "-mx-4 md:-mx-6"
+          )}>
             <Carousel className="w-full">
               <CarouselContent>
                 {service.portfolio_images.map((image, index) => (
@@ -58,16 +66,23 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
                       <img
                         src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
                         alt={`Portfolio ${index + 1}`}
-                        className="rounded-none md:rounded-lg object-cover w-full h-full"
+                        className={cn(
+                          "object-cover w-full h-full",
+                          isMobile ? "rounded-none" : "rounded-none md:rounded-lg"
+                        )}
                         loading="lazy"
                       />
                     </AspectRatio>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <div className="hidden md:block">
-                <CarouselPrevious />
-                <CarouselNext />
+              <div className={isMobile ? "block" : "hidden md:block"}>
+                <CarouselPrevious className={cn(
+                  isMobile && "h-8 w-8 left-2"
+                )} />
+                <CarouselNext className={cn(
+                  isMobile && "h-8 w-8 right-2"
+                )} />
               </div>
             </Carousel>
           </div>
@@ -118,16 +133,24 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className={cn(
+          isMobile ? "space-y-3" : "space-y-2"
+        )}>
           <Button 
-            className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white"
+            className={cn(
+              "w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white",
+              isMobile && "h-12 text-base"
+            )}
             onClick={() => setShowBookingDialog(true)}
           >
             Book Service
           </Button>
           <Button
             variant="outline"
-            className="w-full"
+            className={cn(
+              "w-full",
+              isMobile && "h-12 text-base"
+            )}
             onClick={() => setShowReviewForm(!showReviewForm)}
           >
             Write a Review
