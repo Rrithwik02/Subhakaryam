@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { CreditCard, Loader2 } from "lucide-react";
+import { CreditCard, Loader2, Smartphone } from "lucide-react";
 
 declare global {
   interface Window {
@@ -16,6 +16,8 @@ interface PaymentRequestButtonProps {
   paymentType: 'advance' | 'final';
   description?: string;
   onPaymentSuccess?: () => void;
+  preferUPI?: boolean;
+  upiOnly?: boolean;
 }
 
 const PaymentRequestButton = ({ 
@@ -23,7 +25,9 @@ const PaymentRequestButton = ({
   amount, 
   paymentType, 
   description,
-  onPaymentSuccess 
+  onPaymentSuccess,
+  preferUPI = false,
+  upiOnly = false 
 }: PaymentRequestButtonProps) => {
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -36,6 +40,10 @@ const PaymentRequestButton = ({
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
     });
+  };
+
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   };
 
   const handlePayment = async () => {
@@ -67,13 +75,13 @@ const PaymentRequestButton = ({
         throw new Error('Invalid payment data received');
       }
 
-      // Initialize Razorpay payment
-      const options = {
+      // Initialize Razorpay payment options
+      const baseOptions: any = {
         key: data.keyId,
         amount: data.amount,
         currency: data.currency,
         name: 'Subhakaryam',
-        description: description || `${paymentType} payment`,
+        description: upiOnly ? 'Pay using UPI' : (description || `${paymentType} payment`),
         order_id: data.orderId,
         handler: function (response: any) {
           toast({
@@ -97,7 +105,38 @@ const PaymentRequestButton = ({
         }
       };
 
-      const razorpay = new window.Razorpay(options);
+      // Add UPI-specific configurations
+      if (preferUPI || upiOnly) {
+        baseOptions.method = {
+          upi: true,
+          card: !upiOnly,
+          wallet: !upiOnly,
+          netbanking: !upiOnly
+        };
+        
+        if (isMobile()) {
+          baseOptions.config = {
+            display: {
+              blocks: {
+                upi: {
+                  name: 'Pay using UPI',
+                  instruments: [
+                    {
+                      method: 'upi'
+                    }
+                  ]
+                }
+              },
+              sequence: ['block.upi'],
+              preferences: {
+                show_default_blocks: !upiOnly
+              }
+            }
+          };
+        }
+      }
+
+      const razorpay = new window.Razorpay(baseOptions);
       razorpay.open();
       
     } catch (error) {
@@ -125,8 +164,12 @@ const PaymentRequestButton = ({
         </>
       ) : (
         <>
-          <CreditCard className="h-4 w-4 mr-2" />
-          Pay ₹{amount.toLocaleString()}
+          {upiOnly ? (
+            <Smartphone className="h-4 w-4 mr-2" />
+          ) : (
+            <CreditCard className="h-4 w-4 mr-2" />
+          )}
+          {upiOnly ? 'Pay via UPI' : 'Pay'} ₹{amount.toLocaleString()}
         </>
       )}
     </Button>
