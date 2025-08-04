@@ -68,7 +68,7 @@ export function PullToRefresh({ onRefresh, children, className = '' }: PullToRef
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [isPulling, isRefreshing, isNative]);
+  }, [isNative]);
 
   return (
     <div className={`relative ${className}`}>

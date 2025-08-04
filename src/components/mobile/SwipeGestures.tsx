@@ -74,7 +74,7 @@ export function SwipeGestures({
       element.removeEventListener('touchstart', handleTouchStart);
       element.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [isNative, onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown]);
+  }, [isNative]);
 
   return (
     <div id="swipe-container" className={className}>

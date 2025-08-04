@@ -47,6 +47,20 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
+  return (
+    <ErrorBoundary>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <SessionContextProvider supabaseClient={supabase}>
+            <AppContent />
+          </SessionContextProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
+    </ErrorBoundary>
+  );
+};
+
+const AppContent: React.FC = () => {
   const { isNative } = useMobileFeatures();
 
   // Initialize push notifications for mobile
@@ -57,104 +71,96 @@ const App: React.FC = () => {
   }, [isNative]);
 
   return (
-    <ErrorBoundary>
-      <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <SessionContextProvider supabaseClient={supabase}>
-            <Router>
-            <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <BackButton />
-            <main className="flex-1 pb-16 md:pb-0">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<AboutUs />} />
-              <Route path="/contact" element={<ContactUs />} />
-              <Route path="/services" element={<ServicesPage />} />
-              <Route path="/services/pooja-services" element={<PoojaServices />} />
-              <Route path="/services/wedding-photography" element={<WeddingPhotography />} />
-              <Route path="/services/mehendi-artists" element={<MehendiArtists />} />
-              <Route path="/blog" element={<BlogIndex />} />
-              <Route path="/policies/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/policies/terms-conditions" element={<TermsConditions />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/auth/callback" element={<AuthCallback />} />
-              <Route 
-                path="/profile" 
-                element={
-                  <ProtectedRoute>
-                    <UserProfile />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/provider/profile" 
-                element={
-                  <ProtectedRoute>
-                    <ServiceProviderProfile />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/register/service-provider" 
-                element={
-                  <ProtectedRoute>
-                    <ServiceProviderRegister />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/search" 
-                element={
-                  <ProtectedRoute>
-                    <Search />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/service-request" 
-                element={
-                  <ProtectedRoute>
-                    <ServiceRequest />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/service/add" 
-                element={
-                  <ProtectedRoute>
-                    <AddService />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <ServiceDashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin" 
-                element={
-                  <AdminRoute>
-                    <AdminDashboard />
-                  </AdminRoute>
-                } 
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            </main>
-            {isNative && <MobileBottomNavigation />}
-            </div>
-            <Toaster />
-          </Router>
-        </SessionContextProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
-    </ErrorBoundary>
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <BackButton />
+        <main className="flex-1 pb-16 md:pb-0">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/services/pooja-services" element={<PoojaServices />} />
+            <Route path="/services/wedding-photography" element={<WeddingPhotography />} />
+            <Route path="/services/mehendi-artists" element={<MehendiArtists />} />
+            <Route path="/blog" element={<BlogIndex />} />
+            <Route path="/policies/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/policies/terms-conditions" element={<TermsConditions />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <UserProfile />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/provider/profile" 
+              element={
+                <ProtectedRoute>
+                  <ServiceProviderProfile />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/register/service-provider" 
+              element={
+                <ProtectedRoute>
+                  <ServiceProviderRegister />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/search" 
+              element={
+                <ProtectedRoute>
+                  <Search />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/service-request" 
+              element={
+                <ProtectedRoute>
+                  <ServiceRequest />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/service/add" 
+              element={
+                <ProtectedRoute>
+                  <AddService />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <ServiceDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin" 
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              } 
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        {isNative && <MobileBottomNavigation />}
+      </div>
+      <Toaster />
+    </Router>
   );
 };
 
