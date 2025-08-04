@@ -7,10 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import ChatInterface from "@/components/chat/ChatInterface";
+import PaymentRequestButton from "@/components/payments/PaymentRequestButton";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
-import { LogOut, MessageCircle, Calendar } from "lucide-react";
+import { LogOut, MessageCircle, Calendar, CreditCard, AlertCircle } from "lucide-react";
 import { useState } from "react";
 
 const UserProfile = () => {
@@ -64,6 +65,15 @@ const UserProfile = () => {
             business_name,
             service_type,
             profile_id
+          ),
+          payments (
+            id,
+            amount,
+            payment_type,
+            status,
+            payment_description,
+            is_provider_requested,
+            created_at
           )
         `)
         .eq("user_id", session?.user?.id)
@@ -145,48 +155,87 @@ const UserProfile = () => {
                   {bookings?.length === 0 ? (
                     <p className="text-center text-gray-500">No bookings found</p>
                   ) : (
-                    bookings?.map((booking) => (
-                      <Card key={booking.id} className="border border-gray-200">
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-start">
-                            <div className="space-y-2">
-                              <h3 className="font-semibold text-lg">
-                                {booking.service_providers?.business_name}
-                              </h3>
-                              <p className="text-sm text-gray-600">
-                                Service: {booking.service_providers?.service_type}
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                Date: {new Date(booking.service_date).toLocaleDateString()}
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                Time: {new Date(`2000-01-01T${booking.time_slot}`).toLocaleTimeString([], {
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
-                              </p>
-                              <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                ${booking.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
-                                  booking.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
-                                  'bg-yellow-100 text-yellow-800'}`}>
-                                Status: {booking.status}
+                    bookings?.map((booking) => {
+                      // Find pending payment requests for this booking
+                      const pendingPaymentRequest = booking.payments?.find(
+                        (payment: any) => payment.is_provider_requested && payment.status === 'pending'
+                      );
+
+                      return (
+                        <Card key={booking.id} className="border border-gray-200">
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-start">
+                              <div className="space-y-2">
+                                <h3 className="font-semibold text-lg">
+                                  {booking.service_providers?.business_name}
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                  Service: {booking.service_providers?.service_type}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  Date: {new Date(booking.service_date).toLocaleDateString()}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  Time: {new Date(`2000-01-01T${booking.time_slot}`).toLocaleTimeString([], {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </p>
+                                <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                  ${booking.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
+                                    booking.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
+                                    'bg-yellow-100 text-yellow-800'}`}>
+                                  Status: {booking.status}
+                                </div>
+                                
+                                {/* Payment Request Alert */}
+                                {pendingPaymentRequest && (
+                                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mt-3">
+                                    <div className="flex items-start gap-2">
+                                      <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5" />
+                                      <div className="flex-1">
+                                        <h4 className="text-sm font-medium text-orange-800">
+                                          Payment Request
+                                        </h4>
+                                        <p className="text-sm text-orange-700 mt-1">
+                                          Service provider has requested ₹{pendingPaymentRequest.amount.toLocaleString()} 
+                                          {pendingPaymentRequest.payment_description && (
+                                            <span> for {pendingPaymentRequest.payment_description}</span>
+                                          )}
+                                        </p>
+                                         <div className="mt-2">
+                                           <PaymentRequestButton
+                                             bookingId={booking.id}
+                                             amount={pendingPaymentRequest.amount}
+                                             paymentType={pendingPaymentRequest.payment_type as 'advance' | 'final'}
+                                             description={pendingPaymentRequest.payment_description}
+                                             onPaymentSuccess={() => refetchBookings()}
+                                           />
+                                         </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <Button
+                                  variant="secondary"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedChat(booking.id);
+                                    setActiveTab("messages");
+                                  }}
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-2" />
+                                  Message
+                                </Button>
                               </div>
                             </div>
-                            <Button
-                              variant="secondary"
-                              onClick={() => {
-                                setSelectedChat(booking.id);
-                                setActiveTab("messages");
-                              }}
-                            >
-                              <MessageCircle className="w-4 h-4 mr-2" />
-                              Message
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
-                  )}
+                          </CardContent>
+                        </Card>
+                       );
+                     })
+                   )}
                 </div>
               </CardContent>
             </Card>
