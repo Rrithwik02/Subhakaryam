@@ -207,7 +207,7 @@ serve(async (req) => {
         orderId: orderData.id,
         amount: orderData.amount,
         currency: orderData.currency,
-        key: razorpayKeyId,
+        keyId: razorpayKeyId,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
