@@ -22,6 +22,7 @@ import Footer from "@/components/layout/Footer";
 import AdvertCarousel from "@/components/home/AdvertCarousel";
 import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
+import FAQSchema from "@/components/seo/FAQSchema";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -143,6 +144,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen pt-16">
+      <FAQSchema />
       <div className="absolute top-20 right-4 flex gap-4 z-50">
         <div className="flex gap-2">
           {session ? (

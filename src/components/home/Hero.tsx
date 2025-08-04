@@ -75,10 +75,10 @@ const Hero = () => {
         <div className="absolute inset-0 z-10 flex items-center justify-center text-white p-4">
           <div className="max-w-4xl mx-auto bg-black/80 backdrop-blur-md p-8 rounded-lg shadow-2xl border border-white/10">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-lg">
-              Discover Sacred Traditions
+              Sacred Ceremonies & Traditional Indian Services
             </h1>
             <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto font-body text-white/90 drop-shadow-lg">
-              Connect with expert ceremonial service providers for your most important occasions
+              Book trusted pandits, photographers, caterers & decorators for authentic Indian weddings, pooja rituals, mehendi ceremonies & traditional events across India
             </p>
             {session && serviceProvider ? (
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
