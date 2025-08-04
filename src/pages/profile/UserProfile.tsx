@@ -197,21 +197,31 @@ const UserProfile = () => {
                                         <h4 className="text-sm font-medium text-orange-800">
                                           Payment Request
                                         </h4>
-                                        <p className="text-sm text-orange-700 mt-1">
-                                          Service provider has requested ₹{pendingPaymentRequest.amount.toLocaleString()} 
-                                          {pendingPaymentRequest.payment_description && (
-                                            <span> for {pendingPaymentRequest.payment_description}</span>
-                                          )}
-                                        </p>
-                                         <div className="mt-2">
-                                           <PaymentRequestButton
-                                             bookingId={booking.id}
-                                             amount={pendingPaymentRequest.amount}
-                                             paymentType={pendingPaymentRequest.payment_type as 'advance' | 'final'}
-                                             description={pendingPaymentRequest.payment_description}
-                                             onPaymentSuccess={() => refetchBookings()}
-                                           />
-                                         </div>
+                                         <p className="text-sm text-orange-700 mt-1">
+                                           Service provider has requested ₹{Number(pendingPaymentRequest.amount).toLocaleString()} 
+                                           ({pendingPaymentRequest.payment_type})
+                                           {pendingPaymentRequest.payment_description && (
+                                             <span> - {pendingPaymentRequest.payment_description}</span>
+                                           )}
+                                         </p>
+                                         <p className="text-xs text-orange-500 mt-1">
+                                           Requested on: {new Date(pendingPaymentRequest.created_at).toLocaleDateString()}
+                                         </p>
+                                          <div className="mt-2">
+                                            <PaymentRequestButton
+                                              bookingId={booking.id}
+                                              amount={Number(pendingPaymentRequest.amount)}
+                                              paymentType={pendingPaymentRequest.payment_type as 'advance' | 'final'}
+                                              description={pendingPaymentRequest.payment_description}
+                                              onPaymentSuccess={() => {
+                                                refetchBookings();
+                                                toast({
+                                                  title: "Payment Completed",
+                                                  description: "Your payment has been processed successfully.",
+                                                });
+                                              }}
+                                            />
+                                          </div>
                                       </div>
                                     </div>
                                   </div>
