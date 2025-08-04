@@ -1,5 +1,6 @@
 import { serviceCategories } from "@/data/services";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import FeaturedService from "./services/FeaturedService";
 import ServiceCard from "./services/ServiceCard";
 import { useVoiceSynthesizer } from "./services/VoiceSynthesizer";
@@ -19,22 +20,35 @@ const Services = () => {
         <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-8 text-ceremonial-maroon animate-slide-up-fade">
           Our Services
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FeaturedService 
-            service={serviceCategories[0]}
-            onMouseEnter={() => !isLoading && speakDescription(serviceCategories[0].description)}
-            onMouseLeave={stopSpeaking}
-          />
-          
-          {serviceCategories.slice(1).map((service, index) => (
-            <ServiceCard
-              key={service.id}
-              service={service}
-              index={index}
-              onMouseEnter={() => !isLoading && speakDescription(service.description)}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <Link to="/services/pooja-services">
+            <FeaturedService 
+              service={serviceCategories[0]}
+              onMouseEnter={() => !isLoading && speakDescription(serviceCategories[0].description)}
               onMouseLeave={stopSpeaking}
             />
-          ))}
+          </Link>
+          
+          {serviceCategories.slice(1).map((service, index) => {
+            const getServiceLink = (serviceId: string) => {
+              switch(serviceId) {
+                case "mehendi": return "/services/mehendi-artists";
+                case "photo": return "/services/wedding-photography";
+                default: return `/search?service=${serviceId}`;
+              }
+            };
+            
+            return (
+              <Link key={service.id} to={getServiceLink(service.id)}>
+                <ServiceCard
+                  service={service}
+                  index={index}
+                  onMouseEnter={() => !isLoading && speakDescription(service.description)}
+                  onMouseLeave={stopSpeaking}
+                />
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

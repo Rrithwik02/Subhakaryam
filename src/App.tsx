@@ -2,6 +2,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
+import { HelmetProvider } from "react-helmet-async";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
 import Login from "./pages/auth/Login";
@@ -26,6 +27,10 @@ import PrivacyPolicy from "./pages/policies/PrivacyPolicy";
 import TermsConditions from "./pages/policies/TermsConditions";
 import ServiceRequest from "./pages/ServiceRequest";
 import AddService from "./pages/auth/AddService";
+import PoojaServices from "./pages/services/PoojaServices";
+import WeddingPhotography from "./pages/services/WeddingPhotography";
+import MehendiArtists from "./pages/services/MehendiArtists";
+import BlogIndex from "./pages/blog/BlogIndex";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/error/ErrorBoundary";
 
@@ -41,9 +46,10 @@ const queryClient = new QueryClient({
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <SessionContextProvider supabaseClient={supabase}>
-          <Router>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <SessionContextProvider supabaseClient={supabase}>
+            <Router>
             <Navbar />
             <BackButton />
             <Routes>
@@ -51,6 +57,10 @@ const App: React.FC = () => {
               <Route path="/about" element={<AboutUs />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/services" element={<ServicesPage />} />
+              <Route path="/services/pooja-services" element={<PoojaServices />} />
+              <Route path="/services/wedding-photography" element={<WeddingPhotography />} />
+              <Route path="/services/mehendi-artists" element={<MehendiArtists />} />
+              <Route path="/blog" element={<BlogIndex />} />
               <Route path="/policies/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/policies/terms-conditions" element={<TermsConditions />} />
               <Route path="/login" element={<Login />} />
@@ -126,6 +136,7 @@ const App: React.FC = () => {
           </Router>
         </SessionContextProvider>
       </QueryClientProvider>
+    </HelmetProvider>
     </ErrorBoundary>
   );
 };
