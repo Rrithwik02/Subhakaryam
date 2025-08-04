@@ -57,10 +57,15 @@ class PushNotificationService {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        // Using upsert to handle both insert and update cases
         await supabase
           .from('profiles')
-          .update({ push_token: token })
-          .eq('id', user.id);
+          .upsert({ 
+            id: user.id,
+            push_token: token 
+          }, {
+            onConflict: 'id'
+          });
       }
     } catch (error) {
       console.error('Error saving push token:', error);

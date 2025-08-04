@@ -606,6 +606,7 @@ export type Database = {
           id: string
           phone: string | null
           profile_image: string | null
+          push_token: string | null
           updated_at: string
           user_type: string | null
         }
@@ -617,6 +618,7 @@ export type Database = {
           id: string
           phone?: string | null
           profile_image?: string | null
+          push_token?: string | null
           updated_at?: string
           user_type?: string | null
         }
@@ -628,6 +630,7 @@ export type Database = {
           id?: string
           phone?: string | null
           profile_image?: string | null
+          push_token?: string | null
           updated_at?: string
           user_type?: string | null
         }
