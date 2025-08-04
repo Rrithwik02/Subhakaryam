@@ -6,6 +6,7 @@ import { useState } from "react";
 import ReviewForm from "@/components/reviews/ReviewForm";
 import BookingDialog from "@/components/bookings/BookingDialog";
 import FavoriteButton from "@/components/favorites/FavoriteButton";
+import { ShareButton } from "@/components/mobile/ShareButton";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useToast } from "@/hooks/use-toast";

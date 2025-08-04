@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { PullToRefresh } from "@/components/mobile/PullToRefresh";
+import { useMobileFeatures } from "@/hooks/use-mobile-features";
 import {
   Dialog,
   DialogContent,
@@ -29,6 +31,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { session, isLoading } = useSessionContext();
+  const { isNative } = useMobileFeatures();
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [isServiceProvider, setIsServiceProvider] = React.useState(false);
   const [serviceProviderId, setServiceProviderId] = React.useState<string | null>(null);
@@ -142,7 +145,13 @@ const Index = () => {
     );
   }
 
-  return (
+  const handleRefresh = async () => {
+    // Simulate refresh - in real app, you'd refetch data
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    window.location.reload();
+  };
+
+  const content = (
     <div className="min-h-screen pt-16">
       <FAQSchema />
       <div className="absolute top-20 right-4 flex gap-4 z-50">
@@ -206,6 +215,12 @@ const Index = () => {
       <Footer />
     </div>
   );
+
+  return isNative ? (
+    <PullToRefresh onRefresh={handleRefresh}>
+      {content}
+    </PullToRefresh>
+  ) : content;
 };
 
 export default Index;
