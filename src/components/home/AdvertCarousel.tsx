@@ -40,7 +40,7 @@ const AdvertCarousel = () => {
           }}
           plugins={[
             Autoplay({
-              delay: 4000,
+              delay: 5000,
               stopOnInteraction: true,
             }),
           ]}
@@ -49,12 +49,12 @@ const AdvertCarousel = () => {
           <CarouselContent>
             {advertisements.map((ad, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                <div className="relative group overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <div className="relative group overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl will-change-transform">
                   <div className="relative aspect-[4/3]">
                     <img
                       src={ad.image}
                       alt={ad.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover will-change-transform"
                     />
                     <div className="absolute inset-0 bg-black/60 group-hover:bg-black/70 transition-colors" />
                     <div className="absolute top-4 right-4 bg-ceremonial-gold px-3 py-1 rounded-full text-xs font-semibold text-white">
