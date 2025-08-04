@@ -112,10 +112,17 @@ serve(async (req) => {
       throw new Error("Razorpay credentials not configured");
     }
 
+    // Generate a short receipt ID that stays under 40 characters
+    const shortBookingId = bookingId.slice(0, 8);
+    const shortPaymentType = paymentType === 'advance' ? 'adv' : 'fin';
+    const timestamp = Date.now().toString().slice(-4);
+    const receipt = `bk_${shortBookingId}_${shortPaymentType}_${timestamp}`;
+    
     console.log("Creating Razorpay order with:", {
       amount: amount * 100,
       currency: "INR",
-      receipt: `booking_${bookingId}_${paymentType}`,
+      receipt,
+      receiptLength: receipt.length,
       hasKeyId: !!razorpayKeyId,
       hasKeySecret: !!razorpayKeySecret,
       bookingId,
@@ -133,7 +140,7 @@ serve(async (req) => {
       body: JSON.stringify({
         amount: amount * 100, // Convert to paise
         currency: "INR",
-        receipt: `booking_${bookingId}_${paymentType}`,
+        receipt: receipt,
         notes: {
           booking_id: bookingId,
           payment_type: paymentType,
