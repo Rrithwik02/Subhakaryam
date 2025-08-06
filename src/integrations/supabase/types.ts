@@ -54,6 +54,8 @@ export type Database = {
           created_at: string | null
           description: string
           id: string
+          max_price: number
+          min_price: number
           provider_id: string
           service_type: string
           status: string | null
@@ -63,6 +65,8 @@ export type Database = {
           created_at?: string | null
           description: string
           id?: string
+          max_price: number
+          min_price: number
           provider_id: string
           service_type: string
           status?: string | null
@@ -72,6 +76,8 @@ export type Database = {
           created_at?: string | null
           description?: string
           id?: string
+          max_price?: number
+          min_price?: number
           provider_id?: string
           service_type?: string
           status?: string | null

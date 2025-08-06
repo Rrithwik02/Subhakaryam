@@ -7,9 +7,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { BasicInformation } from "@/components/service-provider/BasicInformation";
-import { ServiceSelection } from "@/components/service-provider/ServiceSelection";
 import { ServiceAreas } from "@/components/service-provider/ServiceAreas";
-import { ServiceDetails } from "@/components/service-provider/ServiceDetails";
+import { ServiceManagerComponent } from "@/components/service-provider/ServiceManagerComponent";
 import { supabase } from "@/integrations/supabase/client";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
@@ -19,7 +18,7 @@ const ServiceProviderRegister = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { session } = useSessionContext();
-  const [selectedService, setSelectedService] = useState("");
+  const [services, setServices] = useState<any[]>([]);
   const [primaryLocation, setPrimaryLocation] = useState("");
   const [secondaryLocation, setSecondaryLocation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,27 +80,53 @@ const ServiceProviderRegister = () => {
         throw upsertProfileError;
       }
       
-      // Then create the service provider record
+      // Validate services
+      if (!services || services.length === 0) {
+        throw new Error("Please add at least one service");
+      }
+
+      // Create the service provider record with the primary service
+      const primaryService = services[0];
       const serviceProviderData = {
         profile_id: user.id,
-        service_type: selectedService,
+        service_type: primaryService.service_type === 'other' ? primaryService.custom_service_name : primaryService.service_type,
         business_name: formData.get('business_name') as string,
         description: formData.get('description') as string,
         city: primaryLocation,
         secondary_city: secondaryLocation || null,
-        base_price: parseFloat(formData.get('base_price') as string),
+        base_price: primaryService.min_price, // Use min price as base price
         portfolio_images: portfolioImages,
         portfolio_link: portfolioLink,
         status: 'pending'
       };
 
 
-      const { error: providerError } = await supabase
+      const { data: providerData, error: providerError } = await supabase
         .from('service_providers')
-        .insert(serviceProviderData);
+        .insert(serviceProviderData)
+        .select()
+        .single();
 
       if (providerError) {
         throw providerError;
+      }
+
+      // Create additional services entries for all services
+      const additionalServicesData = services.map(service => ({
+        provider_id: providerData.id,
+        service_type: service.service_type === 'other' ? service.custom_service_name : service.service_type,
+        description: `${service.service_type === 'other' ? service.custom_service_name : service.service_type} service`,
+        min_price: service.min_price,
+        max_price: service.max_price,
+        status: 'approved' // Auto-approve for registration
+      }));
+
+      const { error: additionalServicesError } = await supabase
+        .from('additional_services')
+        .insert(additionalServicesData);
+
+      if (additionalServicesError) {
+        throw additionalServicesError;
       }
 
       toast({
@@ -160,17 +185,12 @@ const ServiceProviderRegister = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             <BasicInformation className="space-y-6" />
             
-            <ServiceSelection 
-              className="space-y-6" 
-              onServiceChange={setSelectedService} 
-            />
-
-            {selectedService && (
-              <ServiceDetails 
-                selectedService={selectedService}
-                className="space-y-6 pt-6 border-t"
+            <div className="space-y-6 pt-6 border-t">
+              <ServiceManagerComponent 
+                onServicesChange={setServices}
+                className="space-y-6"
               />
-            )}
+            </div>
 
             <div className="space-y-6 pt-6 border-t">
               <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon">
@@ -183,18 +203,6 @@ const ServiceProviderRegister = () => {
                 onSecondaryLocationChange={setSecondaryLocation}
               />
               
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-gray-700">
-                  Base Price (₹)
-                </label>
-                <Input 
-                  type="number" 
-                  name="base_price" 
-                  min="0" 
-                  required 
-                  className="w-full"
-                />
-              </div>
               <div className="space-y-3">
                 <label className="text-sm font-medium text-gray-700">
                   About Your Services

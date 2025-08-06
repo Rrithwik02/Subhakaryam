@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import { ServiceSelection } from "./ServiceSelection";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { serviceCategories } from "@/data/services";
 import {
   Dialog,
   DialogContent,
@@ -37,8 +38,10 @@ interface AdditionalServiceFormProps {
 const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   const { toast } = useToast();
   const [serviceType, setServiceType] = useState("");
+  const [customServiceName, setCustomServiceName] = useState("");
   const [description, setDescription] = useState("");
-  const [basePrice, setBasePrice] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -55,8 +58,16 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
     setUploadError(null);
 
     try {
-      if (!serviceType || !description || !basePrice) {
+      if (!serviceType || !description || !minPrice || !maxPrice) {
         throw new Error("Please fill in all required fields");
+      }
+
+      if (serviceType === "other" && !customServiceName) {
+        throw new Error("Please enter a custom service name");
+      }
+
+      if (parseInt(minPrice) > parseInt(maxPrice)) {
+        throw new Error("Minimum price must be less than or equal to maximum price");
       }
 
       const { data: session } = await supabase.auth.getSession();
@@ -66,9 +77,10 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
 
       const { error } = await supabase.from("additional_services").insert({
         provider_id: providerId,
-        service_type: serviceType,
+        service_type: serviceType === "other" ? customServiceName : serviceType,
         description,
-        base_price: parseFloat(basePrice),
+        min_price: parseFloat(minPrice),
+        max_price: parseFloat(maxPrice),
         portfolio_images: portfolioImages,
       });
 
@@ -83,8 +95,10 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       });
 
       setServiceType("");
+      setCustomServiceName("");
       setDescription("");
-      setBasePrice("");
+      setMinPrice("");
+      setMaxPrice("");
       setPortfolioImages([]);
       setIsOpen(false);
       setShowConfirmation(false);
@@ -157,22 +171,60 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
               </Alert>
             )}
             
-            <ServiceSelection 
-              onServiceChange={setServiceType} 
-              className="space-y-2"
-            />
-            
             <div className="space-y-2">
-              <Label className="text-base">Base Price (₹)</Label>
-              <Input
-                type="number"
-                value={basePrice}
-                onChange={(e) => setBasePrice(e.target.value)}
-                placeholder="Enter base price"
-                min="0"
-                required
-                className="w-full"
-              />
+              <Label className="text-base">Service Type</Label>
+              <Select value={serviceType} onValueChange={setServiceType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a service" />
+                </SelectTrigger>
+                <SelectContent>
+                  {serviceCategories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="other">Other (Custom Service)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {serviceType === "other" && (
+              <div className="space-y-2">
+                <Label className="text-base">Custom Service Name</Label>
+                <Input
+                  value={customServiceName}
+                  onChange={(e) => setCustomServiceName(e.target.value)}
+                  placeholder="Enter service name"
+                  required
+                />
+              </div>
+            )}
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-base">Minimum Price (₹)</Label>
+                <Input
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  placeholder="Min price"
+                  min="1"
+                  required
+                  className="w-full"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-base">Maximum Price (₹)</Label>
+                <Input
+                  type="number"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  placeholder="Max price"
+                  min="1"
+                  required
+                  className="w-full"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
