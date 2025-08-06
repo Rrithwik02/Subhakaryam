@@ -18,7 +18,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -150,11 +150,9 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30 flex items-center gap-2"
-        >
-          Add Extra Service
+        <Button className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Service
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">

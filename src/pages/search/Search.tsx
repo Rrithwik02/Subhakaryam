@@ -23,7 +23,8 @@ const Search = () => {
       try {
         let query = supabase
           .from("service_providers")
-          .select("*, profiles(full_name, phone)");
+          .select("*, profiles(full_name, phone)")
+          .eq("status", "approved");
 
         // Search by business name
         if (searchTerm) {

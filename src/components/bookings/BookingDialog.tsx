@@ -53,6 +53,12 @@ interface BookingDialogProps {
     advance_payment_percentage?: number;
   };
   selectedServices?: string[];
+  serviceData?: Array<{
+    type: string;
+    min_price: number;
+    max_price: number;
+    description: string;
+  }>;
 }
 
 type FormData = {
@@ -75,7 +81,7 @@ const timeSlots = [
   "17:00",
 ];
 
-const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [] }: BookingDialogProps) => {
+const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [], serviceData = [] }: BookingDialogProps) => {
   const { session } = useSessionContext();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,7 +132,23 @@ const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [] }: Boo
   const totalDays = watchCheckInDate && watchCheckOutDate 
     ? differenceInDays(watchCheckOutDate, watchCheckInDate) + 1 
     : 1;
-  const totalPrice = provider.base_price * totalDays;
+  
+  // Calculate price based on selected services or use base price
+  const getServicePrice = () => {
+    if (selectedServices.length > 0 && serviceData.length > 0) {
+      const selectedServicePrices = serviceData.filter(service => 
+        selectedServices.includes(service.type)
+      );
+      // Use average of min and max prices for selected services
+      const totalServicePrice = selectedServicePrices.reduce((total, service) => 
+        total + (service.min_price + service.max_price) / 2, 0
+      );
+      return totalServicePrice;
+    }
+    return provider.base_price;
+  };
+  
+  const totalPrice = getServicePrice() * totalDays;
   
   // Calculate advance payment amounts
   const advanceAmount = providerAdvanceSettings.requiresAdvance 
@@ -563,13 +585,18 @@ const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [] }: Boo
               <div className="rounded-lg border p-4 bg-muted/50">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm">Base price per day:</span>
-                    <span className="text-sm">₹{provider.base_price.toFixed(2)}</span>
+                    <span className="text-sm">Service price per day:</span>
+                    <span className="text-sm">₹{getServicePrice().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Number of days:</span>
                     <span className="text-sm">{totalDays}</span>
                   </div>
+                  {selectedServices.length > 0 && (
+                    <div className="text-xs text-gray-600">
+                      Selected services: {selectedServices.join(', ').replace(/_/g, ' ')}
+                    </div>
+                  )}
                   
                   {providerAdvanceSettings.requiresAdvance && watchPaymentPreference === 'pay_now' ? (
                     <>

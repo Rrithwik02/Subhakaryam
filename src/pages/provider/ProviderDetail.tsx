@@ -35,7 +35,7 @@ const ProviderDetail = () => {
         .select(`
           *,
           profiles(full_name, phone),
-          additional_services(id, service_type, description, status)
+          additional_services(id, service_type, description, status, min_price, max_price, portfolio_images)
         `)
         .eq("id", id)
         .eq("status", "approved")
@@ -92,11 +92,14 @@ const ProviderDetail = () => {
       return "Select services to view pricing";
     }
     
-    // Base price calculation logic
-    const basePrice = provider?.base_price || 0;
-    const multiplier = selectedServices.length;
-    const minPrice = basePrice * 0.8;
-    const maxPrice = basePrice * multiplier * 1.5;
+    const selectedServiceData = allServices.filter(s => selectedServices.includes(s.type));
+    
+    if (selectedServiceData.length === 0) {
+      return "No pricing available";
+    }
+    
+    const minPrice = selectedServiceData.reduce((sum, service) => sum + (service.min_price || 0), 0);
+    const maxPrice = selectedServiceData.reduce((sum, service) => sum + (service.max_price || 0), 0);
     
     return `₹${minPrice.toLocaleString()} - ₹${maxPrice.toLocaleString()}`;
   };
@@ -134,10 +137,19 @@ const ProviderDetail = () => {
   }
 
   const allServices = [
-    { type: provider.service_type, description: `Main ${provider.service_type.replace('_', ' ')} service` },
+    { 
+      type: provider.service_type, 
+      description: `Main ${provider.service_type.replace('_', ' ')} service`,
+      min_price: provider.base_price || 0,
+      max_price: provider.base_price || 0,
+      portfolio_images: provider.portfolio_images || []
+    },
     ...(provider.additional_services?.filter(s => s.status === 'approved').map(s => ({
       type: s.service_type,
-      description: s.description
+      description: s.description,
+      min_price: s.min_price || 0,
+      max_price: s.max_price || 0,
+      portfolio_images: s.portfolio_images || []
     })) || [])
   ];
 
@@ -379,6 +391,7 @@ const ProviderDetail = () => {
         onClose={() => setShowBookingDialog(false)}
         provider={provider}
         selectedServices={selectedServices}
+        serviceData={allServices}
       />
     </div>
   );
