@@ -169,9 +169,9 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 max-h-[calc(90vh-180px)]">
-          <div className="px-1">
-            <Card className="p-6">
+        <div className="flex-1 min-h-0">
+          <ScrollArea className="h-full">
+            <div className="p-6 space-y-6">
               <form id="additional-service-form" onSubmit={handleSubmit} className="space-y-6">
               {uploadError && (
                 <Alert variant="destructive">
@@ -342,9 +342,9 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
               </div>
 
               </form>
-            </Card>
-          </div>
-        </ScrollArea>
+            </div>
+          </ScrollArea>
+        </div>
         
         <DialogFooter className="flex-shrink-0 mt-4 p-4 border-t">
           <Button
