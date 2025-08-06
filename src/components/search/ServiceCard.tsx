@@ -1,17 +1,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Crown, MapPin, IndianRupee, Star, Phone } from "lucide-react";
+import { Crown, MapPin, Star, Eye } from "lucide-react";
 import { useState } from "react";
-import ReviewForm from "@/components/reviews/ReviewForm";
-import BookingDialog from "@/components/bookings/BookingDialog";
 import FavoriteButton from "@/components/favorites/FavoriteButton";
 import { ShareButton } from "@/components/mobile/ShareButton";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 interface ServiceCardProps {
   service: {
@@ -22,31 +20,20 @@ interface ServiceCardProps {
       phone?: string;
     };
     city: string;
-    base_price: number;
     rating: number;
     is_premium: boolean;
     portfolio_images?: string[];
+    service_type: string;
+    description?: string;
   };
 }
 
 const ServiceCard = ({ service }: ServiceCardProps) => {
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [showBookingDialog, setShowBookingDialog] = useState(false);
-  const [showPhone, setShowPhone] = useState(false);
-  const { toast } = useToast();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
-  const handleShowPhone = () => {
-    setShowPhone(true);
-    toast({
-      title: "Phone number revealed",
-      description: "You can now contact the service provider directly.",
-    });
-  };
-
-  const anonymizePhone = (phone?: string) => {
-    if (!phone) return "Not provided";
-    return showPhone ? phone : `${phone.slice(0, 2)}•••${phone.slice(-2)}`;
+  const handleViewDetails = () => {
+    navigate(`/provider/${service.id}`);
   };
 
   return (
@@ -106,16 +93,10 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
           </div>
         </div>
         
-        <div className="space-y-2 mb-4">
+        <div className="space-y-3 mb-4">
           <div className="flex items-center text-gray-600">
             <MapPin className="h-4 w-4 mr-2" />
             {service.city}
-          </div>
-          <div className="flex items-center text-gray-600">
-            <IndianRupee className="h-4 w-4 mr-2" />
-            <span className="font-semibold text-ceremonial-gold">
-              {service.base_price.toLocaleString()}
-            </span>
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 text-yellow-400 fill-current" />
@@ -123,55 +104,26 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
               {service.rating ? service.rating.toFixed(1) : "New"}
             </span>
           </div>
-          <div className="flex items-center text-gray-600">
-            <Phone className="h-4 w-4 mr-2" />
-            <button
-              onClick={handleShowPhone}
-              className="text-ceremonial-teal hover:underline"
-            >
-              {anonymizePhone(service.profiles?.phone)}
-            </button>
+          <div className="text-sm text-gray-600 capitalize">
+            {service.service_type.replace('_', ' ')} Specialist
           </div>
+          {service.description && (
+            <p className="text-sm text-gray-600 line-clamp-2">
+              {service.description}
+            </p>
+          )}
         </div>
 
-        <div className={cn(
-          isMobile ? "space-y-3" : "space-y-2"
-        )}>
-          <Button 
-            className={cn(
-              "w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white",
-              isMobile && "h-12 text-base"
-            )}
-            onClick={() => setShowBookingDialog(true)}
-          >
-            Book Service
-          </Button>
-          <Button
-            variant="outline"
-            className={cn(
-              "w-full",
-              isMobile && "h-12 text-base"
-            )}
-            onClick={() => setShowReviewForm(!showReviewForm)}
-          >
-            Write a Review
-          </Button>
-        </div>
-
-        {showReviewForm && (
-          <div className="mt-4 pt-4 border-t">
-            <ReviewForm
-              providerId={service.id}
-              onSuccess={() => setShowReviewForm(false)}
-            />
-          </div>
-        )}
-
-        <BookingDialog
-          isOpen={showBookingDialog}
-          onClose={() => setShowBookingDialog(false)}
-          provider={service}
-        />
+        <Button 
+          className={cn(
+            "w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white",
+            isMobile && "h-12 text-base"
+          )}
+          onClick={handleViewDetails}
+        >
+          <Eye className="h-4 w-4 mr-2" />
+          View Details & Services
+        </Button>
       </div>
     </Card>
   );

@@ -15,7 +15,7 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [city, setCity] = useState("");
   const [serviceType, setServiceType] = useState(initialServiceType?.toLowerCase() || "all");
-  const [sortBy, setSortBy] = useState<"price_asc" | "price_desc" | "rating_desc">("rating_desc");
+  const [sortBy, setSortBy] = useState<"rating_desc" | "newest">("rating_desc");
 
   const { data: services, isLoading, error, refetch } = useQuery({
     queryKey: ["services", searchTerm, city, serviceType, sortBy],
@@ -42,14 +42,11 @@ const Search = () => {
 
         // Apply sorting
         switch (sortBy) {
-          case "price_asc":
-            query = query.order("base_price", { ascending: true });
-            break;
-          case "price_desc":
-            query = query.order("base_price", { ascending: false });
-            break;
           case "rating_desc":
             query = query.order("rating", { ascending: false, nullsFirst: false });
+            break;
+          case "newest":
+            query = query.order("created_at", { ascending: false });
             break;
         }
 

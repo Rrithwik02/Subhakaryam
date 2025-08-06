@@ -19,8 +19,8 @@ interface SearchFiltersProps {
   setCity: (city: string) => void;
   serviceType: string;
   setServiceType: (type: string) => void;
-  sortBy: "price_asc" | "price_desc" | "rating_desc";
-  setSortBy: (sort: "price_asc" | "price_desc" | "rating_desc") => void;
+  sortBy: "rating_desc" | "newest";
+  setSortBy: (sort: "rating_desc" | "newest") => void;
 }
 
 const SearchFilters = ({
@@ -92,8 +92,7 @@ const SearchFilters = ({
             </SelectTrigger>
             <SelectContent className="z-50">
               <SelectItem value="rating_desc">Highest Rated</SelectItem>
-              <SelectItem value="price_asc">Price: Low to High</SelectItem>
-              <SelectItem value="price_desc">Price: High to Low</SelectItem>
+              <SelectItem value="newest">Newest First</SelectItem>
             </SelectContent>
           </Select>
         </div>

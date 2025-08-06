@@ -52,6 +52,7 @@ interface BookingDialogProps {
     requires_advance_payment?: boolean;
     advance_payment_percentage?: number;
   };
+  selectedServices?: string[];
 }
 
 type FormData = {
@@ -74,7 +75,7 @@ const timeSlots = [
   "17:00",
 ];
 
-const BookingDialog = ({ isOpen, onClose, provider }: BookingDialogProps) => {
+const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [] }: BookingDialogProps) => {
   const { session } = useSessionContext();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);

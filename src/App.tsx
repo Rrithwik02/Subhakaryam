@@ -36,6 +36,7 @@ import MehendiArtists from "./pages/services/MehendiArtists";
 import BlogIndex from "./pages/blog/BlogIndex";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/error/ErrorBoundary";
+import ProviderDetail from "./pages/provider/ProviderDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -119,6 +120,14 @@ const AppContent: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Search />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/provider/:id" 
+              element={
+                <ProtectedRoute>
+                  <ProviderDetail />
                 </ProtectedRoute>
               } 
             />
