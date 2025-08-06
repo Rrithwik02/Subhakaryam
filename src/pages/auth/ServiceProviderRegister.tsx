@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useSessionContext } from "@supabase/auth-helpers-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ServiceProviderRegister = () => {
   const navigate = useNavigate();
@@ -149,85 +150,94 @@ const ServiceProviderRegister = () => {
   };
 
   return (
-    <div className="min-h-screen bg-ceremonial-cream py-16 px-4">
-      <Card className="max-w-2xl mx-auto p-8 space-y-8 bg-white shadow-lg">
-        <div className="text-center">
-          <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-4">
-            Register as Service Provider
-          </h1>
-          <p className="text-gray-600 text-lg">Join our network of trusted professionals</p>
-        </div>
-        
-        {showAuthForm ? (
-          <div className="space-y-6">
-            <Auth
-              supabaseClient={supabase}
-              appearance={{
-                theme: ThemeSupa,
-                variables: {
-                  default: {
-                    colors: {
-                      brand: '#B8860B',
-                      brandAccent: '#966F08',
-                    }
-                  }
-                },
-                className: {
-                  container: 'w-full',
-                  button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
-                  divider: 'my-6',
-                }
-              }}
-              theme="light"
-              providers={["google"]}
-              view="sign_up"
-            />
+    <div className="min-h-screen bg-ceremonial-cream py-4 px-4">
+      <div className="max-w-2xl mx-auto">
+        <Card className="bg-white shadow-lg flex flex-col max-h-[calc(100vh-2rem)]">
+          <div className="p-8 text-center flex-shrink-0">
+            <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-4">
+              Register as Service Provider
+            </h1>
+            <p className="text-gray-600 text-lg">Join our network of trusted professionals</p>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <BasicInformation className="space-y-6" />
-            
-            <div className="space-y-6 pt-6 border-t">
-              <ServiceManagerComponent 
-                onServicesChange={setServices}
-                className="space-y-6"
+        
+          {showAuthForm ? (
+            <div className="p-8 space-y-6">
+              <Auth
+                supabaseClient={supabase}
+                appearance={{
+                  theme: ThemeSupa,
+                  variables: {
+                    default: {
+                      colors: {
+                        brand: '#B8860B',
+                        brandAccent: '#966F08',
+                      }
+                    }
+                  },
+                  className: {
+                    container: 'w-full',
+                    button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
+                    divider: 'my-6',
+                  }
+                }}
+                theme="light"
+                providers={["google"]}
+                view="sign_up"
               />
             </div>
+          ) : (
+            <>
+              <ScrollArea className="flex-1 px-8">
+                <form id="service-provider-form" onSubmit={handleSubmit} className="space-y-8 pb-4">
+                  <BasicInformation className="space-y-6" />
+                  
+                  <div className="space-y-6 pt-6 border-t">
+                    <ServiceManagerComponent 
+                      onServicesChange={setServices}
+                      className="space-y-6"
+                    />
+                  </div>
 
-            <div className="space-y-6 pt-6 border-t">
-              <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon">
-                Additional Information
-              </h2>
+                  <div className="space-y-6 pt-6 border-t">
+                    <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon">
+                      Additional Information
+                    </h2>
+                    
+                    <ServiceAreas 
+                      className="space-y-6" 
+                      onPrimaryLocationChange={setPrimaryLocation}
+                      onSecondaryLocationChange={setSecondaryLocation}
+                    />
+                    
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium text-gray-700">
+                        About Your Services
+                      </label>
+                      <Textarea
+                        name="description"
+                        placeholder="Tell us more about your services and experience"
+                        required
+                        className="w-full min-h-[120px]"
+                      />
+                    </div>
+                  </div>
+                </form>
+              </ScrollArea>
               
-              <ServiceAreas 
-                className="space-y-6" 
-                onPrimaryLocationChange={setPrimaryLocation}
-                onSecondaryLocationChange={setSecondaryLocation}
-              />
-              
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-gray-700">
-                  About Your Services
-                </label>
-                <Textarea
-                  name="description"
-                  placeholder="Tell us more about your services and experience"
-                  required
-                  className="w-full min-h-[120px]"
-                />
+              <div className="p-8 flex-shrink-0 border-t">
+                <Button
+                  type="submit"
+                  form="service-provider-form"
+                  className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-xl py-6"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Registering..." : "Register as Service Provider"}
+                </Button>
               </div>
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-xl py-6"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Registering..." : "Register as Service Provider"}
-            </Button>
-          </form>
-        )}
-      </Card>
+            </>
+          )}
+        </Card>
+      </div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Plus } from "lucide-react";
 import { serviceCategories, getSubcategories, getSubcategoryDetails } from "@/data/services";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ServiceItem {
   id: string;
@@ -105,8 +106,10 @@ export const ServiceManagerComponent = ({
         Add at least one service with its price range
       </p>
       
-      <div className="space-y-4">
-        {services.map((service, index) => (
+      <div className="space-y-4 max-h-[400px]">
+        <ScrollArea className="h-full">
+          <div className="space-y-4 pr-4">
+            {services.map((service, index) => (
           <Card key={service.id} className="p-4 border border-gray-200">
             <div className="flex justify-between items-start mb-4">
               <h4 className="font-medium text-gray-800">Service #{index + 1}</h4>
@@ -230,14 +233,16 @@ export const ServiceManagerComponent = ({
                 Price range: ₹{service.min_price.toLocaleString()} - ₹{service.max_price.toLocaleString()}
               </p>
             )}
-          </Card>
-        ))}
+              </Card>
+            ))}
+          </div>
+        </ScrollArea>
         
         <Button
           type="button"
           variant="outline"
           onClick={addService}
-          className="w-full border-dashed border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white"
+          className="w-full border-dashed border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white mt-4"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Another Service

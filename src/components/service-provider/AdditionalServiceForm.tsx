@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { serviceCategories, getSubcategories, getSubcategoryDetails } from "@/data/services";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { MobileOptimizedDialogContent } from "@/components/ui/mobile-optimized-dialog";
 import {
   Dialog,
   DialogContent,
@@ -160,14 +162,15 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
           Add Service
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
+      <MobileOptimizedDialogContent className="flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-2xl font-display font-bold text-ceremonial-maroon text-center mb-6">
             Add Additional Service
           </DialogTitle>
         </DialogHeader>
-        <Card className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <ScrollArea className="flex-1 pr-4">
+          <Card className="p-6">
+            <form id="additional-service-form" onSubmit={handleSubmit} className="space-y-6">
             {uploadError && (
               <Alert variant="destructive">
                 <AlertDescription>{uploadError}</AlertDescription>
@@ -336,18 +339,20 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
               </div>
             </div>
 
-            <DialogFooter>
-              <Button
-                type="submit"
-                className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white py-6"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Submitting..." : "Submit Additional Service"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Card>
-      </DialogContent>
+            </form>
+          </Card>
+        </ScrollArea>
+        <DialogFooter className="flex-shrink-0 mt-4">
+          <Button
+            type="submit"
+            form="additional-service-form"
+            className="w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white py-6"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Additional Service"}
+          </Button>
+        </DialogFooter>
+      </MobileOptimizedDialogContent>
 
       <AlertDialog open={showConfirmation} onOpenChange={setShowConfirmation}>
         <AlertDialogContent>
