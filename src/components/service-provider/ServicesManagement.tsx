@@ -168,6 +168,11 @@ export function ServicesManagement() {
                         <div>
                           <p className="font-medium capitalize">
                             {service.service_type.replace('_', ' ')}
+                            {service.subcategory && (
+                              <span className="text-sm text-gray-500 ml-1">
+                                → {service.subcategory.replace('_', ' ')}
+                              </span>
+                            )}
                           </p>
                           <p className="text-sm text-gray-600 line-clamp-2">
                             {service.description}

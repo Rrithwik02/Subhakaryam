@@ -59,7 +59,9 @@ export type Database = {
           portfolio_images: string[] | null
           provider_id: string
           service_type: string
+          specialization: string | null
           status: string | null
+          subcategory: string | null
           updated_at: string | null
         }
         Insert: {
@@ -71,7 +73,9 @@ export type Database = {
           portfolio_images?: string[] | null
           provider_id: string
           service_type: string
+          specialization?: string | null
           status?: string | null
+          subcategory?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -83,7 +87,9 @@ export type Database = {
           portfolio_images?: string[] | null
           provider_id?: string
           service_type?: string
+          specialization?: string | null
           status?: string | null
+          subcategory?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -804,6 +810,7 @@ export type Database = {
           service_type: string
           specializations: string[] | null
           status: string | null
+          subcategory: string | null
         }
         Insert: {
           advance_payment_percentage?: number | null
@@ -824,6 +831,7 @@ export type Database = {
           service_type: string
           specializations?: string[] | null
           status?: string | null
+          subcategory?: string | null
         }
         Update: {
           advance_payment_percentage?: number | null
@@ -844,6 +852,7 @@ export type Database = {
           service_type?: string
           specializations?: string[] | null
           status?: string | null
+          subcategory?: string | null
         }
         Relationships: [
           {

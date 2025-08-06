@@ -10,10 +10,20 @@ export type ServiceProvider = {
   image: string;
 };
 
+export type ServiceSubcategory = {
+  id: string;
+  name: string;
+  priceRange: {
+    min: number;
+    max: number;
+  };
+};
+
 export type ServiceCategory = {
   id: string;
   name: string;
   description: string;
   icon: LucideIcon;
   basePrice: number;
+  subcategories?: ServiceSubcategory[];
 };

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { serviceCategories } from "@/data/services";
+import { serviceCategories, getSubcategories, getSubcategoryDetails } from "@/data/services";
 import {
   Dialog,
   DialogContent,
@@ -38,7 +38,9 @@ interface AdditionalServiceFormProps {
 const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
   const { toast } = useToast();
   const [serviceType, setServiceType] = useState("");
+  const [subcategory, setSubcategory] = useState("");
   const [customServiceName, setCustomServiceName] = useState("");
+  const [customSubcategoryName, setCustomSubcategoryName] = useState("");
   const [description, setDescription] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -78,6 +80,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       const { error } = await supabase.from("additional_services").insert({
         provider_id: providerId,
         service_type: serviceType === "other" ? customServiceName : serviceType,
+        subcategory: subcategory === "other" ? customSubcategoryName : subcategory,
         description,
         min_price: parseFloat(minPrice),
         max_price: parseFloat(maxPrice),
@@ -95,7 +98,9 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       });
 
       setServiceType("");
+      setSubcategory("");
       setCustomServiceName("");
+      setCustomSubcategoryName("");
       setDescription("");
       setMinPrice("");
       setMaxPrice("");
@@ -171,7 +176,20 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
             
             <div className="space-y-2">
               <Label className="text-base">Service Type</Label>
-              <Select value={serviceType} onValueChange={setServiceType}>
+              <Select value={serviceType} onValueChange={(value) => {
+                setServiceType(value);
+                setSubcategory("");
+                setCustomSubcategoryName("");
+                // Auto-suggest pricing based on first subcategory
+                if (value !== "other") {
+                  const subcategories = getSubcategories(value);
+                  if (subcategories.length > 0) {
+                    const firstSub = subcategories[0];
+                    setMinPrice(firstSub.priceRange.min.toString());
+                    setMaxPrice(firstSub.priceRange.max.toString());
+                  }
+                }
+              }}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a service" />
                 </SelectTrigger>
@@ -186,6 +204,39 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
               </Select>
             </div>
 
+            {serviceType && serviceType !== "other" && (
+              <div className="space-y-2">
+                <Label className="text-base">Service Subcategory</Label>
+                <Select value={subcategory} onValueChange={(value) => {
+                  setSubcategory(value);
+                  setCustomSubcategoryName("");
+                  // Auto-suggest pricing based on selected subcategory
+                  if (value !== "other") {
+                    const subcategoryDetails = getSubcategoryDetails(serviceType, value);
+                    if (subcategoryDetails) {
+                      setMinPrice(subcategoryDetails.priceRange.min.toString());
+                      setMaxPrice(subcategoryDetails.priceRange.max.toString());
+                    }
+                  }
+                }}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select subcategory" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getSubcategories(serviceType).map((sub) => (
+                      <SelectItem key={sub.id} value={sub.id}>
+                        {sub.name}
+                        <span className="text-xs text-gray-500 ml-2">
+                          (₹{sub.priceRange.min.toLocaleString()} - ₹{sub.priceRange.max.toLocaleString()})
+                        </span>
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="other">Other (Custom Subcategory)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
             {serviceType === "other" && (
               <div className="space-y-2">
                 <Label className="text-base">Custom Service Name</Label>
@@ -193,6 +244,18 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
                   value={customServiceName}
                   onChange={(e) => setCustomServiceName(e.target.value)}
                   placeholder="Enter service name"
+                  required
+                />
+              </div>
+            )}
+
+            {subcategory === "other" && serviceType !== "other" && (
+              <div className="space-y-2">
+                <Label className="text-base">Custom Subcategory Name</Label>
+                <Input
+                  value={customSubcategoryName}
+                  onChange={(e) => setCustomSubcategoryName(e.target.value)}
+                  placeholder="Enter subcategory name"
                   required
                 />
               </div>

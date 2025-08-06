@@ -35,7 +35,7 @@ const ProviderDetail = () => {
         .select(`
           *,
           profiles(full_name, phone),
-          additional_services(id, service_type, description, status, min_price, max_price, portfolio_images)
+          additional_services(id, service_type, subcategory, description, status, min_price, max_price, portfolio_images)
         `)
         .eq("id", id)
         .eq("status", "approved")
@@ -138,7 +138,8 @@ const ProviderDetail = () => {
 
   const allServices = [
     { 
-      type: provider.service_type, 
+      type: provider.service_type,
+      subcategory: provider.subcategory,
       description: `Main ${provider.service_type.replace('_', ' ')} service`,
       min_price: provider.base_price || 0,
       max_price: provider.base_price || 0,
@@ -146,6 +147,7 @@ const ProviderDetail = () => {
     },
     ...(provider.additional_services?.filter(s => s.status === 'approved').map(s => ({
       type: s.service_type,
+      subcategory: s.subcategory,
       description: s.description,
       min_price: s.min_price || 0,
       max_price: s.max_price || 0,
@@ -237,6 +239,11 @@ const ProviderDetail = () => {
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-semibold capitalize">
                           {service.type.replace('_', ' ')}
+                          {service.subcategory && (
+                            <span className="text-sm font-normal text-gray-500 ml-1">
+                              → {service.subcategory.replace('_', ' ')}
+                            </span>
+                          )}
                         </h3>
                         <input
                           type="checkbox"

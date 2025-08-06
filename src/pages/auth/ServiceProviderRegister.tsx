@@ -90,6 +90,7 @@ const ServiceProviderRegister = () => {
       const serviceProviderData = {
         profile_id: user.id,
         service_type: primaryService.service_type === 'other' ? primaryService.custom_service_name : primaryService.service_type,
+        subcategory: primaryService.subcategory === 'other' ? primaryService.custom_subcategory_name : primaryService.subcategory,
         business_name: formData.get('business_name') as string,
         description: formData.get('description') as string,
         city: primaryLocation,
@@ -115,6 +116,7 @@ const ServiceProviderRegister = () => {
       const additionalServicesData = services.map(service => ({
         provider_id: providerData.id,
         service_type: service.service_type === 'other' ? service.custom_service_name : service.service_type,
+        subcategory: service.subcategory === 'other' ? service.custom_subcategory_name : service.subcategory,
         description: `${service.service_type === 'other' ? service.custom_service_name : service.service_type} service`,
         min_price: service.min_price,
         max_price: service.max_price,

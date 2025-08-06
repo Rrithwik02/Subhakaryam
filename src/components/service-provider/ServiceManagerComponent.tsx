@@ -5,12 +5,14 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Plus } from "lucide-react";
-import { serviceCategories } from "@/data/services";
+import { serviceCategories, getSubcategories, getSubcategoryDetails } from "@/data/services";
 
 interface ServiceItem {
   id: string;
   service_type: string;
+  subcategory?: string;
   custom_service_name?: string;
+  custom_subcategory_name?: string;
   min_price: number;
   max_price: number;
 }
@@ -31,6 +33,7 @@ export const ServiceManagerComponent = ({
       {
         id: Date.now().toString(),
         service_type: "",
+        subcategory: "",
         min_price: 0,
         max_price: 0
       }
@@ -46,6 +49,7 @@ export const ServiceManagerComponent = ({
     const newService: ServiceItem = {
       id: Date.now().toString(),
       service_type: "",
+      subcategory: "",
       min_price: 0,
       max_price: 0
     };
@@ -59,9 +63,33 @@ export const ServiceManagerComponent = ({
   };
 
   const updateService = (id: string, field: keyof ServiceItem, value: any) => {
-    updateServices(services.map(service => 
-      service.id === id ? { ...service, [field]: value } : service
-    ));
+    updateServices(services.map(service => {
+      if (service.id === id) {
+        const updatedService = { ...service, [field]: value };
+        // Reset subcategory when service type changes
+        if (field === 'service_type') {
+          updatedService.subcategory = "";
+          updatedService.custom_subcategory_name = "";
+          // Update suggested pricing based on subcategory
+          const subcategories = getSubcategories(value);
+          if (subcategories.length > 0) {
+            const firstSubcategory = subcategories[0];
+            updatedService.min_price = firstSubcategory.priceRange.min;
+            updatedService.max_price = firstSubcategory.priceRange.max;
+          }
+        }
+        // Update pricing when subcategory changes
+        if (field === 'subcategory' && value !== 'other') {
+          const subcategoryDetails = getSubcategoryDetails(service.service_type, value);
+          if (subcategoryDetails) {
+            updatedService.min_price = subcategoryDetails.priceRange.min;
+            updatedService.max_price = subcategoryDetails.priceRange.max;
+          }
+        }
+        return updatedService;
+      }
+      return service;
+    }));
   };
 
   const validatePriceRange = (minPrice: number, maxPrice: number) => {
@@ -116,6 +144,31 @@ export const ServiceManagerComponent = ({
                 </Select>
               </div>
 
+              {service.service_type && service.service_type !== "other" && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Service Subcategory</Label>
+                  <Select 
+                    value={service.subcategory || ""} 
+                    onValueChange={(value) => updateService(service.id, 'subcategory', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select subcategory" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getSubcategories(service.service_type).map((subcategory) => (
+                        <SelectItem key={subcategory.id} value={subcategory.id}>
+                          {subcategory.name}
+                          <span className="text-xs text-gray-500 ml-2">
+                            (₹{subcategory.priceRange.min.toLocaleString()} - ₹{subcategory.priceRange.max.toLocaleString()})
+                          </span>
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="other">Other (Custom Subcategory)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               {service.service_type === "other" && (
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Custom Service Name</Label>
@@ -123,6 +176,18 @@ export const ServiceManagerComponent = ({
                     value={service.custom_service_name || ""}
                     onChange={(e) => updateService(service.id, 'custom_service_name', e.target.value)}
                     placeholder="Enter service name"
+                    required
+                  />
+                </div>
+              )}
+
+              {service.subcategory === "other" && service.service_type !== "other" && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Custom Subcategory Name</Label>
+                  <Input
+                    value={service.custom_subcategory_name || ""}
+                    onChange={(e) => updateService(service.id, 'custom_subcategory_name', e.target.value)}
+                    placeholder="Enter subcategory name"
                     required
                   />
                 </div>
