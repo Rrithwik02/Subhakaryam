@@ -162,191 +162,189 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
           Add Service
         </Button>
       </DialogTrigger>
-      <MobileOptimizedDialogContent className="flex flex-col max-h-[90vh]">
-        <DialogHeader className="flex-shrink-0 pb-4">
+      <MobileOptimizedDialogContent className="flex flex-col h-[90vh] p-0">
+        <DialogHeader className="flex-shrink-0 px-6 pt-6 pb-4">
           <DialogTitle className="text-2xl font-display font-bold text-ceremonial-maroon text-center">
             Add Additional Service
           </DialogTitle>
         </DialogHeader>
         
-        <div className="flex-1 min-h-0">
-          <ScrollArea className="h-full">
-            <div className="p-6 space-y-6">
-              <form id="additional-service-form" onSubmit={handleSubmit} className="space-y-6">
-              {uploadError && (
-                <Alert variant="destructive">
-                  <AlertDescription>{uploadError}</AlertDescription>
-                </Alert>
-              )}
-              
+        <ScrollArea className="flex-1 px-6">
+          <div className="space-y-6 pb-6">
+            <form id="additional-service-form" onSubmit={handleSubmit} className="space-y-6">
+            {uploadError && (
+              <Alert variant="destructive">
+                <AlertDescription>{uploadError}</AlertDescription>
+              </Alert>
+            )}
+            
+            <div className="space-y-2">
+              <Label className="text-base">Service Type</Label>
+              <Select value={serviceType} onValueChange={(value) => {
+                setServiceType(value);
+                setSubcategory("");
+                setCustomSubcategoryName("");
+                // Auto-suggest pricing based on first subcategory
+                if (value !== "other") {
+                  const subcategories = getSubcategories(value);
+                  if (subcategories.length > 0) {
+                    const firstSub = subcategories[0];
+                    setMinPrice(firstSub.priceRange.min.toString());
+                    setMaxPrice(firstSub.priceRange.max.toString());
+                  }
+                }
+              }}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a service" />
+                </SelectTrigger>
+                <SelectContent>
+                  {serviceCategories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="other">Other (Custom Service)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {serviceType && serviceType !== "other" && (
               <div className="space-y-2">
-                <Label className="text-base">Service Type</Label>
-                <Select value={serviceType} onValueChange={(value) => {
-                  setServiceType(value);
-                  setSubcategory("");
+                <Label className="text-base">Service Subcategory</Label>
+                <Select value={subcategory} onValueChange={(value) => {
+                  setSubcategory(value);
                   setCustomSubcategoryName("");
-                  // Auto-suggest pricing based on first subcategory
+                  // Auto-suggest pricing based on selected subcategory
                   if (value !== "other") {
-                    const subcategories = getSubcategories(value);
-                    if (subcategories.length > 0) {
-                      const firstSub = subcategories[0];
-                      setMinPrice(firstSub.priceRange.min.toString());
-                      setMaxPrice(firstSub.priceRange.max.toString());
+                    const subcategoryDetails = getSubcategoryDetails(serviceType, value);
+                    if (subcategoryDetails) {
+                      setMinPrice(subcategoryDetails.priceRange.min.toString());
+                      setMaxPrice(subcategoryDetails.priceRange.max.toString());
                     }
                   }
                 }}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a service" />
+                    <SelectValue placeholder="Select subcategory" />
                   </SelectTrigger>
                   <SelectContent>
-                    {serviceCategories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
+                    {getSubcategories(serviceType).map((sub) => (
+                      <SelectItem key={sub.id} value={sub.id}>
+                        {sub.name}
+                        <span className="text-xs text-gray-500 ml-2">
+                          (₹{sub.priceRange.min.toLocaleString()} - ₹{sub.priceRange.max.toLocaleString()})
+                        </span>
                       </SelectItem>
                     ))}
-                    <SelectItem value="other">Other (Custom Service)</SelectItem>
+                    <SelectItem value="other">Other (Custom Subcategory)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+            )}
 
-              {serviceType && serviceType !== "other" && (
-                <div className="space-y-2">
-                  <Label className="text-base">Service Subcategory</Label>
-                  <Select value={subcategory} onValueChange={(value) => {
-                    setSubcategory(value);
-                    setCustomSubcategoryName("");
-                    // Auto-suggest pricing based on selected subcategory
-                    if (value !== "other") {
-                      const subcategoryDetails = getSubcategoryDetails(serviceType, value);
-                      if (subcategoryDetails) {
-                        setMinPrice(subcategoryDetails.priceRange.min.toString());
-                        setMaxPrice(subcategoryDetails.priceRange.max.toString());
-                      }
-                    }
-                  }}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select subcategory" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getSubcategories(serviceType).map((sub) => (
-                        <SelectItem key={sub.id} value={sub.id}>
-                          {sub.name}
-                          <span className="text-xs text-gray-500 ml-2">
-                            (₹{sub.priceRange.min.toLocaleString()} - ₹{sub.priceRange.max.toLocaleString()})
-                          </span>
-                        </SelectItem>
-                      ))}
-                      <SelectItem value="other">Other (Custom Subcategory)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {serviceType === "other" && (
-                <div className="space-y-2">
-                  <Label className="text-base">Custom Service Name</Label>
-                  <Input
-                    value={customServiceName}
-                    onChange={(e) => setCustomServiceName(e.target.value)}
-                    placeholder="Enter service name"
-                    required
-                  />
-                </div>
-              )}
-
-              {subcategory === "other" && serviceType !== "other" && (
-                <div className="space-y-2">
-                  <Label className="text-base">Custom Subcategory Name</Label>
-                  <Input
-                    value={customSubcategoryName}
-                    onChange={(e) => setCustomSubcategoryName(e.target.value)}
-                    placeholder="Enter subcategory name"
-                    required
-                  />
-                </div>
-              )}
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-base">Minimum Price (₹)</Label>
-                  <Input
-                    type="number"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    placeholder="Min price"
-                    min="1"
-                    required
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-base">Maximum Price (₹)</Label>
-                  <Input
-                    type="number"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    placeholder="Max price"
-                    min="1"
-                    required
-                    className="w-full"
-                  />
-                </div>
-              </div>
-
+            {serviceType === "other" && (
               <div className="space-y-2">
-                <Label className="text-base">Description</Label>
-                <Textarea
-                  placeholder="Describe your additional service in detail..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                <Label className="text-base">Custom Service Name</Label>
+                <Input
+                  value={customServiceName}
+                  onChange={(e) => setCustomServiceName(e.target.value)}
+                  placeholder="Enter service name"
                   required
-                  className="min-h-[120px] resize-none"
                 />
               </div>
+            )}
 
+            {subcategory === "other" && serviceType !== "other" && (
+              <div className="space-y-2">
+                <Label className="text-base">Custom Subcategory Name</Label>
+                <Input
+                  value={customSubcategoryName}
+                  onChange={(e) => setCustomSubcategoryName(e.target.value)}
+                  placeholder="Enter subcategory name"
+                  required
+                />
+              </div>
+            )}
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-base">Minimum Price (₹)</Label>
+                <Input
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  placeholder="Min price"
+                  min="1"
+                  required
+                  className="w-full"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-base">Maximum Price (₹)</Label>
+                <Input
+                  type="number"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  placeholder="Max price"
+                  min="1"
+                  required
+                  className="w-full"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-base">Description</Label>
+              <Textarea
+                placeholder="Describe your additional service in detail..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                className="min-h-[120px] resize-none"
+              />
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <Label className="text-base">Portfolio Images</Label>
+                <span className="text-sm text-gray-500">
+                  {portfolioImages.length}/5 images
+                </span>
+              </div>
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <Label className="text-base">Portfolio Images</Label>
-                  <span className="text-sm text-gray-500">
-                    {portfolioImages.length}/5 images
-                  </span>
-                </div>
-                <div className="space-y-4">
-                  {portfolioImages.length < 5 && (
-                    <ImageUpload
-                      onUploadComplete={handleImageUpload}
-                      className="w-full"
-                      maxSizeInBytes={5 * 1024 * 1024}
-                      allowedFileTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
-                    />
-                  )}
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {portfolioImages.map((image, index) => (
-                      <div key={index} className="relative group aspect-square">
-                        <img
-                          src={image}
-                          alt={`Portfolio ${index + 1}`}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                {portfolioImages.length < 5 && (
+                  <ImageUpload
+                    onUploadComplete={handleImageUpload}
+                    className="w-full"
+                    maxSizeInBytes={5 * 1024 * 1024}
+                    allowedFileTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
+                  />
+                )}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {portfolioImages.map((image, index) => (
+                    <div key={index} className="relative group aspect-square">
+                      <img
+                        src={image}
+                        alt={`Portfolio ${index + 1}`}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
-
-              </form>
             </div>
-          </ScrollArea>
-        </div>
+
+            </form>
+          </div>
+        </ScrollArea>
         
-        <DialogFooter className="flex-shrink-0 mt-4 p-4 border-t">
+        <DialogFooter className="flex-shrink-0 px-6 pb-6 pt-4 border-t bg-background">
           <Button
             type="submit"
             form="additional-service-form"
