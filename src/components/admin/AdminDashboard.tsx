@@ -7,6 +7,7 @@ import DeletionRequestsTable from "./DeletionRequestsTable";
 import PaymentsTable from "./PaymentsTable";
 import ContactSubmissionsTable from "./ContactSubmissionsTable";
 import ServiceRequestsTable from "./ServiceRequestsTable";
+import { AdditionalServicesTable } from "./AdditionalServicesTable";
 
 import PayoutManagement from "./PayoutManagement";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -29,7 +30,7 @@ const AdminDashboard = () => {
 
         <Tabs defaultValue="providers" className="space-y-6">
           <div className={`${isMobile ? "overflow-x-auto" : ""}`}>
-            <TabsList className={`${isMobile ? "flex min-w-max" : "grid"} ${isMobile ? "" : "w-full grid-cols-7"} h-auto ${isMobile ? "p-1" : ""}`}>
+            <TabsList className={`${isMobile ? "flex min-w-max" : "grid"} ${isMobile ? "" : "w-full grid-cols-8"} h-auto ${isMobile ? "p-1" : ""}`}>
               <TabsTrigger value="providers" className={`${isMobile ? "whitespace-nowrap px-3 py-2 text-xs" : ""}`}>
                 {isMobile ? "Providers" : "Service Providers"}
               </TabsTrigger>
@@ -53,6 +54,9 @@ const AdminDashboard = () => {
               </TabsTrigger>
               <TabsTrigger value="service-requests" className={`${isMobile ? "whitespace-nowrap px-3 py-2 text-xs" : ""}`}>
                 {isMobile ? "Requests" : "Service Requests"}
+              </TabsTrigger>
+              <TabsTrigger value="additional-services" className={`${isMobile ? "whitespace-nowrap px-3 py-2 text-xs" : ""}`}>
+                {isMobile ? "Add. Services" : "Additional Services"}
               </TabsTrigger>
             </TabsList>
           </div>
@@ -135,6 +139,16 @@ const AdminDashboard = () => {
               </ScrollArea>
             ) : (
               <ServiceRequestsTable />
+            )}
+          </TabsContent>
+
+          <TabsContent value="additional-services" className={`bg-white rounded-lg shadow-lg ${isMobile ? "p-2" : "p-6"}`}>
+            {isMobile ? (
+              <ScrollArea className="h-[calc(100vh-300px)]">
+                <AdditionalServicesTable />
+              </ScrollArea>
+            ) : (
+              <AdditionalServicesTable />
             )}
           </TabsContent>
         </Tabs>
