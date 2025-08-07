@@ -41,8 +41,18 @@ import ProviderDetail from "./pages/provider/ProviderDetail";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      retry: (failureCount, error) => {
+        // Don't retry on auth errors
+        if (error?.message?.includes('auth') || error?.message?.includes('401')) {
+          return false;
+        }
+        return failureCount < 2;
+      },
       refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+    mutations: {
+      retry: false,
     },
   },
 });
