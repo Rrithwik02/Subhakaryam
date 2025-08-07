@@ -44,12 +44,12 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
           .in('id', [session.user.id, receiverId]);
 
         if (error) {
-          console.error('ChatInterface: Profile query error:', error);
+          
           throw error;
         }
         
         if (!data || data.length < 1) {
-          console.error('ChatInterface: No profiles found');
+          
           setIsInitialized(false);
           setIsLoading(false);
           return;
@@ -86,7 +86,7 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
           .order("created_at", { ascending: true });
 
         if (error) {
-          console.error('ChatInterface: Error fetching messages:', error);
+          
           toast({
             variant: "destructive",
             title: "Error",
@@ -143,13 +143,13 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
       const { error: insertError } = await supabase.from("chat_messages").insert(messageData);
 
       if (insertError) {
-        console.error('ChatInterface: Error inserting message:', insertError);
+        
         throw insertError;
       }
 
       setNewMessage("");
     } catch (error) {
-      console.error('ChatInterface: Error sending message:', error);
+      
       toast({
         variant: "destructive",
         title: "Error",

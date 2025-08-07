@@ -99,12 +99,16 @@ const PaymentsTable = () => {
         title: "Error",
         description: "Failed to verify payment",
       });
-      console.error("Verify payment error:", error);
+      
     },
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   return (

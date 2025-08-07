@@ -61,7 +61,7 @@ const ServiceRequestsTable = () => {
 
       setRequests(formattedData || []);
     } catch (error) {
-      console.error("Error fetching service requests:", error);
+      
       toast({
         variant: "destructive",
         title: "Error",
@@ -97,7 +97,6 @@ const ServiceRequestsTable = () => {
         description: `Request marked as ${status}`,
       });
     } catch (error) {
-      console.error("Error updating request status:", error);
       toast({
         variant: "destructive",
         title: "Update Failed",
@@ -134,7 +133,7 @@ const ServiceRequestsTable = () => {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       ) : requests.length > 0 ? (
         <Table>

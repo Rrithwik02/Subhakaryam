@@ -60,7 +60,7 @@ const Index = () => {
     retry: false,
     meta: {
       onError: (error: any) => {
-        console.error('Error in service provider query:', error);
+        
         toast({
           variant: "destructive",
           title: "Error",
@@ -79,7 +79,7 @@ const Index = () => {
             .rpc('is_user_admin' as any, { user_id: session.user.id });
           
           if (adminError) {
-            console.error('Error checking admin status:', adminError);
+            
           } else {
             setIsAdmin(Boolean(isAdminResult));
           }
@@ -92,7 +92,7 @@ const Index = () => {
           
           // Only log error if it's not a "no rows found" error
           if (providerError && providerError.code !== 'PGRST116') {
-            console.error('Error checking provider status:', providerError);
+            
             return;
           }
           
@@ -101,7 +101,7 @@ const Index = () => {
             setServiceProviderId(providerData.id);
           }
         } catch (error) {
-          console.error('Error in checkUserStatus:', error);
+          
           toast({
             variant: "destructive",
             title: "Error",
@@ -128,7 +128,7 @@ const Index = () => {
       
       navigate('/auth/login', { replace: true }); // Redirect to login page and replace history
     } catch (error) {
-      console.error('Error signing out:', error);
+      
       toast({
         variant: "destructive",
         title: "Error",
@@ -140,7 +140,7 @@ const Index = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }

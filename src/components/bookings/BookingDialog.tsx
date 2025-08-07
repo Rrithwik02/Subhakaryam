@@ -119,7 +119,7 @@ const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [], servi
           percentage: data?.advance_payment_percentage || 0,
         });
       } catch (error) {
-        console.error('Error loading provider settings:', error);
+        // Silently handle error, use defaults
       }
     };
 
@@ -221,7 +221,11 @@ const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [], servi
 
       return true;
     } catch (error) {
-      console.error('Error checking availability:', error);
+      toast({
+        variant: "destructive",
+        title: "Availability Check Failed",
+        description: "Unable to verify availability. Please try again.",
+      });
       return false;
     }
   };
@@ -294,7 +298,7 @@ const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [], servi
       form.reset();
       setDateRange(undefined);
     } catch (error: any) {
-      console.error("Error creating booking:", error);
+      
       toast({
         variant: "destructive",
         title: "Error",

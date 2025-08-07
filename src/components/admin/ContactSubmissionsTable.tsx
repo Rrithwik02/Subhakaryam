@@ -50,7 +50,7 @@ const ContactSubmissionsTable = () => {
       if (error) throw error;
       setSubmissions(data || []);
     } catch (error) {
-      console.error("Error fetching contact submissions:", error);
+      
       toast({
         variant: "destructive",
         title: "Error",
@@ -86,7 +86,6 @@ const ContactSubmissionsTable = () => {
         description: `Submission marked as ${status}`,
       });
     } catch (error) {
-      console.error("Error updating submission status:", error);
       toast({
         variant: "destructive",
         title: "Update Failed",
@@ -103,7 +102,7 @@ const ContactSubmissionsTable = () => {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       ) : submissions.length > 0 ? (
         <Table>

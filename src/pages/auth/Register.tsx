@@ -18,7 +18,7 @@ const Register = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth event:", event, session?.user?.email_confirmed_at);
+      
       
       if (event === "SIGNED_IN" && session && !session.user.email_confirmed_at) {
         setUserEmail(session?.user?.email || "");
@@ -121,7 +121,7 @@ const Register = () => {
         if (error) throw error;
       }
     } catch (error: any) {
-      console.error("Resend error:", error);
+      
       throw error;
     } finally {
       setIsResending(false);

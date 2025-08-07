@@ -26,7 +26,6 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           .rpc('is_user_admin' as any, { user_id: session.user.id });
         
         if (error) {
-          console.error('Error checking admin status:', error);
           throw error;
         }
         
@@ -40,7 +39,11 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           });
         }
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        toast({
+          variant: "destructive",
+          title: "Authentication Error",
+          description: "Unable to verify admin privileges.",
+        });
         setIsAdmin(false);
       } finally {
         setCheckingAdminStatus(false);
@@ -55,7 +58,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (isLoading || checkingAdminStatus) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }

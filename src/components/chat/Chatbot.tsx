@@ -40,12 +40,12 @@ const Chatbot = () => {
       });
 
       if (error) {
-        console.error('Supabase function error:', error);
+        
         throw new Error('Failed to connect to chat service');
       }
 
       if (!data?.choices?.[0]?.message?.content) {
-        console.error('Invalid response format:', data);
+        
         throw new Error('Invalid response from chat service');
       }
 
@@ -55,7 +55,7 @@ const Chatbot = () => {
       };
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Chat error:', error);
+      
       toast({
         title: "Error",
         description: error.message || "Failed to get response. Please try again.",
