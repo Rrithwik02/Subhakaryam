@@ -126,7 +126,7 @@ const Index = () => {
         description: "You have been signed out of your account.",
       });
       
-      navigate('/login', { replace: true }); // Redirect to login page and replace history
+      navigate('/auth/login', { replace: true }); // Redirect to login page and replace history
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
@@ -169,7 +169,7 @@ const Index = () => {
               <Button
                 variant="outline"
                 className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/auth/login")}
               >
                 Sign In
               </Button>

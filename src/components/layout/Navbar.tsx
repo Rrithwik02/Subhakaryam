@@ -51,7 +51,7 @@ const Navbar = () => {
 
   const handleProfileClick = () => {
     if (!session) {
-      navigate("/login");
+      navigate("/auth/login");
       return;
     }
 

@@ -23,7 +23,7 @@ const AddService: React.FC = () => {
             title: "Authentication Required",
             description: "Please log in to access this page",
           });
-          navigate('/login');
+          navigate('/auth/login');
           return;
         }
 

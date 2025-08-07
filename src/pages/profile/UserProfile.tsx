@@ -89,7 +89,7 @@ const UserProfile = () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      navigate('/login');
+      navigate('/auth/login');
     } catch (error) {
       toast({
         variant: "destructive",

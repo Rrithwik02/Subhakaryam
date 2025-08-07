@@ -44,7 +44,7 @@ const ServiceRequest = () => {
   }
 
   if (!session) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth/login" replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

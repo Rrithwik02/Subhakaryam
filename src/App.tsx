@@ -88,7 +88,7 @@ const AppContent: React.FC = () => {
             <Route path="/blog" element={<BlogIndex />} />
             <Route path="/policies/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/policies/terms-conditions" element={<TermsConditions />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/auth/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route 
