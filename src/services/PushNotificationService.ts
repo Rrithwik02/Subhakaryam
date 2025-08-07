@@ -7,49 +7,63 @@ class PushNotificationService {
 
   async initialize() {
     if (!Capacitor.isNativePlatform() || this.initialized) {
+      console.log('Push notifications: Skipping initialization (not native platform or already initialized)');
       return;
     }
 
     try {
-      // Request permission
-      let permStatus = await PushNotifications.checkPermissions();
+      // Check if push notifications are available
+      const permStatus = await PushNotifications.checkPermissions();
       
       if (permStatus.receive === 'prompt') {
-        permStatus = await PushNotifications.requestPermissions();
-      }
-      
-      if (permStatus.receive !== 'granted') {
-        throw new Error('User denied push notification permissions');
+        const requestResult = await PushNotifications.requestPermissions();
+        if (requestResult.receive !== 'granted') {
+          console.warn('Push notifications: Permission denied by user');
+          return;
+        }
+      } else if (permStatus.receive !== 'granted') {
+        console.warn('Push notifications: Permission not granted');
+        return;
       }
 
-      // Register for push notifications
-      await PushNotifications.register();
+      // Attempt to register for push notifications with Firebase fallback
+      try {
+        await PushNotifications.register();
+        console.log('Push notifications: Registration successful');
+      } catch (registerError: any) {
+        // Handle Firebase not initialized error gracefully
+        if (registerError.message?.includes('FirebaseApp is not initialized')) {
+          console.warn('Push notifications: Firebase not configured, disabling push notifications');
+          return;
+        }
+        throw registerError;
+      }
 
-      // Set up listeners
+      // Set up listeners only after successful registration
       PushNotifications.addListener('registration', async (token) => {
         console.log('Push registration success, token: ' + token.value);
         await this.savePushToken(token.value);
       });
 
       PushNotifications.addListener('registrationError', (error) => {
-        console.error('Push registration error: ', error);
+        console.warn('Push registration error (will continue without push notifications):', error);
       });
 
       PushNotifications.addListener('pushNotificationReceived', (notification) => {
         console.log('Push notification received: ', notification);
-        // Handle notification when app is in foreground
         this.handleForegroundNotification(notification);
       });
 
       PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
         console.log('Push notification action performed: ', notification);
-        // Handle notification tap
         this.handleNotificationTap(notification);
       });
 
       this.initialized = true;
+      console.log('Push notifications: Initialization complete');
     } catch (error) {
-      console.error('Error initializing push notifications:', error);
+      console.warn('Push notifications: Failed to initialize, continuing without push notifications:', error);
+      // Don't throw error, continue app initialization
     }
   }
 

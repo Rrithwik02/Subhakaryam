@@ -8,6 +8,15 @@ const config: CapacitorConfig = {
     url: 'https://1d772fcc-a164-4075-bbeb-3e31686d5eab.lovableproject.com?forceHideBadge=true',
     cleartext: true
   },
+  android: {
+    allowMixedContent: true,
+    captureInput: true,
+    webContentsDebuggingEnabled: true
+  },
+  ios: {
+    allowsLinkPreview: false,
+    handleApplicationUrl: false
+  },
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
@@ -17,6 +26,9 @@ const config: CapacitorConfig = {
     },
     PushNotifications: {
       presentationOptions: ["badge", "sound", "alert"]
+    },
+    CapacitorHttp: {
+      enabled: true
     }
   }
 };
