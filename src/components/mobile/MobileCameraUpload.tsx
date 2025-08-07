@@ -28,7 +28,7 @@ export function MobileCameraUpload({ onImageCapture, children }: MobileCameraUpl
         });
       }
     } catch (error) {
-      console.error('Error capturing photo:', error);
+      
     }
   };
 
@@ -45,7 +45,7 @@ export function MobileCameraUpload({ onImageCapture, children }: MobileCameraUpl
         });
       }
     } catch (error) {
-      console.error('Error selecting photo:', error);
+      
     }
   };
 

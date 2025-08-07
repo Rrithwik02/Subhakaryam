@@ -33,7 +33,7 @@ export function LocationPicker({ onLocationSelect, className }: LocationPickerPr
         description: "Your current location has been detected.",
       });
     } catch (error) {
-      console.error('Error getting location:', error);
+      
       toast({
         title: "Location Error",
         description: "Failed to get your location. Please enable location services.",
