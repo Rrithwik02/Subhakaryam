@@ -53,7 +53,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
                   <CarouselItem key={index}>
                     <AspectRatio ratio={16 / 9} className="bg-muted">
                       <img
-                        src={`${SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}}
+                        src={`${SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
                         alt={`Portfolio ${index + 1}`}
                         className={cn(
                           "object-cover w-full h-full",
