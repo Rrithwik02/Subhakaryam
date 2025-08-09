@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LogOut } from "lucide-react";
+
 import SuggestionForm from "@/components/suggestions/SuggestionForm";
 import Hero from "@/components/home/Hero";
 import Services from "@/components/home/Services";
@@ -113,28 +113,6 @@ const Index = () => {
     checkUserStatus();
   }, [session, toast]);
 
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      localStorage.clear(); // Clear any stored auth data
-      
-      toast({
-        title: "Signed out successfully",
-        description: "You have been signed out of your account.",
-      });
-      
-      navigate('/auth/login', { replace: true }); // Redirect to login page and replace history
-    } catch (error) {
-      
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to sign out. Please try again.",
-      });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -152,6 +130,7 @@ const Index = () => {
         <meta name="description" content="Discover and book trusted pooja services, mehendi artists, wedding photography, and more across major cities." />
         <link rel="canonical" href="/" />
       </Helmet>
+      <Hero />
       <AdvertCarousel />
       <Services />
       <EssentialsPreview />

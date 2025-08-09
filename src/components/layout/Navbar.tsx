@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus, Briefcase } from "lucide-react";
+import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus, Briefcase, LogOut } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
@@ -13,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 const Navbar = () => {
   const navigate = useNavigate();
   const { session } = useSessionContext();
+  const { toast } = useToast();
 
   const { data: userProfile } = useQuery({
     queryKey: ["user-profile"],
@@ -59,6 +61,18 @@ const Navbar = () => {
       navigate("/provider/profile");
     } else {
       navigate("/profile");
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      localStorage.clear();
+      toast({ title: "Signed out successfully", description: "You have been signed out of your account." });
+      navigate("/auth/login", { replace: true });
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to sign out. Please try again." });
     }
   };
 
@@ -189,6 +203,17 @@ const Navbar = () => {
 
             <div className="flex items-center gap-4">
               {session && <NotificationBell />}
+              {session && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
+                  onClick={handleSignOut}
+                  aria-label="Sign out"
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              )}
               
               <Button
                 variant="ghost"
@@ -273,6 +298,13 @@ const Navbar = () => {
                             />
                           </>
                         )}
+                        <Separator className="my-4" />
+                        <MenuLink 
+                          icon={LogOut}
+                          text="Sign Out"
+                          onClick={handleSignOut}
+                          className="text-ceremonial-maroon"
+                        />
                       </>
                     )}
                   </div>
