@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams } from "react-router-dom";
@@ -10,12 +10,24 @@ import SearchFilters from "@/components/search/SearchFilters";
 import ServiceCard from "@/components/search/ServiceCard";
 
 const Search = () => {
-  const [searchParams] = useSearchParams();
-  const initialServiceType = searchParams.get("service");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [city, setCity] = useState("");
-  const [serviceType, setServiceType] = useState(initialServiceType?.toLowerCase() || "all");
-  const [sortBy, setSortBy] = useState<"rating_desc" | "newest">("rating_desc");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialSearch = searchParams.get("q") || "";
+  const initialCity = searchParams.get("city") || "all";
+  const initialService = searchParams.get("service")?.toLowerCase() || "all";
+  const initialSort = (searchParams.get("sort") as "rating_desc" | "newest") || "rating_desc";
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [city, setCity] = useState(initialCity);
+  const [serviceType, setServiceType] = useState(initialService);
+  const [sortBy, setSortBy] = useState<"rating_desc" | "newest">(initialSort);
+
+  useEffect(() => {
+    const params: Record<string, string> = {};
+    if (searchTerm) params.q = searchTerm;
+    if (city && city !== "all") params.city = city;
+    if (serviceType && serviceType !== "all") params.service = serviceType;
+    if (sortBy && sortBy !== "rating_desc") params.sort = sortBy;
+    setSearchParams(params);
+  }, [searchTerm, city, serviceType, sortBy, setSearchParams]);
 
   const { data: services, isLoading, error, refetch } = useQuery({
     queryKey: ["services", searchTerm, city, serviceType, sortBy],
@@ -31,7 +43,6 @@ const Search = () => {
           query = query.ilike("business_name", `%${searchTerm}%`);
         }
 
-        // Filter by city (including secondary city)
         if (city && city !== "all") {
           query = query.or(`city.ilike.%${city}%,secondary_city.ilike.%${city}%`);
         }

@@ -10,6 +10,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { SUPABASE_URL } from "@/integrations/supabase/client";
 
 interface ServiceCardProps {
   service: {
@@ -52,7 +53,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
                   <CarouselItem key={index}>
                     <AspectRatio ratio={16 / 9} className="bg-muted">
                       <img
-                        src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
+                        src={`${SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}}
                         alt={`Portfolio ${index + 1}`}
                         className={cn(
                           "object-cover w-full h-full",

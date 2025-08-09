@@ -1,6 +1,7 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Search as SearchIcon } from "lucide-react";
 import { serviceCategories } from "@/data/services";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -37,7 +38,7 @@ const SearchFilters = ({
   
   return (
     <div className={cn(
-      "bg-white rounded-lg shadow-md mb-8",
+      "bg-background rounded-lg shadow-md mb-8",
       isMobile ? "p-4" : "p-6"
     )}>
       <div className={cn(
@@ -63,7 +64,7 @@ const SearchFilters = ({
             <SelectContent className="z-50">
               <SelectItem value="all">All Cities</SelectItem>
               {cities.map((city) => (
-                <SelectItem key={city.id} value={city.id}>
+                <SelectItem key={city.id} value={city.name}>
                   {city.name}
                 </SelectItem>
               ))}
@@ -86,7 +87,7 @@ const SearchFilters = ({
           </Select>
         </div>
         <div className={isMobile ? "w-full" : "md:w-64"}>
-          <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+          <Select value={sortBy} onValueChange={(value: "rating_desc" | "newest") => setSortBy(value)}>
             <SelectTrigger className={isMobile ? "h-12" : ""}>
               <SelectValue placeholder="Sort by..." />
             </SelectTrigger>
@@ -96,6 +97,20 @@ const SearchFilters = ({
             </SelectContent>
           </Select>
         </div>
+      </div>
+      <div className={isMobile ? "w-full mt-4" : "md:w-auto md:mt-0"}>
+        <Button
+          variant="outline"
+          className={isMobile ? "w-full h-12" : ""}
+          onClick={() => {
+            setSearchTerm("");
+            setCity("all");
+            setServiceType("all");
+            setSortBy("rating_desc");
+          }}
+        >
+          Clear filters
+        </Button>
       </div>
     </div>
   );

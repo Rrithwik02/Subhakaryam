@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, SUPABASE_URL } from "@/integrations/supabase/client";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -135,7 +135,7 @@ export function ServicesManagement() {
                               <CarouselItem key={index}>
                                 <AspectRatio ratio={16 / 10} className="bg-muted">
                                   <img
-                                    src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
+                                    src={`${SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
                                     alt={`Portfolio ${index + 1}`}
                                     className="object-cover w-full h-full rounded"
                                   />

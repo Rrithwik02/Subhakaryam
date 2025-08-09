@@ -24,6 +24,7 @@ import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
 import FAQSchema from "@/components/seo/FAQSchema";
 import { useToast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -146,37 +147,11 @@ const Index = () => {
   return (
     <div className="min-h-screen pt-16">
       <FAQSchema />
-      <div className="absolute top-20 right-4 flex gap-4 z-50">
-        <div className="flex gap-2">
-          {session ? (
-            <Button
-              className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md flex items-center gap-2"
-              onClick={handleSignOut}
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </Button>
-          ) : (
-            <>
-              <Button
-                variant="outline"
-                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
-                onClick={() => navigate("/auth/login")}
-              >
-                Sign In
-              </Button>
-              <Button
-                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
-                onClick={() => navigate("/register")}
-              >
-                Join Us
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
-
-      <Hero />
+      <Helmet>
+        <title>Subhakaryam - Book Poojari & Ceremonial Services</title>
+        <meta name="description" content="Discover and book trusted pooja services, mehendi artists, wedding photography, and more across major cities." />
+        <link rel="canonical" href="/" />
+      </Helmet>
       <AdvertCarousel />
       <Services />
       <EssentialsPreview />
