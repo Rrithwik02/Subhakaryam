@@ -41,7 +41,7 @@ export class AppError extends Error {
 }
 
 export const handleError = (error: unknown, context?: ErrorContext) => {
-  console.error('Error occurred:', error, context);
+  // In production, you would send this to an error reporting service
 
   let appError: AppError;
 

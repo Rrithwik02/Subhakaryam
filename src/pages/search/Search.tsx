@@ -59,7 +59,7 @@ const Search = () => {
 
         return data;
       } catch (err) {
-        console.error("Error fetching services:", err);
+        
         throw err;
       }
     },

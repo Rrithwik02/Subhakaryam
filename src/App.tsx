@@ -17,9 +17,6 @@ import { supabase } from "./integrations/supabase/client";
 import BackButton from "./components/layout/BackButton";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminRoute from "./components/auth/AdminRoute";
-import { MobileBottomNavigation } from "./components/mobile/MobileBottomNavigation";
-import { pushNotificationService } from "./services/PushNotificationService";
-import { useMobileFeatures } from "./hooks/use-mobile-features";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import Navbar from "./components/layout/Navbar";
@@ -72,21 +69,13 @@ const App: React.FC = () => {
 };
 
 const AppContent: React.FC = () => {
-  const { isNative } = useMobileFeatures();
-
-  // Initialize push notifications for mobile
-  React.useEffect(() => {
-    if (isNative) {
-      pushNotificationService.initialize();
-    }
-  }, [isNative]);
 
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <BackButton />
-        <main className="flex-1 pb-16 md:pb-0">
+        <main className="flex-1">
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<AboutUs />} />
@@ -176,7 +165,7 @@ const AppContent: React.FC = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
-        {isNative && <MobileBottomNavigation />}
+        
       </div>
       <Toaster />
     </Router>

@@ -39,7 +39,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { MobileOptimizedDialogContent } from "@/components/ui/mobile-optimized-dialog";
+
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -311,7 +311,7 @@ const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [], servi
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <MobileOptimizedDialogContent>
+      <DialogContent className="max-h-[90vh]">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>
             Book Service with {provider.business_name}
@@ -644,7 +644,7 @@ const BookingDialog = ({ isOpen, onClose, provider, selectedServices = [], servi
             }
           </Button>
         </DialogFooter>
-      </MobileOptimizedDialogContent>
+      </DialogContent>
     </Dialog>
   );
 };

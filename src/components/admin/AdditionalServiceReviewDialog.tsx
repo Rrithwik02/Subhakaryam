@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { PortfolioImageViewer } from "./PortfolioImageViewer";
-import { MobileOptimizedDialogContent } from "@/components/ui/mobile-optimized-dialog";
+
 import { 
   AlertDialog, 
   AlertDialogAction, 
@@ -68,7 +68,7 @@ export function AdditionalServiceReviewDialog({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <MobileOptimizedDialogContent className="max-w-4xl">
+        <DialogContent className="max-w-4xl max-h-[90vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               Service Review: {service.service_type}
@@ -187,7 +187,7 @@ export function AdditionalServiceReviewDialog({
               </div>
             )}
           </div>
-        </MobileOptimizedDialogContent>
+        </DialogContent>
       </Dialog>
 
       {/* Approve Confirmation Dialog */}

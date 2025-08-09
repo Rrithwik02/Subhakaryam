@@ -140,7 +140,7 @@ const PaymentRequestButton = ({
       razorpay.open();
       
     } catch (error) {
-      console.error('Payment error:', error);
+      
       toast({
         variant: "destructive",
         title: "Payment Error",

@@ -136,7 +136,7 @@ const ServiceProvidersTable = () => {
         title: "Error",
         description: "Failed to delete service provider",
       });
-      console.error("Delete provider error:", error);
+      
     },
   });
 

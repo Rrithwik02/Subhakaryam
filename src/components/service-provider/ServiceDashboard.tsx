@@ -129,7 +129,7 @@ const ServiceDashboard = () => {
         });
 
         if (paymentError) {
-          console.error('Payment creation error:', paymentError);
+          
           // Don't throw here - booking is confirmed, payment can be retried
         }
 

@@ -8,7 +8,7 @@ import { ImageUpload } from "@/components/ui/image-upload";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { serviceCategories, getSubcategories, getSubcategoryDetails } from "@/data/services";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MobileOptimizedDialogContent } from "@/components/ui/mobile-optimized-dialog";
+
 import {
   Dialog,
   DialogContent,
@@ -90,7 +90,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       });
 
       if (error) {
-        console.error("Submission error:", error);
+        
         throw new Error(error.message);
       }
 
@@ -110,7 +110,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       setIsOpen(false);
       setShowConfirmation(false);
     } catch (error: any) {
-      console.error("Error submitting additional service:", error);
+      
       setUploadError(error.message);
       toast({
         variant: "destructive",
@@ -137,7 +137,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
       });
     } catch (error: any) {
       setUploadError(error.message);
-      console.error("Error handling image upload:", error);
+      
       
       toast({
         variant: "destructive",
@@ -162,7 +162,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
           Add Service
         </Button>
       </DialogTrigger>
-      <MobileOptimizedDialogContent className="flex flex-col h-[90vh] p-0">
+      <DialogContent className="flex flex-col h-[90vh] p-0 max-w-2xl">
         <DialogHeader className="flex-shrink-0 px-6 pt-6 pb-4">
           <DialogTitle className="text-2xl font-display font-bold text-ceremonial-maroon text-center">
             Add Additional Service
@@ -354,7 +354,7 @@ const AdditionalServiceForm = ({ providerId }: AdditionalServiceFormProps) => {
             {isSubmitting ? "Submitting..." : "Submit Additional Service"}
           </Button>
         </DialogFooter>
-      </MobileOptimizedDialogContent>
+      </DialogContent>
 
       <AlertDialog open={showConfirmation} onOpenChange={setShowConfirmation}>
         <AlertDialogContent>

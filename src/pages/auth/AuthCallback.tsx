@@ -13,7 +13,7 @@ const AuthCallback = () => {
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error("Auth callback error:", error);
+          
           toast({
             title: "Authentication Error",
             description: "There was an issue confirming your email. Please try again.",
@@ -55,7 +55,7 @@ const AuthCallback = () => {
           navigate("/auth/login");
         }
       } catch (error) {
-        console.error("Unexpected error in auth callback:", error);
+        
         navigate("/auth/login");
       }
     };

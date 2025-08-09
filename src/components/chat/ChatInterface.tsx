@@ -58,7 +58,7 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
         setIsInitialized(true);
         setIsLoading(false);
       } catch (error) {
-        console.error('ChatInterface: Profile verification failed:', error);
+        
         setIsInitialized(false);
         setIsLoading(false);
         toast({
@@ -97,7 +97,7 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
 
         setMessages(data || []);
       } catch (error) {
-        console.error('ChatInterface: Unexpected error fetching messages:', error);
+        
       }
     };
 

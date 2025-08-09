@@ -83,7 +83,7 @@ export function ImageUpload({
         description: "Image uploaded successfully",
       });
     } catch (error: any) {
-      console.error('Upload error:', error);
+      
       toast({
         variant: "destructive",
         title: "Error",

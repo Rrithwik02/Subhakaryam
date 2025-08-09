@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Crown, MapPin, Star, Eye } from "lucide-react";
 import { useState } from "react";
 import FavoriteButton from "@/components/favorites/FavoriteButton";
-import { ShareButton } from "@/components/mobile/ShareButton";
+
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useIsMobile } from "@/hooks/use-mobile";

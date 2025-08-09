@@ -26,7 +26,7 @@ export const useVoiceSynthesizer = () => {
       });
 
       if (error) {
-        console.error('Voice synthesis error:', error);
+        
         if (error.message?.includes('Rate limit exceeded')) {
           toast({
             title: "Please wait",
@@ -49,7 +49,7 @@ export const useVoiceSynthesizer = () => {
         await audio.play();
       }
     } catch (error) {
-      console.error('Error in speech generation:', error);
+      
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again later.",

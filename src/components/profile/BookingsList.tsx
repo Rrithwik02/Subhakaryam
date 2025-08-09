@@ -52,7 +52,7 @@ const BookingsList = ({ bookings, isServiceProvider, onBookingUpdate }: Bookings
         onBookingUpdate();
       }
     } catch (error) {
-      console.error('Error cancelling booking:', error);
+      
       toast({
         variant: "destructive",
         title: "Error",

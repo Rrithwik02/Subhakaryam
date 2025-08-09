@@ -134,7 +134,7 @@ export function PaymentSettings() {
       queryClient.invalidateQueries({ queryKey: ["payment-details"] });
     },
     onError: (error: any) => {
-      console.error("Error saving payment settings:", error);
+      
       toast({
         variant: "destructive",
         title: "Error",

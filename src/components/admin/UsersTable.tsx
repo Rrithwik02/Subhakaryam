@@ -97,7 +97,7 @@ const UsersTable = () => {
         title: "Error",
         description: "Failed to delete user. Please try again.",
       });
-      console.error("Delete user error:", error);
+      
     },
   });
 

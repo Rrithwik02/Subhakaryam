@@ -43,7 +43,7 @@ const ContactUs = () => {
       // Reset form after successful submission
       setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
-      console.error("Error submitting contact form:", error);
+      
       toast({
         variant: "destructive",
         title: "Submission Failed",

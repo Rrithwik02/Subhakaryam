@@ -3,7 +3,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+
 
 const advertisements = [
   {
@@ -38,12 +38,6 @@ const AdvertCarousel = () => {
             loop: true,
             align: "start",
           }}
-          plugins={[
-            Autoplay({
-              delay: 5000,
-              stopOnInteraction: true,
-            }),
-          ]}
           className="w-full max-w-5xl mx-auto"
         >
           <CarouselContent>

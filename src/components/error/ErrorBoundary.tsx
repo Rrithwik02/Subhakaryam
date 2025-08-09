@@ -22,7 +22,8 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    // Error is already captured in state for user display
+    // In production, you would send this to an error reporting service
   }
 
   private handleReset = () => {

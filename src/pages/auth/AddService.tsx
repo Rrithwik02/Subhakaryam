@@ -34,7 +34,7 @@ const AddService: React.FC = () => {
           .maybeSingle();
 
         if (error) {
-          console.error('Error fetching provider:', error);
+          
           toast({
             variant: "destructive",
             title: "Error", 
@@ -56,7 +56,7 @@ const AddService: React.FC = () => {
 
         setProviderId(provider.id);
       } catch (error) {
-        console.error('Error:', error);
+        
         toast({
           variant: "destructive",
           title: "Error",

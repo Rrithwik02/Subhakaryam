@@ -82,7 +82,7 @@ const ServiceRequest = () => {
       });
       setDate(undefined);
     } catch (error) {
-      console.error("Error submitting service request:", error);
+      
       toast({
         variant: "destructive",
         title: "Submission Failed",

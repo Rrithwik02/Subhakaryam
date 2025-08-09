@@ -9,7 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+
 
 const eventImages = [
   {
@@ -116,12 +116,6 @@ const Hero = () => {
         <div className="absolute inset-0">
           <Carousel 
             className="w-full h-full" 
-            plugins={[
-              Autoplay({
-                delay: 5000,
-                stopOnInteraction: true,
-              }),
-            ]}
             opts={{
               loop: true,
               align: "start",
