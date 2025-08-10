@@ -5,14 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus, Briefcase } from "lucide-react";
+import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus, Briefcase, LogOut } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { session } = useSessionContext();
+  const { toast } = useToast();
 
   const { data: userProfile } = useQuery({
     queryKey: ["user-profile"],
@@ -59,6 +61,28 @@ const Navbar = () => {
       navigate("/provider/profile");
     } else {
       navigate("/profile");
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      localStorage.clear();
+      
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account.",
+      });
+      
+      navigate('/auth/login', { replace: true });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+      });
     }
   };
 
@@ -190,14 +214,45 @@ const Navbar = () => {
             <div className="flex items-center gap-4">
               {session && <NotificationBell />}
               
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
-                onClick={handleProfileClick}
-              >
-                <UserRound className="h-5 w-5" />
-              </Button>
+              {session ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hidden md:flex text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
+                    onClick={handleProfileClick}
+                  >
+                    <UserRound className="h-5 w-5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hidden md:flex items-center gap-2 text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <div className="hidden md:flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-colors"
+                    onClick={() => navigate("/auth/login")}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-colors"
+                    onClick={() => navigate("/register")}
+                  >
+                    Join Us
+                  </Button>
+                </div>
+              )}
               
               <Sheet>
                 <SheetTrigger asChild>
@@ -237,10 +292,16 @@ const Navbar = () => {
                       onClick={() => navigate("/contact")} 
                     />
 
-                    {/* Mobile Menu Dashboard Links */}
-                    {session && (
+                    <Separator className="my-4" />
+                    
+                    {/* Mobile Auth Section */}
+                    {session ? (
                       <>
-                        <Separator className="my-4" />
+                        <MenuLink 
+                          icon={UserRound}
+                          text="Profile"
+                          onClick={handleProfileClick}
+                        />
                         {isGuest && (
                           <MenuLink 
                             icon={Briefcase}
@@ -273,6 +334,28 @@ const Navbar = () => {
                             />
                           </>
                         )}
+                        <Separator className="my-4" />
+                        <MenuLink 
+                          icon={LogOut}
+                          text="Sign Out"
+                          onClick={handleSignOut}
+                          className="text-destructive hover:text-destructive/90"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <MenuLink 
+                          icon={UserRound}
+                          text="Sign In"
+                          onClick={() => navigate("/auth/login")}
+                          className="text-ceremonial-gold"
+                        />
+                        <MenuLink 
+                          icon={Plus}
+                          text="Join Us"
+                          onClick={() => navigate("/register")}
+                          className="text-ceremonial-maroon"
+                        />
                       </>
                     )}
                   </div>

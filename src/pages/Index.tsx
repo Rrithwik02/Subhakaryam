@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LogOut } from "lucide-react";
+
 import SuggestionForm from "@/components/suggestions/SuggestionForm";
 import Hero from "@/components/home/Hero";
 import Services from "@/components/home/Services";
@@ -112,28 +112,6 @@ const Index = () => {
     checkUserStatus();
   }, [session, toast]);
 
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      localStorage.clear(); // Clear any stored auth data
-      
-      toast({
-        title: "Signed out successfully",
-        description: "You have been signed out of your account.",
-      });
-      
-      navigate('/auth/login', { replace: true }); // Redirect to login page and replace history
-    } catch (error) {
-      
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to sign out. Please try again.",
-      });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -146,35 +124,6 @@ const Index = () => {
   return (
     <div className="min-h-screen pt-16">
       <FAQSchema />
-      <div className="absolute top-20 right-4 flex gap-4 z-50">
-        <div className="flex gap-2">
-          {session ? (
-            <Button
-              className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md flex items-center gap-2"
-              onClick={handleSignOut}
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </Button>
-          ) : (
-            <>
-              <Button
-                variant="outline"
-                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white backdrop-blur-md bg-white/30"
-                onClick={() => navigate("/auth/login")}
-              >
-                Sign In
-              </Button>
-              <Button
-                className="shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff] bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white backdrop-blur-md"
-                onClick={() => navigate("/register")}
-              >
-                Join Us
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
 
       <Hero />
       <AdvertCarousel />
