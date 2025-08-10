@@ -27,14 +27,37 @@
     --input: 20 5.9% 90%;
     --ring: 35.5 91.7% 32.9%;
     --radius: 0.75rem;
+    
+    /* Enhanced shadow system */
+    --shadow-sm: 0 1px 2px 0 hsl(var(--foreground) / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(var(--foreground) / 0.1), 0 2px 4px -1px hsl(var(--foreground) / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(var(--foreground) / 0.1), 0 4px 6px -2px hsl(var(--foreground) / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(var(--foreground) / 0.1), 0 10px 10px -5px hsl(var(--foreground) / 0.04);
   }
  
   body {
     @apply bg-background text-foreground font-body;
+    scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-display;
+  }
+
+  /* Enhanced focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* Improved button touch targets */
+  button, a[role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Enhanced loading and animation utilities */
+  .stagger-animation > * {
+    animation-delay: calc(var(--stagger-delay, 0ms) * var(--index, 0));
   }
 }
 

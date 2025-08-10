@@ -108,21 +108,64 @@ const Search = () => {
             setServiceType={setServiceType}
             sortBy={sortBy}
             setSortBy={setSortBy}
+            resultCount={services?.length || 0}
           />
 
           {isLoading ? (
-            <div className="flex justify-center items-center min-h-[400px]">
-              <Loader2 className="h-8 w-8 animate-spin text-ceremonial-gold" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="animate-scale-up" style={{ animationDelay: `${i * 100}ms` }}>
+                  <div className="bg-white rounded-xl shadow-md p-6 space-y-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="h-12 w-12 bg-muted rounded-full animate-pulse" />
+                      <div className="space-y-2 flex-1">
+                        <div className="h-4 bg-muted rounded animate-pulse" />
+                        <div className="h-3 bg-muted rounded w-2/3 animate-pulse" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-muted rounded animate-pulse" />
+                      <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="h-4 bg-muted rounded w-20 animate-pulse" />
+                      <div className="h-8 bg-muted rounded w-24 animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : services?.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg shadow-sm">
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">No services found</h3>
-              <p className="text-gray-500">Try adjusting your search criteria</p>
+            <div className="text-center py-16 bg-white rounded-xl shadow-sm animate-slide-up-fade">
+              <div className="max-w-md mx-auto">
+                <div className="h-16 w-16 bg-muted rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <Loader2 className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">No services found</h3>
+                <p className="text-muted-foreground mb-4">Try adjusting your search criteria or explore different service types</p>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSearchTerm('');
+                    setCity('all');
+                    setServiceType('all');
+                  }}
+                  className="hover:bg-primary hover:text-primary-foreground transition-colors"
+                >
+                  Clear Filters
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services?.map((service) => (
-                <ServiceCard key={service.id} service={service} />
+              {services?.map((service, index) => (
+                <div 
+                  key={service.id} 
+                  className="animate-scale-up hover:scale-105 transition-transform duration-200"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <ServiceCard service={service} />
+                </div>
               ))}
             </div>
           )}

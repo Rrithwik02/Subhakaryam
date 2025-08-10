@@ -4,11 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef, useState } from "react";
 
 
 const eventImages = [
@@ -33,6 +36,10 @@ const eventImages = [
 const Hero = () => {
   const navigate = useNavigate();
   const { session } = useSessionContext();
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const autoplayRef = useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
 
   const { data: userProfile } = useQuery({
     queryKey: ["user-profile"],
@@ -73,11 +80,11 @@ const Hero = () => {
       <div className="relative w-full h-[70vh] overflow-hidden">
         {/* Hero Content */}
         <div className="absolute inset-0 z-10 flex items-center justify-center text-white p-4">
-          <div className="max-w-4xl mx-auto bg-black/80 backdrop-blur-md p-8 rounded-lg shadow-2xl border border-white/10">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-lg">
+          <div className="max-w-4xl mx-auto bg-black/80 backdrop-blur-md p-8 rounded-xl shadow-2xl border border-white/10 animate-slide-up-fade">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-lg" role="banner">
               Sacred Ceremonies & Traditional Indian Services
             </h1>
-            <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto font-body text-white/90 drop-shadow-lg">
+            <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto font-body text-white/90 drop-shadow-lg" aria-describedby="hero-description">
               Book trusted pandits, photographers, caterers & decorators for authentic Indian weddings, pooja rituals, mehendi ceremonies & traditional events across India
             </p>
             {session && serviceProvider ? (
@@ -114,27 +121,37 @@ const Hero = () => {
 
         {/* Background Carousel */}
         <div className="absolute inset-0">
+          {!imagesLoaded && (
+            <div className="absolute inset-0 z-0">
+              <Skeleton className="w-full h-full bg-gradient-to-br from-muted to-muted/50" />
+            </div>
+          )}
           <Carousel 
             className="w-full h-full" 
+            plugins={[autoplayRef.current]}
             opts={{
               loop: true,
               align: "start",
             }}
+            onMouseEnter={() => autoplayRef.current.stop()}
+            onMouseLeave={() => autoplayRef.current.play()}
           >
             <CarouselContent>
               {eventImages.map((image, index) => (
                 <CarouselItem key={index} className="w-full h-full">
-                  <div className="relative w-full h-full">
+                  <div className="relative w-full h-full group">
                     <img
                       src={image.url}
                       alt={image.alt}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      onLoad={() => index === 0 && setImagesLoaded(true)}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = "/placeholder.svg";
                       }}
                     />
-                    <div className="absolute inset-0 bg-black/60" /> {/* Darker overlay for better contrast */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
                   </div>
                 </CarouselItem>
               ))}

@@ -219,16 +219,18 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="hidden md:flex text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
+                    className="hidden md:flex text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors focus:ring-2 focus:ring-primary"
                     onClick={handleProfileClick}
+                    aria-label="Go to profile"
                   >
                     <UserRound className="h-5 w-5" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="hidden md:flex items-center gap-2 text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
+                    className="hidden md:flex items-center gap-2 text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors focus:ring-2 focus:ring-primary"
                     onClick={handleSignOut}
+                    aria-label="Sign out of your account"
                   >
                     <LogOut className="h-4 w-4" />
                     Sign Out
@@ -239,14 +241,14 @@ const Navbar = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-colors"
+                    className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-colors focus:ring-2 focus:ring-primary min-h-[44px]"
                     onClick={() => navigate("/auth/login")}
                   >
                     Sign In
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-colors"
+                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-colors focus:ring-2 focus:ring-primary min-h-[44px]"
                     onClick={() => navigate("/register")}
                   >
                     Join Us
@@ -259,7 +261,8 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors"
+                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors focus:ring-2 focus:ring-primary"
+                    aria-label="Open navigation menu"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
