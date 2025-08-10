@@ -23,6 +23,7 @@ import AdvertCarousel from "@/components/home/AdvertCarousel";
 import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
 import FAQSchema from "@/components/seo/FAQSchema";
+import QuickBookingWidget from "@/components/booking/QuickBookingWidget";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -126,6 +127,7 @@ const Index = () => {
       <FAQSchema />
 
       <Hero />
+      <QuickBookingWidget />
       <AdvertCarousel />
       <Services />
       <EssentialsPreview />

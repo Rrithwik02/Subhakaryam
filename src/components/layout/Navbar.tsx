@@ -5,11 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus, Briefcase, LogOut } from "lucide-react";
+import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus, Briefcase, LogOut, Search, ChevronDown } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ const Navbar = () => {
   const MenuLink = ({ icon: Icon, text, onClick, className = "" }) => (
     <Button
       variant="ghost"
-      className={`w-full justify-start gap-2 px-4 py-6 text-lg font-medium text-gray-700 hover:text-ceremonial-maroon hover:bg-ceremonial-cream/50 transition-colors ${className}`}
+      className={`w-full justify-start gap-2 px-4 py-6 text-lg font-medium text-foreground hover:text-primary hover:bg-accent/50 transition-colors ${className}`}
       onClick={onClick}
     >
       <Icon className="h-5 w-5" />
@@ -106,7 +107,7 @@ const Navbar = () => {
       <NavigationMenuList className="hidden md:flex">
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
+            className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/about")}
           >
             About Us
@@ -114,7 +115,7 @@ const Navbar = () => {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
+            className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/services")}
           >
             Services
@@ -122,7 +123,7 @@ const Navbar = () => {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
+            className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/blog")}
           >
             Blog
@@ -130,70 +131,77 @@ const Navbar = () => {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-gray-700 hover:text-ceremonial-maroon transition-colors cursor-pointer py-2 px-6"
+            className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/contact")}
           >
             Contact
           </NavigationMenuLink>
         </NavigationMenuItem>
+        
+        {/* Track Booking Link */}
+        <NavigationMenuItem>
+          <NavigationMenuLink
+            className="text-primary hover:text-primary/90 transition-colors cursor-pointer py-2 px-4 font-semibold"
+            onClick={() => navigate("/track-booking")}
+          >
+            <Search className="h-4 w-4 inline-block mr-2" />
+            Track Booking
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        {/* Dashboard Dropdown */}
+        {session && (isAdmin || isServiceProvider) && (
+          <NavigationMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-foreground hover:text-primary font-medium px-4">
+                  <Briefcase className="h-4 w-4 mr-2" />
+                  Dashboard
+                  <ChevronDown className="h-4 w-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-popover border-border">
+                {isAdmin && (
+                  <DropdownMenuItem onClick={() => navigate("/admin")} className="text-foreground hover:bg-accent">
+                    <HomeIcon className="h-4 w-4 mr-2" />
+                    Admin Dashboard
+                  </DropdownMenuItem>
+                )}
+                {isServiceProvider && (
+                  <>
+                    <DropdownMenuItem onClick={() => navigate("/dashboard")} className="text-foreground hover:bg-accent">
+                      <Briefcase className="h-4 w-4 mr-2" />
+                      Provider Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/service/add")} className="text-foreground hover:bg-accent">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add New Service
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </NavigationMenuItem>
+        )}
 
         {/* Become a Service Provider Link (show when logged in as guest) */}
         {session && isGuest && (
           <NavigationMenuItem>
             <NavigationMenuLink
-              className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6 font-semibold"
+              className="text-primary hover:text-primary/90 transition-colors cursor-pointer py-2 px-4 font-semibold"
               onClick={() => navigate("/register/service-provider")}
             >
               <Briefcase className="h-4 w-4 inline-block mr-2" />
-              Become a Service Provider
+              Become a Provider
             </NavigationMenuLink>
           </NavigationMenuItem>
-        )}
-
-        {/* Dashboard Links */}
-        {session && (
-          <>
-            {isAdmin && (
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
-                  onClick={() => navigate("/admin")}
-                >
-                  <HomeIcon className="h-4 w-4 inline-block mr-2" />
-                  Admin Dashboard
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            )}
-            {isServiceProvider && (
-              <>
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    className="text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors cursor-pointer py-2 px-6"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    <Briefcase className="h-4 w-4 inline-block mr-2" />
-                    Provider Dashboard
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    className="text-ceremonial-gold hover:text-ceremonial-gold/90 transition-colors cursor-pointer py-2 px-6"
-                    onClick={() => navigate("/service/add")}
-                  >
-                    <Plus className="h-4 w-4 inline-block mr-2" />
-                    Add New Service
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              </>
-            )}
-          </>
         )}
       </NavigationMenuList>
     </NavigationMenu>
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-ceremonial-cream border-b border-ceremonial-gold/10">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Button 
@@ -215,40 +223,37 @@ const Navbar = () => {
               {session && <NotificationBell />}
               
               {session ? (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="hidden md:flex text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors focus:ring-2 focus:ring-primary"
-                    onClick={handleProfileClick}
-                    aria-label="Go to profile"
-                  >
-                    <UserRound className="h-5 w-5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hidden md:flex items-center gap-2 text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors focus:ring-2 focus:ring-primary"
-                    onClick={handleSignOut}
-                    aria-label="Sign out of your account"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </Button>
-                </>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="hidden md:flex text-foreground hover:text-primary transition-colors focus:ring-2 focus:ring-primary">
+                      <UserRound className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48 bg-popover border-border">
+                    <DropdownMenuItem onClick={handleProfileClick} className="text-foreground hover:bg-accent">
+                      <UserRound className="h-4 w-4 mr-2" />
+                      My Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut} className="text-destructive hover:bg-destructive/10">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <div className="hidden md:flex items-center gap-2">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-colors focus:ring-2 focus:ring-primary min-h-[44px]"
+                    className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors focus:ring-2 focus:ring-primary min-h-[44px] font-medium"
                     onClick={() => navigate("/auth/login")}
                   >
                     Sign In
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white transition-colors focus:ring-2 focus:ring-primary min-h-[44px]"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground transition-colors focus:ring-2 focus:ring-primary min-h-[44px] font-medium"
                     onClick={() => navigate("/register")}
                   >
                     Join Us
@@ -261,15 +266,15 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-ceremonial-maroon hover:text-ceremonial-maroon/90 transition-colors focus:ring-2 focus:ring-primary"
+                    className="md:hidden text-foreground hover:text-primary transition-colors focus:ring-2 focus:ring-primary"
                     aria-label="Open navigation menu"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] bg-white p-0">
-                  <SheetHeader className="p-6 bg-ceremonial-cream">
-                    <SheetTitle className="text-2xl font-display text-ceremonial-maroon">
+                <SheetContent side="right" className="w-[300px] bg-background p-0">
+                  <SheetHeader className="p-6 bg-accent/50">
+                    <SheetTitle className="text-2xl font-display text-foreground">
                       Menu
                     </SheetTitle>
                   </SheetHeader>
@@ -278,6 +283,12 @@ const Navbar = () => {
                       icon={HomeIcon} 
                       text="Home" 
                       onClick={() => navigate("/")} 
+                    />
+                    <MenuLink 
+                      icon={Search} 
+                      text="Track Booking" 
+                      onClick={() => navigate("/track-booking")} 
+                      className="text-primary"
                     />
                     <MenuLink 
                       icon={Info} 
@@ -310,7 +321,7 @@ const Navbar = () => {
                             icon={Briefcase}
                             text="Become a Service Provider"
                             onClick={() => navigate("/register/service-provider")}
-                            className="text-ceremonial-gold"
+                            className="text-primary"
                           />
                         )}
                         {isAdmin && (
@@ -318,7 +329,7 @@ const Navbar = () => {
                             icon={HomeIcon}
                             text="Admin Dashboard"
                             onClick={() => navigate("/admin")}
-                            className="text-ceremonial-maroon"
+                            className="text-primary"
                           />
                         )}
                         {isServiceProvider && (
@@ -327,13 +338,13 @@ const Navbar = () => {
                               icon={Briefcase}
                               text="Provider Dashboard"
                               onClick={() => navigate("/dashboard")}
-                              className="text-ceremonial-maroon"
+                              className="text-primary"
                             />
                             <MenuLink 
                               icon={Plus}
                               text="Add New Service"
                               onClick={() => navigate("/service/add")}
-                              className="text-ceremonial-gold"
+                              className="text-primary"
                             />
                           </>
                         )}
@@ -351,13 +362,13 @@ const Navbar = () => {
                           icon={UserRound}
                           text="Sign In"
                           onClick={() => navigate("/auth/login")}
-                          className="text-ceremonial-gold"
+                          className="text-primary"
                         />
                         <MenuLink 
                           icon={Plus}
                           text="Join Us"
                           onClick={() => navigate("/register")}
-                          className="text-ceremonial-maroon"
+                          className="text-primary"
                         />
                       </>
                     )}

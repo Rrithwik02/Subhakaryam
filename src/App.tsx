@@ -26,6 +26,7 @@ import ServicesPage from "./pages/services";
 import PrivacyPolicy from "./pages/policies/PrivacyPolicy";
 import TermsConditions from "./pages/policies/TermsConditions";
 import ServiceRequest from "./pages/ServiceRequest";
+import TrackBooking from "./pages/TrackBooking";
 import AddService from "./pages/auth/AddService";
 import PoojaServices from "./pages/services/PoojaServices";
 import WeddingPhotography from "./pages/services/WeddingPhotography";
@@ -80,6 +81,7 @@ const AppContent: React.FC = () => {
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<ContactUs />} />
+            <Route path="/track-booking" element={<TrackBooking />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/services/pooja-services" element={<PoojaServices />} />
             <Route path="/services/wedding-photography" element={<WeddingPhotography />} />
