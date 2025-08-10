@@ -6,11 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 interface FeaturedServiceProps {
   service: ServiceCategory;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
 }
 
-const FeaturedService = ({ service, onMouseEnter, onMouseLeave }: FeaturedServiceProps) => {
+const FeaturedService = ({ service }: FeaturedServiceProps) => {
   const navigate = useNavigate();
   const IconComponent = service.icon;
 
@@ -21,8 +19,6 @@ const FeaturedService = ({ service, onMouseEnter, onMouseLeave }: FeaturedServic
   return (
     <Card 
       className="md:col-span-2 p-4 md:p-6 transform transition-all duration-300 hover:scale-102 hover:shadow-lg bg-gradient-to-br from-ceremonial-cream to-white shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff]"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
     >
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex-1">

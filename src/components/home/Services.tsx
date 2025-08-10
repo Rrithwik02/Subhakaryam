@@ -1,18 +1,9 @@
 import { serviceCategories } from "@/data/services";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import FeaturedService from "./services/FeaturedService";
 import ServiceCard from "./services/ServiceCard";
-import { useVoiceSynthesizer } from "./services/VoiceSynthesizer";
 
 const Services = () => {
-  const { speakDescription, stopSpeaking, isLoading } = useVoiceSynthesizer();
-
-  useEffect(() => {
-    return () => {
-      stopSpeaking();
-    };
-  }, []);
 
   return (
     <section id="services-section" className="py-12 px-4 bg-white">
@@ -24,8 +15,6 @@ const Services = () => {
           <Link to="/services/pooja-services">
             <FeaturedService 
               service={serviceCategories[0]}
-              onMouseEnter={() => !isLoading && speakDescription(serviceCategories[0].description)}
-              onMouseLeave={stopSpeaking}
             />
           </Link>
           
@@ -43,8 +32,6 @@ const Services = () => {
                 <ServiceCard
                   service={service}
                   index={index}
-                  onMouseEnter={() => !isLoading && speakDescription(service.description)}
-                  onMouseLeave={stopSpeaking}
                 />
               </Link>
             );
