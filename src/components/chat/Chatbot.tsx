@@ -139,7 +139,7 @@ const Chatbot = () => {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && !isLoading) { e.preventDefault(); handleSend(); } }}
+                onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSend()}
                 placeholder="Type your message..."
                 className="flex-1 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-ceremonial-gold/50 bg-white"
                 disabled={isLoading}

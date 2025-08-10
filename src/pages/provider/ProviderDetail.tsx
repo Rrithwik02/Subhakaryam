@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { supabase, SUPABASE_URL } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -197,7 +197,7 @@ const ProviderDetail = () => {
                     <CarouselItem key={index}>
                       <AspectRatio ratio={16 / 9} className="bg-muted">
                         <img
-                          src={`${SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
+                          src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/portfolio_images/${image}`}
                           alt={`Portfolio ${index + 1}`}
                           className="object-cover w-full h-full"
                           loading="lazy"

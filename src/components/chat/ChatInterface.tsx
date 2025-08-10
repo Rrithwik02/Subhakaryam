@@ -221,7 +221,7 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
           <Input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (!isDisabled) sendMessage(); } }}
+            onKeyPress={(e) => e.key === "Enter" && !isDisabled && sendMessage()}
             placeholder="Type your message..."
             disabled={isDisabled}
           />
