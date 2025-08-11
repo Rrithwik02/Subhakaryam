@@ -1,17 +1,16 @@
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
-import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useSessionContext } from "@supabase/auth-helpers-react";
+import { SecureAuthForm } from "@/components/auth/SecureAuthForm";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { session, isLoading } = useSessionContext();
   const [redirecting, setRedirecting] = useState(false);
+  const [authMode, setAuthMode] = useState<"sign_in" | "sign_up">("sign_in");
 
   useEffect(() => {
     if (!session || redirecting) return;
@@ -84,58 +83,11 @@ const Login = () => {
   if (!session) {
     return (
       <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
-        <Card className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg">
-          <div className="text-center">
-            <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-2">
-              Welcome Back
-            </h1>
-            <p className="text-gray-600 mb-6">Sign in to your account</p>
-          </div>
-
-          <div className="space-y-4">
-            <Auth
-              supabaseClient={supabase}
-              appearance={{
-                theme: ThemeSupa,
-                variables: {
-                  default: {
-                    colors: {
-                      brand: '#B8860B',
-                      brandAccent: '#966F08',
-                    }
-                  }
-                },
-                className: {
-                  container: 'w-full',
-                  button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
-                  divider: 'my-4',
-                }
-              }}
-              theme="light"
-              providers={["google"]}
-              view="sign_in"
-              localization={{
-                variables: {
-                  sign_in: {
-                    email_label: "Email address",
-                    password_label: "Password",
-                    button_label: "Sign in",
-                    loading_button_label: "Signing in...",
-                    social_provider_text: "Sign in with {{provider}}",
-                    link_text: "Already have an account? Sign in"
-                  }
-                }
-              }}
-              showLinks={false}
-            />
-          </div>
-
-          <div className="mt-4 p-4 bg-ceremonial-cream/50 rounded-lg">
-            <p className="text-sm text-gray-600 text-center">
-              Note: You'll be redirected to complete your provider profile after authentication.
-            </p>
-          </div>
-        </Card>
+        <SecureAuthForm
+          mode={authMode}
+          onModeChange={setAuthMode}
+          redirectTo={`${window.location.origin}/auth/callback`}
+        />
       </div>
     );
   }

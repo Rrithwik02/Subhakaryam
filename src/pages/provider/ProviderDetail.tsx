@@ -15,6 +15,7 @@ import BookingDialog from "@/components/bookings/BookingDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { FloatingBookingButton } from "@/components/booking/FloatingBookingButton";
 
 const ProviderDetail = () => {
   const { id } = useParams();
@@ -399,6 +400,12 @@ const ProviderDetail = () => {
         provider={provider}
         selectedServices={selectedServices}
         serviceData={allServices}
+      />
+
+      <FloatingBookingButton
+        providerId={provider.id}
+        serviceType={provider.service_type}
+        basePrice={provider.base_price}
       />
     </div>
   );

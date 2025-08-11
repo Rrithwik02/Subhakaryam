@@ -6,7 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Loader2, AlertCircle } from "lucide-react";
-import SearchFilters from "@/components/search/SearchFilters";
+import { EnhancedSearchFilters } from "@/components/search/EnhancedSearchFilters";
 import ServiceCard from "@/components/search/ServiceCard";
 
 const Search = () => {
@@ -14,11 +14,13 @@ const Search = () => {
   const initialServiceType = searchParams.get("service");
   const [searchTerm, setSearchTerm] = useState("");
   const [city, setCity] = useState("");
-  const [serviceType, setServiceType] = useState(initialServiceType?.toLowerCase() || "all");
-  const [sortBy, setSortBy] = useState<"rating_desc" | "newest">("rating_desc");
+  const [serviceType, setServiceType] = useState(initialServiceType?.toLowerCase() || "");
+  const [sortBy, setSortBy] = useState("rating");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
+  const [rating, setRating] = useState(0);
 
   const { data: services, isLoading, error, refetch } = useQuery({
-    queryKey: ["services", searchTerm, city, serviceType, sortBy],
+    queryKey: ["services", searchTerm, city, serviceType, sortBy, priceRange, rating],
     queryFn: async () => {
       try {
         let query = supabase
@@ -32,23 +34,41 @@ const Search = () => {
         }
 
         // Filter by city (including secondary city)
-        if (city && city !== "all") {
+        if (city) {
           query = query.or(`city.ilike.%${city}%,secondary_city.ilike.%${city}%`);
         }
 
         // Filter by service type
-        if (serviceType && serviceType !== "all") {
+        if (serviceType) {
           query = query.eq("service_type", serviceType);
+        }
+
+        // Filter by price range
+        if (priceRange[0] > 0 || priceRange[1] < 100000) {
+          query = query.gte("base_price", priceRange[0]).lte("base_price", priceRange[1]);
+        }
+
+        // Filter by rating
+        if (rating > 0) {
+          query = query.gte("rating", rating);
         }
 
         // Apply sorting
         switch (sortBy) {
-          case "rating_desc":
+          case "rating":
             query = query.order("rating", { ascending: false, nullsFirst: false });
+            break;
+          case "price_low":
+            query = query.order("base_price", { ascending: true });
+            break;
+          case "price_high":
+            query = query.order("base_price", { ascending: false });
             break;
           case "newest":
             query = query.order("created_at", { ascending: false });
             break;
+          default:
+            query = query.order("rating", { ascending: false, nullsFirst: false });
         }
 
         const { data, error: supabaseError } = await query;
@@ -99,7 +119,7 @@ const Search = () => {
             Discover the perfect service provider for your ceremonial needs
           </p>
 
-          <SearchFilters
+          <EnhancedSearchFilters
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             city={city}
@@ -108,7 +128,11 @@ const Search = () => {
             setServiceType={setServiceType}
             sortBy={sortBy}
             setSortBy={setSortBy}
-            resultCount={services?.length || 0}
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
+            rating={rating}
+            setRating={setRating}
+            resultsCount={services?.length || 0}
           />
 
           {isLoading ? (
@@ -147,8 +171,10 @@ const Search = () => {
                   variant="outline" 
                   onClick={() => {
                     setSearchTerm('');
-                    setCity('all');
-                    setServiceType('all');
+                    setCity('');
+                    setServiceType('');
+                    setPriceRange([0, 100000]);
+                    setRating(0);
                   }}
                   className="hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
