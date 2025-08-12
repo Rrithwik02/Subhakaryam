@@ -1029,6 +1029,22 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_provider_payment_details_for_admin: {
+        Args: { provider_id_param: string }
+        Returns: {
+          id: string
+          provider_id: string
+          payment_method: string
+          account_holder_name: string
+          bank_name: string
+          account_number_masked: string
+          ifsc_code: string
+          upi_id_masked: string
+          qr_code_url: string
+          created_at: string
+          updated_at: string
+        }[]
+      }
       get_public_service_providers: {
         Args: Record<PropertyKey, never>
         Returns: {

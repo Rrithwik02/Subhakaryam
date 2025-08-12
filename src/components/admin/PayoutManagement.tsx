@@ -55,7 +55,13 @@ const PayoutManagement = () => {
           service_providers!inner(
             business_name,
             profiles!inner(full_name),
-            provider_payment_details(*)
+            provider_payment_details(
+              payment_method,
+              account_holder_name,
+              bank_name,
+              ifsc_code,
+              qr_code_url
+            )
           )
         `)
         .order('created_at', { ascending: false });

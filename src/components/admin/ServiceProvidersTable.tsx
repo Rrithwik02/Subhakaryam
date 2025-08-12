@@ -56,15 +56,13 @@ const ServiceProvidersTable = () => {
             email,
             phone
           ),
-          provider_payment_details!provider_payment_details_provider_id_fkey (
-            payment_method,
-            account_holder_name,
-            bank_name,
-            account_number,
-            ifsc_code,
-            upi_id,
-            qr_code_url
-          )
+           provider_payment_details!provider_payment_details_provider_id_fkey (
+             payment_method,
+             account_holder_name,
+             bank_name,
+             ifsc_code,
+             qr_code_url
+           )
         `)
         .order("created_at", { ascending: false });
 
@@ -439,43 +437,43 @@ const ServiceProvidersTable = () => {
                       Payment Method: {selectedProvider.provider_payment_details.payment_method}
                     </p>
                     
-                    {selectedProvider.provider_payment_details.payment_method === "bank_account" && (
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm text-gray-500">Account Holder Name</p>
-                          <p className="font-medium">
-                            {selectedProvider.provider_payment_details.account_holder_name}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Bank Name</p>
-                          <p className="font-medium">
-                            {selectedProvider.provider_payment_details.bank_name}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Account Number</p>
-                          <p className="font-medium">
-                            {selectedProvider.provider_payment_details.account_number}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">IFSC Code</p>
-                          <p className="font-medium">
-                            {selectedProvider.provider_payment_details.ifsc_code}
-                          </p>
-                        </div>
-                      </div>
-                    )}
+                     {selectedProvider.provider_payment_details.payment_method === "bank_account" && (
+                       <div className="grid grid-cols-2 gap-4">
+                         <div>
+                           <p className="text-sm text-gray-500">Account Holder Name</p>
+                           <p className="font-medium">
+                             {selectedProvider.provider_payment_details.account_holder_name}
+                           </p>
+                         </div>
+                         <div>
+                           <p className="text-sm text-gray-500">Bank Name</p>
+                           <p className="font-medium">
+                             {selectedProvider.provider_payment_details.bank_name}
+                           </p>
+                         </div>
+                         <div>
+                           <p className="text-sm text-gray-500">Account Number (Masked)</p>
+                           <p className="font-medium text-muted-foreground">
+                             {selectedProvider.provider_payment_details.account_number_masked || '****'}
+                           </p>
+                         </div>
+                         <div>
+                           <p className="text-sm text-gray-500">IFSC Code</p>
+                           <p className="font-medium">
+                             {selectedProvider.provider_payment_details.ifsc_code}
+                           </p>
+                         </div>
+                       </div>
+                     )}
 
-                    {selectedProvider.provider_payment_details.payment_method === "upi" && (
-                      <div>
-                        <p className="text-sm text-gray-500">UPI ID</p>
-                        <p className="font-medium">
-                          {selectedProvider.provider_payment_details.upi_id}
-                        </p>
-                      </div>
-                    )}
+                     {selectedProvider.provider_payment_details.payment_method === "upi" && (
+                       <div>
+                         <p className="text-sm text-gray-500">UPI ID (Masked)</p>
+                         <p className="font-medium text-muted-foreground">
+                           {selectedProvider.provider_payment_details.upi_id_masked || '****'}
+                         </p>
+                       </div>
+                     )}
 
                     {selectedProvider.provider_payment_details.payment_method === "qr_code" && (
                       <div>
