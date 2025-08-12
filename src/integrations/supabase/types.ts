@@ -1012,6 +1012,63 @@ export type Database = {
       }
     }
     Views: {
+      admin_payment_details_view: {
+        Row: {
+          account_holder_name: string | null
+          account_number_masked: string | null
+          bank_name: string | null
+          created_at: string | null
+          id: string | null
+          ifsc_code: string | null
+          payment_method: string | null
+          provider_id: string | null
+          qr_code_url: string | null
+          updated_at: string | null
+          upi_id_masked: string | null
+        }
+        Insert: {
+          account_holder_name?: string | null
+          account_number_masked?: never
+          bank_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          ifsc_code?: string | null
+          payment_method?: never
+          provider_id?: string | null
+          qr_code_url?: string | null
+          updated_at?: string | null
+          upi_id_masked?: never
+        }
+        Update: {
+          account_holder_name?: string | null
+          account_number_masked?: never
+          bank_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          ifsc_code?: string | null
+          payment_method?: never
+          provider_id?: string | null
+          qr_code_url?: string | null
+          updated_at?: string | null
+          upi_id_masked?: never
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_payment_details_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "provider_payment_details_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_service_provider_profiles: {
         Row: {
           city: string | null
@@ -1025,11 +1082,7 @@ export type Database = {
       }
     }
     Functions: {
-      get_current_user_type: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_provider_payment_details_for_admin: {
+      get_admin_payment_details: {
         Args: { provider_id_param: string }
         Returns: {
           id: string
@@ -1044,6 +1097,10 @@ export type Database = {
           created_at: string
           updated_at: string
         }[]
+      }
+      get_current_user_type: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       get_public_service_providers: {
         Args: Record<PropertyKey, never>
