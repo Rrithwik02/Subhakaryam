@@ -1159,6 +1159,10 @@ export type Database = {
       }
     }
     Functions: {
+      check_current_user_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       check_user_is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -1194,6 +1198,10 @@ export type Database = {
           full_name: string
           profile_image: string
         }[]
+      }
+      get_security_architecture_info: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       is_admin: {
         Args: Record<PropertyKey, never>
