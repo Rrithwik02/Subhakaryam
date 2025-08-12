@@ -116,6 +116,27 @@ export type Database = {
           },
         ]
       }
+      admin_payment_details_access_log: {
+        Row: {
+          accessed_at: string | null
+          admin_user_id: string
+          id: string
+          provider_id: string
+        }
+        Insert: {
+          accessed_at?: string | null
+          admin_user_id: string
+          id?: string
+          provider_id: string
+        }
+        Update: {
+          accessed_at?: string | null
+          admin_user_id?: string
+          id?: string
+          provider_id?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           cancellation_reason: string | null
@@ -1082,63 +1103,6 @@ export type Database = {
       }
     }
     Views: {
-      admin_payment_details_view: {
-        Row: {
-          account_holder_name: string | null
-          account_number_masked: string | null
-          bank_name: string | null
-          created_at: string | null
-          id: string | null
-          ifsc_code: string | null
-          payment_method: string | null
-          provider_id: string | null
-          qr_code_url: string | null
-          updated_at: string | null
-          upi_id_masked: string | null
-        }
-        Insert: {
-          account_holder_name?: string | null
-          account_number_masked?: never
-          bank_name?: string | null
-          created_at?: string | null
-          id?: string | null
-          ifsc_code?: string | null
-          payment_method?: never
-          provider_id?: string | null
-          qr_code_url?: string | null
-          updated_at?: string | null
-          upi_id_masked?: never
-        }
-        Update: {
-          account_holder_name?: string | null
-          account_number_masked?: never
-          bank_name?: string | null
-          created_at?: string | null
-          id?: string | null
-          ifsc_code?: string | null
-          payment_method?: never
-          provider_id?: string | null
-          qr_code_url?: string | null
-          updated_at?: string | null
-          upi_id_masked?: never
-        }
-        Relationships: [
-          {
-            foreignKeyName: "provider_payment_details_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: true
-            referencedRelation: "public_service_provider_profiles"
-            referencedColumns: ["provider_id"]
-          },
-          {
-            foreignKeyName: "provider_payment_details_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: true
-            referencedRelation: "service_providers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       admin_user_cache: {
         Row: {
           is_admin: boolean | null
@@ -1171,7 +1135,19 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
-      get_admin_payment_details: {
+      get_current_user_type: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_public_service_providers: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          full_name: string
+          profile_image: string
+        }[]
+      }
+      get_secure_payment_details_for_admin: {
         Args: { provider_id_param: string }
         Returns: {
           id: string
@@ -1185,18 +1161,6 @@ export type Database = {
           qr_code_url: string
           created_at: string
           updated_at: string
-        }[]
-      }
-      get_current_user_type: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_public_service_providers: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          id: string
-          full_name: string
-          profile_image: string
         }[]
       }
       get_security_architecture_info: {
