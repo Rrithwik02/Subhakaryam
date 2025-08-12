@@ -44,6 +44,13 @@ export type Database = {
             foreignKeyName: "fk_account_deletion_requests_user_id"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "fk_account_deletion_requests_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -198,6 +205,13 @@ export type Database = {
             foreignKeyName: "bookings_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "bookings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -298,8 +312,22 @@ export type Database = {
             foreignKeyName: "chat_messages_receiver_id_fkey"
             columns: ["receiver_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "chat_messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "chat_messages_sender_id_fkey"
@@ -441,6 +469,13 @@ export type Database = {
             foreignKeyName: "favorites_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "favorites_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -475,6 +510,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "notifications_user_id_fkey"
             columns: ["user_id"]
@@ -793,6 +835,13 @@ export type Database = {
             foreignKeyName: "reviews_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -915,6 +964,13 @@ export type Database = {
             foreignKeyName: "service_providers_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "service_providers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -970,6 +1026,13 @@ export type Database = {
             foreignKeyName: "service_requests_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "service_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1001,6 +1064,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "service_suggestions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "service_suggestions_user_id_fkey"
             columns: ["user_id"]
@@ -1069,6 +1139,13 @@ export type Database = {
           },
         ]
       }
+      admin_user_cache: {
+        Row: {
+          is_admin: boolean | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
       public_service_provider_profiles: {
         Row: {
           city: string | null
@@ -1083,6 +1160,10 @@ export type Database = {
     }
     Functions: {
       check_user_is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      current_user_is_admin_cached: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
@@ -1125,6 +1206,10 @@ export type Database = {
       is_user_admin: {
         Args: { user_id: string }
         Returns: boolean
+      }
+      refresh_admin_cache: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {
