@@ -1082,6 +1082,10 @@ export type Database = {
       }
     }
     Functions: {
+      check_user_is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       get_admin_payment_details: {
         Args: { provider_id_param: string }
         Returns: {
