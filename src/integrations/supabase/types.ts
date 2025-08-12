@@ -47,13 +47,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "fk_account_deletion_requests_user_id"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       additional_services: {
@@ -100,6 +93,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "additional_services_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
           {
             foreignKeyName: "additional_services_provider_id_fkey"
             columns: ["provider_id"]
@@ -184,6 +184,13 @@ export type Database = {
             foreignKeyName: "bookings_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "bookings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -192,13 +199,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bookings_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -241,6 +241,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "bookings"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_connections_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
           },
           {
             foreignKeyName: "chat_connections_provider_id_fkey"
@@ -295,24 +302,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "chat_messages_receiver_id_fkey"
-            columns: ["receiver_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "chat_messages_sender_id_fkey"
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "chat_messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -434,6 +427,13 @@ export type Database = {
             foreignKeyName: "favorites_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "favorites_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -442,13 +442,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "favorites_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -487,13 +480,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "notifications_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -649,6 +635,13 @@ export type Database = {
             foreignKeyName: "payouts_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "payouts_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -738,6 +731,13 @@ export type Database = {
             foreignKeyName: "provider_payment_details_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: true
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "provider_payment_details_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -779,6 +779,13 @@ export type Database = {
             foreignKeyName: "reviews_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -787,13 +794,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -830,6 +830,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "service_provider_availability_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
           {
             foreignKeyName: "service_provider_availability_provider_id_fkey"
             columns: ["provider_id"]
@@ -911,13 +918,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "service_providers_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       service_requests: {
@@ -956,6 +956,13 @@ export type Database = {
             foreignKeyName: "service_requests_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "service_requests_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -964,13 +971,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_requests_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1008,22 +1008,18 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "service_suggestions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
     Views: {
-      public_profiles: {
+      public_service_provider_profiles: {
         Row: {
+          city: string | null
           full_name: string | null
-          id: string | null
           profile_image: string | null
+          provider_id: string | null
+          rating: number | null
+          service_type: string | null
         }
         Relationships: []
       }
@@ -1032,6 +1028,14 @@ export type Database = {
       get_current_user_type: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_public_service_providers: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          full_name: string
+          profile_image: string
+        }[]
       }
       is_admin: {
         Args: Record<PropertyKey, never>
