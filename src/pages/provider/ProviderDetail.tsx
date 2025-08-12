@@ -141,7 +141,7 @@ const ProviderDetail = () => {
     { 
       type: provider.service_type,
       subcategory: provider.subcategory,
-      description: `Main ${provider.service_type.replace('_', ' ')} service`,
+      description: `Main ${provider.service_type?.replace('_', ' ') || 'service'} service`,
       min_price: provider.base_price || 0,
       max_price: provider.base_price || 0,
       portfolio_images: provider.portfolio_images || []
@@ -239,10 +239,10 @@ const ProviderDetail = () => {
                     >
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-semibold capitalize">
-                          {service.type.replace('_', ' ')}
+                          {service.type?.replace('_', ' ') || 'Service'}
                           {service.subcategory && (
                             <span className="text-sm font-normal text-gray-500 ml-1">
-                              → {service.subcategory.replace('_', ' ')}
+                              → {service.subcategory?.replace('_', ' ') || service.subcategory}
                             </span>
                           )}
                         </h3>
@@ -362,7 +362,7 @@ const ProviderDetail = () => {
 
                   <div className="text-sm text-gray-600 capitalize">
                     <Badge variant="secondary">
-                      {provider.service_type.replace('_', ' ')} Specialist
+                      {provider.service_type?.replace('_', ' ') || 'Service'} Specialist
                     </Badge>
                   </div>
 

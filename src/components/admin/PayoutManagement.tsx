@@ -158,7 +158,7 @@ const PayoutManagement = () => {
                   <TableCell>₹{Number(payout.amount).toLocaleString()}</TableCell>
                   <TableCell>₹{Number(payout.commission_amount).toLocaleString()}</TableCell>
                   <TableCell className="font-medium">₹{Number(payout.net_amount).toLocaleString()}</TableCell>
-                  <TableCell className="capitalize">{payout.payout_method.replace('_', ' ')}</TableCell>
+                  <TableCell className="capitalize">{payout.payout_method?.replace('_', ' ') || payout.payout_method}</TableCell>
                   <TableCell>
                     <Badge variant={getStatusVariant(payout.status)} className="flex items-center gap-1">
                       {getStatusIcon(payout.status)}

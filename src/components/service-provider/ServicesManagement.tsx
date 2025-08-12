@@ -117,7 +117,7 @@ export function ServicesManagement() {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-semibold text-lg capitalize">
-                        {provider.service_type.replace('_', ' ')} (Primary)
+                        {provider.service_type?.replace('_', ' ') || 'Service'} (Primary)
                       </h3>
                       <p className="text-sm text-gray-600 mb-2">{provider.description}</p>
                       <p className="text-ceremonial-gold font-medium">
@@ -167,10 +167,10 @@ export function ServicesManagement() {
                       <TableCell>
                         <div>
                           <p className="font-medium capitalize">
-                            {service.service_type.replace('_', ' ')}
+                            {service.service_type?.replace('_', ' ') || 'Service'}
                             {service.subcategory && (
                               <span className="text-sm text-gray-500 ml-1">
-                                → {service.subcategory.replace('_', ' ')}
+                                → {service.subcategory?.replace('_', ' ') || service.subcategory}
                               </span>
                             )}
                           </p>

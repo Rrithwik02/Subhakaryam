@@ -105,7 +105,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
             </span>
           </div>
           <div className="text-sm text-gray-600 capitalize">
-            {service.service_type.replace('_', ' ')} Specialist
+            {service.service_type?.replace('_', ' ') || 'Service'} Specialist
           </div>
           {service.description && (
             <p className="text-sm text-gray-600 line-clamp-2">

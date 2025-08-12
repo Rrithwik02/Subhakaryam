@@ -315,7 +315,7 @@ export const EnhancedSearchFilters = ({
             )}
             {serviceType && (
               <Badge variant="secondary" className="flex items-center gap-1">
-                {serviceType.replace('_', ' ')}
+                {serviceType?.replace('_', ' ') || serviceType}
                 <X 
                   className="w-3 h-3 cursor-pointer" 
                   onClick={() => setServiceType('')} 
