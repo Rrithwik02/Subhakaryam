@@ -79,16 +79,16 @@ const Hero = () => {
     <div className="min-h-[calc(100vh-4rem)] pt-16 bg-white">
       <div className="relative w-full h-[70vh] overflow-hidden">
         {/* Hero Content */}
-        <div className="absolute inset-0 z-10 flex items-center justify-center text-white p-4">
-          <div className="max-w-4xl mx-auto bg-black/80 backdrop-blur-md p-8 rounded-xl shadow-2xl border border-white/10 animate-slide-up-fade">
+        <div className="absolute inset-0 z-10 flex items-center justify-start text-white p-4 pl-8">
+          <div className="max-w-4xl bg-black/80 backdrop-blur-md p-8 rounded-xl shadow-2xl border border-white/10 animate-slide-up-fade">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-lg" role="banner">
               Sacred Ceremonies & Traditional Indian Services
             </h1>
-            <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto font-body text-white/90 drop-shadow-lg" aria-describedby="hero-description">
+            <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl font-body text-white/90 drop-shadow-lg" aria-describedby="hero-description">
               Book trusted pandits, photographers, caterers & decorators for authentic Indian weddings, pooja rituals, mehendi ceremonies & traditional events across India
             </p>
             {session && serviceProvider ? (
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-start">
                 <Button 
                   size="lg"
                   className="w-full sm:w-auto bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-black font-semibold transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-xl"
@@ -98,7 +98,7 @@ const Hero = () => {
                 </Button>
               </div>
             ) : (
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-start">
                 <Button 
                   size="lg"
                   className="w-full sm:w-auto bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-black font-semibold transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-xl"

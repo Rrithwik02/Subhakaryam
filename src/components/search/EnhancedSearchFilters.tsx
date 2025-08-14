@@ -54,8 +54,8 @@ export const EnhancedSearchFilters = ({
   useEffect(() => {
     const params = new URLSearchParams();
     if (debouncedSearchTerm) params.set('search', debouncedSearchTerm);
-    if (city) params.set('city', city);
-    if (serviceType) params.set('service', serviceType);
+    if (city && city !== 'all') params.set('city', city);
+    if (serviceType && serviceType !== 'all') params.set('service', serviceType);
     if (sortBy) params.set('sort', sortBy);
     if (priceRange[0] > 0 || priceRange[1] < 100000) {
       params.set('minPrice', priceRange[0].toString());
@@ -69,8 +69,8 @@ export const EnhancedSearchFilters = ({
   // Read from URL params on mount
   useEffect(() => {
     const urlSearch = searchParams.get('search') || '';
-    const urlCity = searchParams.get('city') || '';
-    const urlService = searchParams.get('service') || '';
+    const urlCity = searchParams.get('city') || 'all';
+    const urlService = searchParams.get('service') || 'all';
     const urlSort = searchParams.get('sort') || 'rating';
     const urlMinPrice = parseInt(searchParams.get('minPrice') || '0');
     const urlMaxPrice = parseInt(searchParams.get('maxPrice') || '100000');
@@ -88,8 +88,8 @@ export const EnhancedSearchFilters = ({
 
   const clearAllFilters = () => {
     setSearchTerm('');
-    setCity('');
-    setServiceType('');
+    setCity('all');
+    setServiceType('all');
     setSortBy('rating');
     setPriceRange([0, 100000]);
     setRating(0);
@@ -99,8 +99,8 @@ export const EnhancedSearchFilters = ({
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (searchTerm) count++;
-    if (city) count++;
-    if (serviceType) count++;
+    if (city && city !== 'all') count++;
+    if (serviceType && serviceType !== 'all') count++;
     if (priceRange[0] > 0 || priceRange[1] < 100000) count++;
     if (rating > 0) count++;
     return count;
@@ -140,7 +140,7 @@ export const EnhancedSearchFilters = ({
             <SelectValue placeholder="Select city" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Cities</SelectItem>
+            <SelectItem value="all">All Cities</SelectItem>
             <SelectItem value="Mumbai">Mumbai</SelectItem>
             <SelectItem value="Delhi">Delhi</SelectItem>
             <SelectItem value="Bangalore">Bangalore</SelectItem>
@@ -161,7 +161,7 @@ export const EnhancedSearchFilters = ({
             <SelectValue placeholder="All services" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Services</SelectItem>
+            <SelectItem value="all">All Services</SelectItem>
             <SelectItem value="wedding_photography">Wedding Photography</SelectItem>
             <SelectItem value="mehendi_artist">Mehendi Artist</SelectItem>
             <SelectItem value="pooja_services">Pooja Services</SelectItem>
@@ -304,21 +304,21 @@ export const EnhancedSearchFilters = ({
                 />
               </Badge>
             )}
-            {city && (
+            {city && city !== 'all' && (
               <Badge variant="secondary" className="flex items-center gap-1">
                 {city}
                 <X 
                   className="w-3 h-3 cursor-pointer" 
-                  onClick={() => setCity('')} 
+                  onClick={() => setCity('all')} 
                 />
               </Badge>
             )}
-            {serviceType && (
+            {serviceType && serviceType !== 'all' && (
               <Badge variant="secondary" className="flex items-center gap-1">
                 {serviceType?.replace('_', ' ') || serviceType}
                 <X 
                   className="w-3 h-3 cursor-pointer" 
-                  onClick={() => setServiceType('')} 
+                  onClick={() => setServiceType('all')} 
                 />
               </Badge>
             )}
