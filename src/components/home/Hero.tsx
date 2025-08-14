@@ -79,7 +79,7 @@ const Hero = () => {
     <div className="min-h-[calc(100vh-4rem)] pt-16 bg-white">
       <div className="relative w-full h-[70vh] overflow-hidden">
         {/* Hero Content */}
-        <div className="absolute inset-0 z-10 flex items-center justify-start text-white p-4 pl-8">
+        <div className="absolute inset-0 z-10 flex items-center justify-center text-white p-4">
           <div className="max-w-4xl bg-black/80 backdrop-blur-md p-8 rounded-xl shadow-2xl border border-white/10 animate-slide-up-fade">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-lg" role="banner">
               Sacred Ceremonies & Traditional Indian Services
