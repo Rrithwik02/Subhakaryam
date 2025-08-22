@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { supabaseAdmin } from "@/integrations/supabase/admin-client";
 import { useToast } from "@/hooks/use-toast";
 import {
   Table,
@@ -75,11 +74,12 @@ const UsersTable = () => {
 
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
-      // First delete the user from auth.users using admin client
-      const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+      const { data, error } = await supabase.functions.invoke('admin-delete-user', {
+        body: { userId }
+      });
       
-      if (authError) {
-        throw authError;
+      if (error) {
+        throw error;
       }
 
       // The profile will be automatically deleted due to the CASCADE constraint

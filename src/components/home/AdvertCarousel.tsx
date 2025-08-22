@@ -55,7 +55,7 @@ const AdvertCarousel = () => {
                     <div className="absolute top-4 right-4 bg-ceremonial-gold px-3 py-1 rounded-full text-xs font-semibold text-white">
                       {ad.tag}
                     </div>
-                    <div className="absolute inset-0 flex flex-col justify-end p-4 text-white [&>*]:text-white [&>*]:!text-white">
+                    <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 text-white [&>*]:text-white [&>*]:!text-white">
                       <h3 className="text-xl font-semibold mb-2 text-white !text-white">{ad.title}</h3>
                       <p className="text-sm opacity-90 text-white !text-white">{ad.description}</p>
                     </div>

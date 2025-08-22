@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { supabaseAdmin } from "@/integrations/supabase/admin-client";
 import { useToast } from "@/hooks/use-toast";
 import {
   Table,
@@ -99,26 +98,12 @@ const ServiceProvidersTable = () => {
 
   const deleteProvider = useMutation({
     mutationFn: async (providerId: string) => {
-      const { data: provider, error: fetchError } = await supabase
-        .from("service_providers")
-        .select("profile_id")
-        .eq("id", providerId)
-        .single();
-
-      if (fetchError) throw fetchError;
-
-      const { error: deleteError } = await supabase
-        .from("service_providers")
-        .delete()
-        .eq("id", providerId);
-
-      if (deleteError) throw deleteError;
-
-      if (provider.profile_id) {
-        const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(
-          provider.profile_id
-        );
-        if (authError) throw authError;
+      const { data, error } = await supabase.functions.invoke('admin-delete-provider', {
+        body: { providerId }
+      });
+      
+      if (error) {
+        throw error;
       }
     },
     onSuccess: () => {
