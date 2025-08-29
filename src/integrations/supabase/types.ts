@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -1142,25 +1142,25 @@ export type Database = {
       get_public_service_providers: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
           full_name: string
+          id: string
           profile_image: string
         }[]
       }
       get_secure_payment_details_for_admin: {
         Args: { provider_id_param: string }
         Returns: {
-          id: string
-          provider_id: string
-          payment_method: string
           account_holder_name: string
-          bank_name: string
           account_number_masked: string
-          ifsc_code: string
-          upi_id_masked: string
-          qr_code_url: string
+          bank_name: string
           created_at: string
+          id: string
+          ifsc_code: string
+          payment_method: string
+          provider_id: string
+          qr_code_url: string
           updated_at: string
+          upi_id_masked: string
         }[]
       }
       get_security_architecture_info: {
