@@ -1,53 +1,105 @@
-import { Truck } from "lucide-react";
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Truck, Clock, MapPin, Shield, Package, Phone } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 const ShippingDelivery = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ceremonial-cream to-white pt-24">
-      <div className="container mx-auto px-4 pb-12">
-        <div className="flex items-center gap-3 mb-8">
-          <Truck className="h-8 w-8 text-ceremonial-maroon" />
-          <h1 className="text-4xl font-display font-bold text-ceremonial-maroon">
-            Shipping & Delivery
-          </h1>
-        </div>
-        <div className="prose max-w-none">
-          <p>Last updated: {new Date().toLocaleDateString()}</p>
-          
-          <h2>Service Delivery Model</h2>
-          <p>Subhakaryam operates as a service marketplace connecting customers with local service providers. Our delivery model is designed for in-person services.</p>
+    <>
+      <Helmet>
+        <title>Shipping & Delivery Policy | Subhakaryam</title>
+        <meta name="description" content="Learn about our shipping and delivery policies for service-related materials and booking confirmations. Fast, reliable delivery across India." />
+        <meta name="keywords" content="shipping policy, delivery, service materials, booking confirmation, subhakaryam" />
+        <link rel="canonical" href="https://subhakaryam.org/policies/shipping-delivery" />
+      </Helmet>
 
-          <h2>Service Locations</h2>
-          <ul>
-            <li>Services are provided at customer-specified locations</li>
-            <li>Service providers travel to your venue or preferred location</li>
-            <li>Coverage areas are defined by individual service providers</li>
-          </ul>
+      <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">
+        {/* Header */}
+        <section className="py-16 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="text-center mb-12">
+              <div className="flex justify-center mb-6">
+                <Truck className="h-16 w-16 text-ceremonial-gold" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-display font-bold text-ceremonial-maroon mb-4">
+                Shipping & Delivery Policy
+              </h1>
+              <p className="text-xl text-ceremonial-brown max-w-3xl mx-auto">
+                Information about delivery of service-related materials and booking confirmations
+              </p>
+            </div>
+          </div>
+        </section>
 
-          <h2>Scheduling & Timing</h2>
-          <ul>
-            <li>Services are scheduled based on availability of providers</li>
-            <li>Minimum 24-48 hours advance booking recommended</li>
-            <li>Emergency services may be available with additional charges</li>
-            <li>Service duration varies by type and requirements</li>
-          </ul>
+        {/* Policy Content */}
+        <section className="py-16 px-4">
+          <div className="container mx-auto max-w-4xl space-y-8">
+            
+            {/* Service Nature */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-ceremonial-maroon flex items-center gap-2">
+                  <Package className="h-5 w-5" />
+                  Nature of Our Services
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-ceremonial-brown space-y-4">
+                <p>
+                  Subhakaryam primarily provides <strong>service-based offerings</strong> rather than physical products. 
+                  Our main services include connecting customers with verified service providers for:
+                </p>
+                <ul className="list-disc list-inside space-y-2 ml-4">
+                  <li>Pooja and religious ceremony services</li>
+                  <li>Wedding photography and videography</li>
+                  <li>Mehendi art services</li>
+                  <li>Event decoration and catering</li>
+                  <li>Music and DJ services</li>
+                  <li>Function hall bookings</li>
+                </ul>
+                <p>
+                  Since these are location-based services performed at your venue, traditional shipping doesn't apply. 
+                  However, some services may include delivery of ceremony materials or equipment.
+                </p>
+              </CardContent>
+            </Card>
 
-          <h2>Physical Products</h2>
-          <p>For services that include physical items (decorations, materials, etc.):</p>
-          <ul>
-            <li>Items are brought by service providers to your location</li>
-            <li>Setup and removal included in service package</li>
-            <li>Any damaged or missing items will be addressed directly with the provider</li>
-          </ul>
+            {/* Contact Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-ceremonial-maroon flex items-center gap-2">
+                  <Phone className="h-5 w-5" />
+                  Delivery Support & Tracking
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-ceremonial-brown space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="font-semibold text-ceremonial-maroon mb-3">Track Your Service</h3>
+                    <ul className="list-disc list-inside space-y-1 text-sm">
+                      <li>Real-time booking status updates</li>
+                      <li>Service provider location tracking</li>
+                      <li>Material delivery notifications</li>
+                      <li>Customer support helpline</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-ceremonial-maroon mb-3">Customer Support</h3>
+                    <div className="space-y-2 text-sm">
+                      <p><strong>Phone:</strong> +91-XXXX-XXXX-XX</p>
+                      <p><strong>Email:</strong> support@subhakaryam.org</p>
+                      <p><strong>Hours:</strong> 24/7 for urgent bookings</p>
+                      <p><strong>WhatsApp:</strong> Available for quick queries</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-          <h2>Coverage Areas</h2>
-          <ul>
-            <li>Service availability varies by location</li>
-            <li>Each provider defines their service radius</li>
-            <li>Additional travel charges may apply for distant locations</li>
-          </ul>
-        </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </>
   );
 };
 

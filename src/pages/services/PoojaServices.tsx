@@ -65,7 +65,7 @@ const PoojaServices = () => {
               </div>
               <Link to="/search?service=poojari">
                 <Button size="lg" className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white px-8 py-3">
-                  Book Pandit Now
+                  Find Pooja Services
                 </Button>
               </Link>
             </div>

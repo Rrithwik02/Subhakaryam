@@ -25,6 +25,7 @@ import ServiceProviderProfile from "./pages/profile/ServiceProviderProfile";
 import ServicesPage from "./pages/services";
 import PrivacyPolicy from "./pages/policies/PrivacyPolicy";
 import TermsConditions from "./pages/policies/TermsConditions";
+import ShippingDelivery from "./pages/policies/ShippingDelivery";
 import ServiceRequest from "./pages/ServiceRequest";
 import TrackBooking from "./pages/TrackBooking";
 import AddService from "./pages/auth/AddService";
@@ -32,6 +33,7 @@ import PoojaServices from "./pages/services/PoojaServices";
 import WeddingPhotography from "./pages/services/WeddingPhotography";
 import MehendiArtists from "./pages/services/MehendiArtists";
 import BlogIndex from "./pages/blog/BlogIndex";
+import BlogPost from "./pages/blog/BlogPost";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/error/ErrorBoundary";
 import ProviderDetail from "./pages/provider/ProviderDetail";
@@ -87,8 +89,10 @@ const AppContent: React.FC = () => {
             <Route path="/services/wedding-photography" element={<WeddingPhotography />} />
             <Route path="/services/mehendi-artists" element={<MehendiArtists />} />
             <Route path="/blog" element={<BlogIndex />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/policies/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/policies/terms-conditions" element={<TermsConditions />} />
+            <Route path="/policies/shipping-delivery" element={<ShippingDelivery />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/auth/callback" element={<AuthCallback />} />

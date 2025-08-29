@@ -6,7 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Loader2, AlertCircle } from "lucide-react";
-import { EnhancedSearchFilters } from "@/components/search/EnhancedSearchFilters";
+import { ModernSearchFilters } from "@/components/search/ModernSearchFilters";
 import ServiceCard from "@/components/search/ServiceCard";
 
 const Search = () => {
@@ -119,7 +119,7 @@ const Search = () => {
             Discover the perfect service provider for your ceremonial needs
           </p>
 
-          <EnhancedSearchFilters
+          <ModernSearchFilters
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             city={city}
