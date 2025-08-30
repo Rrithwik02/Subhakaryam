@@ -34,6 +34,13 @@ import WeddingPhotography from "./pages/services/WeddingPhotography";
 import MehendiArtists from "./pages/services/MehendiArtists";
 import BlogIndex from "./pages/blog/BlogIndex";
 import BlogPost from "./pages/blog/BlogPost";
+import TimelessWeddingTraditions from "./pages/blog/TimelessWeddingTraditions";
+import EssentialHomeCeremonies from "./pages/blog/EssentialHomeCeremonies";
+import FestivalCelebrations from "./pages/blog/FestivalCelebrations";
+import BeautyStyleGuide from "./pages/blog/BeautyStyleGuide";
+import PhotographyTips from "./pages/blog/PhotographyTips";
+import CateringIdeas from "./pages/blog/CateringIdeas";
+import DecorationTrends from "./pages/blog/DecorationTrends";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/error/ErrorBoundary";
 import ProviderDetail from "./pages/provider/ProviderDetail";
@@ -88,8 +95,15 @@ const AppContent: React.FC = () => {
             <Route path="/services/pooja-services" element={<PoojaServices />} />
             <Route path="/services/wedding-photography" element={<WeddingPhotography />} />
             <Route path="/services/mehendi-artists" element={<MehendiArtists />} />
-            <Route path="/blog" element={<BlogIndex />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/blog" element={<BlogIndex />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/blog/timeless-wedding-traditions" element={<TimelessWeddingTraditions />} />
+        <Route path="/blog/essential-home-ceremonies" element={<EssentialHomeCeremonies />} />
+        <Route path="/blog/festival-celebrations" element={<FestivalCelebrations />} />
+        <Route path="/blog/beauty-style-guide" element={<BeautyStyleGuide />} />
+        <Route path="/blog/photography-tips" element={<PhotographyTips />} />
+        <Route path="/blog/catering-ideas" element={<CateringIdeas />} />
+        <Route path="/blog/decoration-trends" element={<DecorationTrends />} />
             <Route path="/policies/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/policies/terms-conditions" element={<TermsConditions />} />
             <Route path="/policies/shipping-delivery" element={<ShippingDelivery />} />

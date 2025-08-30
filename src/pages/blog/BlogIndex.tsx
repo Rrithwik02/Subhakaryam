@@ -113,7 +113,7 @@ const BlogIndex = () => {
                     <CardDescription className="mb-4 line-clamp-3">
                       {post.excerpt}
                     </CardDescription>
-                    <Link to={`/blog/${post.id === 1 ? 'hindu-wedding-ceremonies-guide' : post.id === 2 ? 'griha-pravesh-ritual-guide' : 'mehendi-designs-trends'}`}>
+                    <Link to={`/blog/${post.id === 1 ? 'timeless-wedding-traditions' : post.id === 2 ? 'essential-home-ceremonies' : 'beauty-style-guide'}`}>
                       <Button variant="outline" className="w-full group">
                         Read More
                         <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -171,7 +171,7 @@ const BlogIndex = () => {
                           </Badge>
                         </div>
                       </div>
-                      <Link to={`/blog/${index === 0 ? 'wedding-photography-poses' : index === 1 ? 'south-indian-wedding-menu' : index === 2 ? 'navratri-decoration-ideas' : index === 3 ? 'satyanarayan-puja-guide' : 'wedding-photographer-guide'}`}>
+                      <Link to={`/blog/${index === 0 ? 'photography-tips' : index === 1 ? 'catering-ideas' : index === 2 ? 'decoration-trends' : index === 3 ? 'festival-celebrations' : 'beauty-style-guide'}`}>
                         <Button variant="ghost" size="sm" className="mt-4 md:mt-0 group">
                           Read More
                           <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
