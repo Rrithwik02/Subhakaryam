@@ -1,13 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { UserRoundCog, MapPin, Star, Clock, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import ServiceSchema from '@/components/seo/ServiceSchema';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSessionContext } from '@supabase/auth-helpers-react';
 
 const PoojaServices = () => {
+  const { session, isLoading } = useSessionContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && session) {
+      navigate('/search?service=poojari');
+    }
+  }, [session, isLoading, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
+      </div>
+    );
+  }
+
+  if (session) {
+    return null; // Will redirect
+  }
+
   const poojaTypes = [
     { name: "Griha Pravesh", price: "₹2,500 - ₹8,000", duration: "2-3 hours" },
     { name: "Satyanarayan Puja", price: "₹1,500 - ₹5,000", duration: "1-2 hours" },
