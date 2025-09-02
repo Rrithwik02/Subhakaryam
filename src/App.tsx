@@ -32,6 +32,10 @@ import AddService from "./pages/auth/AddService";
 import PoojaServices from "./pages/services/PoojaServices";
 import WeddingPhotography from "./pages/services/WeddingPhotography";
 import MehendiArtists from "./pages/services/MehendiArtists";
+import CateringServices from "./pages/services/CateringServices";
+import MusicServices from "./pages/services/MusicServices";
+import DecorationServices from "./pages/services/DecorationServices";
+import FunctionHallServices from "./pages/services/FunctionHallServices";
 import BlogIndex from "./pages/blog/BlogIndex";
 import BlogPost from "./pages/blog/BlogPost";
 import TimelessWeddingTraditions from "./pages/blog/TimelessWeddingTraditions";
@@ -95,6 +99,10 @@ const AppContent: React.FC = () => {
             <Route path="/services/pooja-services" element={<PoojaServices />} />
             <Route path="/services/wedding-photography" element={<WeddingPhotography />} />
             <Route path="/services/mehendi-artists" element={<MehendiArtists />} />
+            <Route path="/services/catering" element={<CateringServices />} />
+            <Route path="/services/music" element={<MusicServices />} />
+            <Route path="/services/decoration" element={<DecorationServices />} />
+            <Route path="/services/function-hall" element={<FunctionHallServices />} />
         <Route path="/blog" element={<BlogIndex />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/blog/timeless-wedding-traditions" element={<TimelessWeddingTraditions />} />
