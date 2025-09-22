@@ -6,6 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
+import NotificationPreferences from "@/components/notifications/NotificationPreferences";
+import ThemeCustomizer from "@/components/theme/ThemeCustomizer";
 import ChatInterface from "@/components/chat/ChatInterface";
 import PaymentRequestButton from "@/components/payments/PaymentRequestButton";
 import { Button } from "@/components/ui/button";
@@ -135,18 +137,24 @@ const UserProfile = () => {
         </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="w-full">
-            <TabsTrigger value="overview" className="flex-1">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="overview">
               <Calendar className="w-4 h-4 mr-2" />
               Bookings
             </TabsTrigger>
-            <TabsTrigger value="quotations" className="flex-1">
+            <TabsTrigger value="quotations">
               <Quote className="w-4 h-4 mr-2" />
               Quotations
             </TabsTrigger>
-            <TabsTrigger value="messages" className="flex-1">
+            <TabsTrigger value="messages">
               <MessageCircle className="w-4 h-4 mr-2" />
               Messages
+            </TabsTrigger>
+            <TabsTrigger value="notifications">
+              Notifications
+            </TabsTrigger>
+            <TabsTrigger value="themes">
+              Themes
             </TabsTrigger>
           </TabsList>
 
@@ -211,6 +219,14 @@ const UserProfile = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="notifications">
+            <NotificationPreferences />
+          </TabsContent>
+
+          <TabsContent value="themes">
+            <ThemeCustomizer />
           </TabsContent>
         </Tabs>
 

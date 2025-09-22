@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar, MapPin, Star, Filter, DollarSign, Clock, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import PaymentScheduleTracker from '@/components/payments/PaymentScheduleTracker';
 
 interface BookingDashboardProps {
   userId: string;
@@ -314,6 +315,16 @@ const BookingCard = ({ booking, getStatusColor }: BookingCardProps) => {
             )}
           </div>
         </div>
+
+        {/* Payment Schedule Tracker */}
+        {booking.total_amount && (
+          <div className="mt-4 pt-4 border-t">
+            <PaymentScheduleTracker 
+              bookingId={booking.id} 
+              totalAmount={Number(booking.total_amount)} 
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
