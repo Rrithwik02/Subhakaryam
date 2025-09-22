@@ -238,6 +238,111 @@ export type Database = {
           },
         ]
       }
+      bundle_bookings: {
+        Row: {
+          advance_amount: number | null
+          bundle_id: string
+          created_at: string | null
+          event_date: string
+          guest_count: number | null
+          id: string
+          special_requirements: string | null
+          status: string | null
+          total_amount: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          advance_amount?: number | null
+          bundle_id: string
+          created_at?: string | null
+          event_date: string
+          guest_count?: number | null
+          id?: string
+          special_requirements?: string | null
+          status?: string | null
+          total_amount: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          advance_amount?: number | null
+          bundle_id?: string
+          created_at?: string | null
+          event_date?: string
+          guest_count?: number | null
+          id?: string
+          special_requirements?: string | null
+          status?: string | null
+          total_amount?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_bundle_bookings_bundle"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "service_bundles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_bundle_bookings_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_cache"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "fk_bundle_bookings_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bundle_items: {
+        Row: {
+          bundle_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          individual_price: number | null
+          quantity: number | null
+          service_name: string
+          service_type: string
+        }
+        Insert: {
+          bundle_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          individual_price?: number | null
+          quantity?: number | null
+          service_name: string
+          service_type: string
+        }
+        Update: {
+          bundle_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          individual_price?: number | null
+          quantity?: number | null
+          service_name?: string
+          service_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_bundle_items_bundle"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "service_bundles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_connections: {
         Row: {
           booking_id: string | null
@@ -936,6 +1041,75 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_bundles: {
+        Row: {
+          base_price: number
+          bundle_name: string
+          created_at: string | null
+          description: string | null
+          discount_percentage: number | null
+          discounted_price: number
+          duration_days: number | null
+          id: string
+          is_active: boolean | null
+          max_guests: number | null
+          min_advance_percentage: number | null
+          portfolio_images: string[] | null
+          provider_id: string
+          terms_conditions: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          base_price: number
+          bundle_name: string
+          created_at?: string | null
+          description?: string | null
+          discount_percentage?: number | null
+          discounted_price: number
+          duration_days?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_guests?: number | null
+          min_advance_percentage?: number | null
+          portfolio_images?: string[] | null
+          provider_id: string
+          terms_conditions?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          base_price?: number
+          bundle_name?: string
+          created_at?: string | null
+          description?: string | null
+          discount_percentage?: number | null
+          discounted_price?: number
+          duration_days?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_guests?: number | null
+          min_advance_percentage?: number | null
+          portfolio_images?: string[] | null
+          provider_id?: string
+          terms_conditions?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_service_bundles_provider"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "fk_service_bundles_provider"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
         ]

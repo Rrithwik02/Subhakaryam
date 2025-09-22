@@ -40,6 +40,7 @@ const BeautyStyleGuide = lazy(() => import("@/pages/blog/BeautyStyleGuide"));
 const PhotographyTips = lazy(() => import("@/pages/blog/PhotographyTips"));
 const CateringIdeas = lazy(() => import("@/pages/blog/CateringIdeas"));
 const DecorationTrends = lazy(() => import("@/pages/blog/DecorationTrends"));
+const ServiceBundles = lazy(() => import("@/pages/services/ServiceBundles"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const ProviderDetail = lazy(() => import("@/pages/provider/ProviderDetail"));
 
@@ -73,6 +74,7 @@ const AppRoutes = () => {
         <Route path="/services/music" element={<MusicServices />} />
         <Route path="/services/decoration" element={<DecorationServices />} />
         <Route path="/services/function-hall" element={<FunctionHallServices />} />
+        <Route path="/bundles" element={<ServiceBundles />} />
         
         <Route path="/blog" element={<BlogIndex />} />
         <Route path="/blog/:slug" element={<BlogPost />} />

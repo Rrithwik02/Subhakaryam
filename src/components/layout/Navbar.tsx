@@ -114,12 +114,41 @@ const Navbar = () => {
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink
-            className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
-            onClick={() => navigate("/services")}
-          >
-            Services
-          </NavigationMenuLink>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="text-foreground hover:text-primary font-medium px-4">
+                Services
+                <ChevronDown className="h-4 w-4 ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuItem onClick={() => navigate('/services/pooja-services')}>
+                Pooja Services
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/services/wedding-photography')}>
+                Wedding Photography
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/services/mehendi-artists')}>
+                Mehendi Artists
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/services/catering')}>
+                Catering Services
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/services/music')}>
+                Music Services
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/services/decoration')}>
+                Decoration Services
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/services/function-hall')}>
+                Function Hall
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/bundles')}>
+                Service Bundles
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink

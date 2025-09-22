@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaymentSettings } from "./PaymentSettings";
 import { PaymentRequestDialog } from "./PaymentRequestDialog";
 import { ServicesManagement } from "./ServicesManagement";
+import { BundleManagement } from "../bundles/BundleManagement";
 
 const ServiceDashboard = () => {
   const { session } = useSessionContext();
@@ -171,12 +172,15 @@ const ServiceDashboard = () => {
 
       {!isProviderError && provider && (
         <Tabs defaultValue="bookings" className="space-y-6">
-          <TabsList className={`grid w-full grid-cols-4 ${isMobile ? 'h-12' : ''}`}>
+          <TabsList className={`grid w-full grid-cols-5 ${isMobile ? 'h-12' : ''}`}>
             <TabsTrigger value="bookings" className={isMobile ? 'text-xs' : 'text-sm'}>
               {isMobile ? 'Bookings' : 'Bookings'}
             </TabsTrigger>
             <TabsTrigger value="services" className={isMobile ? 'text-xs' : 'text-sm'}>
               {isMobile ? 'Services' : 'Services'}
+            </TabsTrigger>
+            <TabsTrigger value="bundles" className={isMobile ? 'text-xs' : 'text-sm'}>
+              {isMobile ? 'Bundles' : 'Bundles'}
             </TabsTrigger>
             <TabsTrigger value="availability" className={isMobile ? 'text-xs' : 'text-sm'}>
               {isMobile ? 'Schedule' : 'Availability'}
@@ -300,6 +304,10 @@ const ServiceDashboard = () => {
 
           <TabsContent value="services">
             <ServicesManagement />
+          </TabsContent>
+
+          <TabsContent value="bundles">
+            <BundleManagement />
           </TabsContent>
 
           <TabsContent value="availability">

@@ -31,6 +31,7 @@ import QuickStats from "@/components/home/QuickStats";
 import CTASection from "@/components/home/CTASection";
 import FeaturedProviders from "@/components/home/FeaturedProviders";
 import PWAInstall from "@/components/ui/pwa-install";
+import { FeaturedBundles } from "@/components/home/FeaturedBundles";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -147,6 +148,7 @@ const Index = () => {
       <AdvertCarousel />
       <Services />
       <FeaturedProviders />
+      <FeaturedBundles />
       <EssentialsPreview />
       <TrustIndicators />
       <HowItWorks />
