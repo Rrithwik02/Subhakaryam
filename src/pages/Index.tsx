@@ -27,7 +27,7 @@ import MetaTags from "@/components/seo/MetaTags";
 import QuickBookingWidget from "@/components/booking/QuickBookingWidget";
 import ScrollToTop from "@/components/ui/scroll-to-top";
 import TrustIndicators from "@/components/home/TrustIndicators";
-import QuickStats from "@/components/home/QuickStats";
+
 import CTASection from "@/components/home/CTASection";
 import FeaturedProviders from "@/components/home/FeaturedProviders";
 import PWAInstall from "@/components/ui/pwa-install";
@@ -144,7 +144,7 @@ const Index = () => {
 
       <Hero />
       <QuickBookingWidget />
-      <QuickStats />
+      
       <AdvertCarousel />
       <Services />
       <FeaturedProviders />
