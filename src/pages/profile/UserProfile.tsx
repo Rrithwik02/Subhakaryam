@@ -11,8 +11,9 @@ import PaymentRequestButton from "@/components/payments/PaymentRequestButton";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
-import { LogOut, MessageCircle, Calendar, CreditCard, AlertCircle } from "lucide-react";
+import { LogOut, MessageCircle, Calendar, CreditCard, AlertCircle, Quote } from "lucide-react";
 import { useState } from "react";
+import BookingDashboard from "@/components/profile/BookingDashboard";
 
 const UserProfile = () => {
   const { session } = useSessionContext();
@@ -137,7 +138,11 @@ const UserProfile = () => {
           <TabsList className="w-full">
             <TabsTrigger value="overview" className="flex-1">
               <Calendar className="w-4 h-4 mr-2" />
-              Bookings Overview
+              Bookings
+            </TabsTrigger>
+            <TabsTrigger value="quotations" className="flex-1">
+              <Quote className="w-4 h-4 mr-2" />
+              Quotations
             </TabsTrigger>
             <TabsTrigger value="messages" className="flex-1">
               <MessageCircle className="w-4 h-4 mr-2" />
@@ -146,109 +151,13 @@ const UserProfile = () => {
           </TabsList>
 
           <TabsContent value="overview">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Bookings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {bookings?.length === 0 ? (
-                    <p className="text-center text-gray-500">No bookings found</p>
-                  ) : (
-                    bookings?.map((booking) => {
-                      // Find pending payment requests for this booking
-                      const pendingPaymentRequest = booking.payments?.find(
-                        (payment: any) => payment.is_provider_requested && payment.status === 'pending'
-                      );
+            <BookingDashboard userId={session?.user?.id || ''} />
+          </TabsContent>
 
-                      return (
-                        <Card key={booking.id} className="border border-gray-200">
-                          <CardContent className="p-4">
-                            <div className="flex justify-between items-start">
-                              <div className="space-y-2">
-                                <h3 className="font-semibold text-lg">
-                                  {booking.service_providers?.business_name}
-                                </h3>
-                                <p className="text-sm text-gray-600">
-                                  Service: {booking.service_providers?.service_type}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                  Date: {new Date(booking.service_date).toLocaleDateString()}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                  Time: {new Date(`2000-01-01T${booking.time_slot}`).toLocaleTimeString([], {
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                  })}
-                                </p>
-                                <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                  ${booking.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
-                                    booking.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
-                                    'bg-yellow-100 text-yellow-800'}`}>
-                                  Status: {booking.status}
-                                </div>
-                                
-                                {/* Payment Request Alert */}
-                                {pendingPaymentRequest && (
-                                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mt-3">
-                                    <div className="flex items-start gap-2">
-                                      <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5" />
-                                      <div className="flex-1">
-                                        <h4 className="text-sm font-medium text-orange-800">
-                                          Payment Request
-                                        </h4>
-                                         <p className="text-sm text-orange-700 mt-1">
-                                           Service provider has requested ₹{Number(pendingPaymentRequest.amount).toLocaleString()} 
-                                           ({pendingPaymentRequest.payment_type})
-                                           {pendingPaymentRequest.payment_description && (
-                                             <span> - {pendingPaymentRequest.payment_description}</span>
-                                           )}
-                                         </p>
-                                         <p className="text-xs text-orange-500 mt-1">
-                                           Requested on: {new Date(pendingPaymentRequest.created_at).toLocaleDateString()}
-                                         </p>
-                                          <div className="mt-2">
-                                            <PaymentRequestButton
-                                              bookingId={booking.id}
-                                              amount={Number(pendingPaymentRequest.amount)}
-                                              paymentType={pendingPaymentRequest.payment_type as 'advance' | 'final'}
-                                              description={pendingPaymentRequest.payment_description}
-                                              onPaymentSuccess={() => {
-                                                refetchBookings();
-                                                toast({
-                                                  title: "Payment Completed",
-                                                  description: "Your payment has been processed successfully.",
-                                                });
-                                              }}
-                                            />
-                                          </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                              <div className="flex flex-col gap-2">
-                                <Button
-                                  variant="secondary"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedChat(booking.id);
-                                    setActiveTab("messages");
-                                  }}
-                                >
-                                  <MessageCircle className="w-4 h-4 mr-2" />
-                                  Message
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                       );
-                     })
-                   )}
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="quotations">
+            <div className="text-center py-8 text-gray-500">
+              Quotation system coming soon...
+            </div>
           </TabsContent>
 
           <TabsContent value="messages">

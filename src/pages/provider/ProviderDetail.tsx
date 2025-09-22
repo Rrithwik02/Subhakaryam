@@ -16,6 +16,28 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { FloatingBookingButton } from "@/components/booking/FloatingBookingButton";
+import SocialSharing from "@/components/ui/social-sharing";
+import ProviderCalendar from "@/components/calendar/ProviderCalendar";
+import { format } from "date-fns";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Crown, MapPin, Star, Phone, ArrowLeft, Calendar } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import FavoriteButton from "@/components/favorites/FavoriteButton";
+import ReviewForm from "@/components/reviews/ReviewForm";
+import BookingDialog from "@/components/bookings/BookingDialog";
+import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
+import { FloatingBookingButton } from "@/components/booking/FloatingBookingButton";
+import SocialSharing from "@/components/ui/social-sharing";
+import ProviderCalendar from "@/components/calendar/ProviderCalendar";
 
 const ProviderDetail = () => {
   const { id } = useParams();
@@ -184,6 +206,12 @@ const ProviderDetail = () => {
                 {provider.is_premium && (
                   <Crown className="h-6 w-6 text-ceremonial-gold" />
                 )}
+                <SocialSharing 
+                  url={window.location.href}
+                  title={`${provider.business_name} - ${provider.service_type} Services`}
+                  description={provider.description || `Professional ${provider.service_type} services by ${provider.profiles?.full_name}`}
+                  image={provider.portfolio_images?.[0] ? `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/portfolio_images/${provider.portfolio_images[0]}` : undefined}
+                />
                 <FavoriteButton providerId={provider.id} />
               </div>
             </div>
@@ -274,38 +302,83 @@ const ProviderDetail = () => {
                 )}
               </Card>
 
+              {/* Calendar Section */}
+              <ProviderCalendar providerId={provider.id} isPublic={true} />
+
               {/* Reviews Section */}
-              <Card className="p-6 mt-6">
+              <Card className="p-6">
                 <Tabs defaultValue="reviews" className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                    <TabsTrigger value="reviews">Reviews ({reviews?.length || 0})</TabsTrigger>
                     <TabsTrigger value="write-review">Write Review</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="reviews" className="mt-4">
                     {reviews && reviews.length > 0 ? (
-                      <div className="space-y-4">
-                        {reviews.map((review) => (
-                          <div key={review.id} className="border-b pb-4 last:border-b-0">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="flex items-center">
+                      <div className="space-y-6">
+                        {/* Rating Summary */}
+                        <div className="border-b pb-4">
+                          <div className="flex items-center gap-4 mb-4">
+                            <div className="text-center">
+                              <div className="text-3xl font-bold text-ceremonial-gold">
+                                {provider.rating ? provider.rating.toFixed(1) : '0.0'}
+                              </div>
+                              <div className="flex items-center justify-center">
                                 {[...Array(5)].map((_, i) => (
                                   <Star
                                     key={i}
                                     className={cn(
                                       "h-4 w-4",
-                                      i < review.rating
+                                      i < Math.floor(provider.rating || 0)
                                         ? "text-yellow-400 fill-current"
                                         : "text-gray-300"
                                     )}
                                   />
                                 ))}
                               </div>
-                              <span className="font-medium">{review.profiles?.full_name}</span>
+                              <div className="text-sm text-gray-500">
+                                {reviews.length} review{reviews.length !== 1 ? 's' : ''}
+                              </div>
                             </div>
-                            <p className="text-gray-600">{review.comment}</p>
                           </div>
-                        ))}
+                        </div>
+
+                        {/* Individual Reviews */}
+                        <div className="space-y-4">
+                          {reviews.map((review) => (
+                            <div key={review.id} className="border-b pb-4 last:border-b-0">
+                              <div className="flex items-start gap-3">
+                                <div className="w-10 h-10 bg-ceremonial-gold/20 rounded-full flex items-center justify-center">
+                                  <span className="text-sm font-medium text-ceremonial-gold">
+                                    {review.profiles?.full_name?.charAt(0) || 'U'}
+                                  </span>
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <span className="font-medium">{review.profiles?.full_name}</span>
+                                    <div className="flex items-center">
+                                      {[...Array(5)].map((_, i) => (
+                                        <Star
+                                          key={i}
+                                          className={cn(
+                                            "h-4 w-4",
+                                            i < review.rating
+                                              ? "text-yellow-400 fill-current"
+                                              : "text-gray-300"
+                                          )}
+                                        />
+                                      ))}
+                                    </div>
+                                    <span className="text-sm text-gray-500">
+                                      {format(new Date(review.created_at), 'MMM d, yyyy')}
+                                    </span>
+                                  </div>
+                                  <p className="text-gray-600">{review.comment}</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     ) : (
                       <p className="text-gray-500 text-center py-8">

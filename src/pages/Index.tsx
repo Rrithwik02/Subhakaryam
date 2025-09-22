@@ -30,6 +30,7 @@ import TrustIndicators from "@/components/home/TrustIndicators";
 import QuickStats from "@/components/home/QuickStats";
 import CTASection from "@/components/home/CTASection";
 import FeaturedProviders from "@/components/home/FeaturedProviders";
+import PWAInstall from "@/components/ui/pwa-install";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -174,6 +175,7 @@ const Index = () => {
       
       <Chatbot />
       <ScrollToTop />
+      <PWAInstall />
       <Footer />
     </div>
   );

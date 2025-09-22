@@ -1,12 +1,16 @@
 {
-  "name": "Subhakaryam - Event Services Platform",
+  "name": "Subhakaryam - Sacred Ceremonies & Traditional Services",
   "short_name": "Subhakaryam",
-  "description": "Complete event services platform for weddings, functions, and celebrations",
+  "description": "Book trusted pandits, photographers, caterers & decorators for authentic Indian ceremonies",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#8B5CF6",
+  "theme_color": "#8B4513",
   "orientation": "portrait-primary",
+  "scope": "/",
+  "id": "subhakaryam-app",
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/lovable-uploads/icon-192x192.png",
@@ -21,13 +25,41 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["business", "lifestyle", "utilities"],
+  "categories": ["business", "lifestyle", "utilities", "entertainment"],
   "screenshots": [
     {
       "src": "/lovable-uploads/screenshot-mobile.png",
       "sizes": "390x844",
       "type": "image/png",
-      "form_factor": "narrow"
+      "form_factor": "narrow",
+      "label": "Mobile view of Subhakaryam app"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Find Services",
+      "short_name": "Search",
+      "description": "Search for service providers",
+      "url": "/search",
+      "icons": [
+        {
+          "src": "/lovable-uploads/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Track Booking",
+      "short_name": "Track",
+      "description": "Track your bookings",
+      "url": "/track-booking",
+      "icons": [
+        {
+          "src": "/lovable-uploads/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
 }
