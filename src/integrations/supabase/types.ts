@@ -111,6 +111,13 @@ export type Database = {
             foreignKeyName: "additional_services_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "additional_services_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -214,6 +221,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_service_provider_profiles"
             referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "bookings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "bookings_provider_id_fkey"
@@ -429,6 +443,13 @@ export type Database = {
             foreignKeyName: "chat_connections_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_connections_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -619,6 +640,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_service_provider_profiles"
             referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "favorites_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "favorites_provider_id_fkey"
@@ -921,6 +949,13 @@ export type Database = {
             foreignKeyName: "payouts_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payouts_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -1017,6 +1052,13 @@ export type Database = {
             foreignKeyName: "provider_payment_details_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: true
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_payment_details_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -1089,6 +1131,13 @@ export type Database = {
             foreignKeyName: "quotation_requests_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotation_requests_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -1132,6 +1181,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_service_provider_profiles"
             referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "reviews_provider_id_fkey"
@@ -1220,6 +1276,13 @@ export type Database = {
             foreignKeyName: "fk_service_bundles_provider"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_service_bundles_provider"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -1263,6 +1326,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_service_provider_profiles"
             referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "service_provider_availability_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "service_provider_availability_provider_id_fkey"
@@ -1397,6 +1467,13 @@ export type Database = {
             foreignKeyName: "service_requests_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
             referencedRelation: "service_providers"
             referencedColumns: ["id"]
           },
@@ -1497,6 +1574,55 @@ export type Database = {
         }
         Relationships: []
       }
+      public_reviews: {
+        Row: {
+          anonymous_user_id: string | null
+          comment: string | null
+          created_at: string | null
+          id: string | null
+          provider_id: string | null
+          rating: number | null
+        }
+        Insert: {
+          anonymous_user_id?: never
+          comment?: string | null
+          created_at?: string | null
+          id?: string | null
+          provider_id?: string | null
+          rating?: number | null
+        }
+        Update: {
+          anonymous_user_id?: never
+          comment?: string | null
+          created_at?: string | null
+          id?: string | null
+          provider_id?: string | null
+          rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_service_provider_profiles: {
         Row: {
           city: string | null
@@ -1505,6 +1631,54 @@ export type Database = {
           provider_id: string | null
           rating: number | null
           service_type: string | null
+        }
+        Relationships: []
+      }
+      public_service_providers: {
+        Row: {
+          base_price: number | null
+          city: string | null
+          created_at: string | null
+          description: string | null
+          display_name: string | null
+          id: string | null
+          is_premium: boolean | null
+          portfolio_images: string[] | null
+          portfolio_link: string | null
+          rating: number | null
+          service_type: string | null
+          specializations: string[] | null
+          subcategory: string | null
+        }
+        Insert: {
+          base_price?: number | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_name?: never
+          id?: string | null
+          is_premium?: boolean | null
+          portfolio_images?: string[] | null
+          portfolio_link?: string | null
+          rating?: number | null
+          service_type?: string | null
+          specializations?: string[] | null
+          subcategory?: string | null
+        }
+        Update: {
+          base_price?: number | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_name?: never
+          id?: string | null
+          is_premium?: boolean | null
+          portfolio_images?: string[] | null
+          portfolio_link?: string | null
+          rating?: number | null
+          service_type?: string | null
+          specializations?: string[] | null
+          subcategory?: string | null
         }
         Relationships: []
       }
@@ -1548,6 +1722,32 @@ export type Database = {
           qr_code_url: string
           updated_at: string
           upi_id_masked: string
+        }[]
+      }
+      get_secure_provider_details: {
+        Args: { provider_id_param: string }
+        Returns: {
+          base_price: number
+          city: string
+          description: string
+          display_name: string
+          id: string
+          portfolio_images: string[]
+          portfolio_link: string
+          rating: number
+          service_type: string
+          specializations: string[]
+          subcategory: string
+        }[]
+      }
+      get_secure_provider_reviews: {
+        Args: { provider_id_param: string }
+        Returns: {
+          anonymous_user_id: string
+          comment: string
+          created_at: string
+          id: string
+          rating: number
         }[]
       }
       get_security_architecture_info: {
