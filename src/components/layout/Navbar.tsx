@@ -11,6 +11,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -249,6 +250,7 @@ const Navbar = () => {
             <NavLinks />
 
             <div className="flex items-center gap-4">
+              <LanguageSwitcher />
               {session && <NotificationBell />}
               
               {session ? (
