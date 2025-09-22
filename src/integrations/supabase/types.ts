@@ -806,6 +806,78 @@ export type Database = {
           },
         ]
       }
+      quotation_requests: {
+        Row: {
+          budget_range: string | null
+          created_at: string
+          description: string
+          event_date: string | null
+          guest_count: number | null
+          id: string
+          images: string[] | null
+          location: string
+          provider_id: string | null
+          quoted_amount: number | null
+          quoted_description: string | null
+          service_type: string
+          special_requirements: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget_range?: string | null
+          created_at?: string
+          description: string
+          event_date?: string | null
+          guest_count?: number | null
+          id?: string
+          images?: string[] | null
+          location: string
+          provider_id?: string | null
+          quoted_amount?: number | null
+          quoted_description?: string | null
+          service_type: string
+          special_requirements?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget_range?: string | null
+          created_at?: string
+          description?: string
+          event_date?: string | null
+          guest_count?: number | null
+          id?: string
+          images?: string[] | null
+          location?: string
+          provider_id?: string | null
+          quoted_amount?: number | null
+          quoted_description?: string | null
+          service_type?: string
+          special_requirements?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotation_requests_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["provider_id"]
+          },
+          {
+            foreignKeyName: "quotation_requests_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null

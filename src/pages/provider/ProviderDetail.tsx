@@ -19,25 +19,6 @@ import { FloatingBookingButton } from "@/components/booking/FloatingBookingButto
 import SocialSharing from "@/components/ui/social-sharing";
 import ProviderCalendar from "@/components/calendar/ProviderCalendar";
 import { format } from "date-fns";
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Crown, MapPin, Star, Phone, ArrowLeft, Calendar } from "lucide-react";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import FavoriteButton from "@/components/favorites/FavoriteButton";
-import ReviewForm from "@/components/reviews/ReviewForm";
-import BookingDialog from "@/components/bookings/BookingDialog";
-import { useToast } from "@/hooks/use-toast";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
-import { FloatingBookingButton } from "@/components/booking/FloatingBookingButton";
-import SocialSharing from "@/components/ui/social-sharing";
-import ProviderCalendar from "@/components/calendar/ProviderCalendar";
 
 const ProviderDetail = () => {
   const { id } = useParams();

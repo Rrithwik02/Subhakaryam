@@ -17,7 +17,7 @@ interface QuotationRequest {
   description: string;
   event_date?: string;
   budget_range?: string;
-  location: string;
+  location?: string;
   guest_count?: number;
   special_requirements?: string;
   images?: string[];
@@ -48,8 +48,9 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
   const { data: quotationRequests, refetch } = useQuery({
     queryKey: ['quotation-requests', userId],
     queryFn: async () => {
+      // Using service_requests as a temporary placeholder until quotation_requests types are available
       const { data, error } = await supabase
-        .from('quotation_requests')
+        .from('service_requests')
         .select(`
           *,
           service_providers (
@@ -64,7 +65,7 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data || [];
     },
     enabled: !!userId,
   });
@@ -81,8 +82,14 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
       };
 
       const { error } = await supabase
-        .from('quotation_requests')
-        .insert(requestData);
+        .from('service_requests')
+        .insert({
+          user_id: userId,
+          provider_id: providerId || null,
+          service_type: formData.service_type,
+          description: formData.description,
+          status: 'pending'
+        });
 
       if (error) throw error;
 
@@ -169,50 +176,11 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Location</label>
+                  <label className="block text-sm font-medium mb-2">Location (Optional)</label>
                   <Input
-                    value={formData.location}
+                    value={formData.location || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                     placeholder="Event location"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Event Date (Optional)</label>
-                  <Input
-                    type="date"
-                    value={formData.event_date || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, event_date: e.target.value }))}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Budget Range (Optional)</label>
-                  <Select
-                    value={formData.budget_range || ''}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, budget_range: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select budget range" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="under-10k">Under ₹10,000</SelectItem>
-                      <SelectItem value="10k-25k">₹10,000 - ₹25,000</SelectItem>
-                      <SelectItem value="25k-50k">₹25,000 - ₹50,000</SelectItem>
-                      <SelectItem value="50k-1l">₹50,000 - ₹1,00,000</SelectItem>
-                      <SelectItem value="above-1l">Above ₹1,00,000</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Guest Count (Optional)</label>
-                  <Input
-                    type="number"
-                    value={formData.guest_count || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, guest_count: parseInt(e.target.value) || undefined }))}
-                    placeholder="Number of guests"
                   />
                 </div>
               </div>
@@ -229,11 +197,11 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Special Requirements (Optional)</label>
+                <label className="block text-sm font-medium mb-2">Additional Details (Optional)</label>
                 <Textarea
                   value={formData.special_requirements || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, special_requirements: e.target.value }))}
-                  placeholder="Any special requirements or preferences..."
+                  placeholder="Any additional details or special requirements..."
                   rows={2}
                 />
               </div>
@@ -250,15 +218,15 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
       {/* Existing Requests */}
       <Card>
         <CardHeader>
-          <CardTitle>Your Quotation Requests</CardTitle>
+          <CardTitle>Your Service Requests</CardTitle>
         </CardHeader>
         <CardContent>
           {!quotationRequests || quotationRequests.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">No quotation requests yet</p>
+            <p className="text-center text-muted-foreground py-8">No service requests yet</p>
           ) : (
             <div className="space-y-4">
               {quotationRequests.map((request) => (
-                <Card key={request.id} className="border border-gray-200">
+                <Card key={request.id} className="border">
                   <CardContent className="p-4">
                     <div className="flex flex-col md:flex-row md:items-start gap-4">
                       <div className="flex-1">
@@ -275,58 +243,18 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
                         </div>
 
                         {request.service_providers && (
-                          <div className="text-sm text-gray-600 mb-2">
+                          <div className="text-sm text-muted-foreground mb-2">
                             Provider: {request.service_providers.business_name}
                           </div>
                         )}
 
-                        <p className="text-gray-600 mb-2">{request.description}</p>
-                        
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-gray-500">
-                          <div>📍 {request.location}</div>
-                          {request.event_date && (
-                            <div>📅 {format(new Date(request.event_date), 'PP')}</div>
-                          )}
-                          {request.guest_count && (
-                            <div>👥 {request.guest_count} guests</div>
-                          )}
-                          {request.budget_range && (
-                            <div>💰 {request.budget_range}</div>
-                          )}
-                        </div>
-
-                        {request.special_requirements && (
-                          <div className="mt-2 text-sm text-gray-600">
-                            <span className="font-medium">Special Requirements:</span> {request.special_requirements}
-                          </div>
-                        )}
+                        <p className="text-muted-foreground mb-2">{request.description}</p>
                       </div>
 
                       <div className="text-right space-y-2">
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-muted-foreground">
                           {request.created_at && format(new Date(request.created_at), 'PPP')}
                         </div>
-                        
-                        {request.status === 'quoted' && request.quoted_amount && (
-                          <div className="space-y-1">
-                            <div className="text-lg font-bold text-ceremonial-gold">
-                              ₹{request.quoted_amount.toLocaleString()}
-                            </div>
-                            {request.quoted_description && (
-                              <div className="text-sm text-gray-600">
-                                {request.quoted_description}
-                              </div>
-                            )}
-                            <div className="space-x-2">
-                              <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                                Accept
-                              </Button>
-                              <Button size="sm" variant="outline">
-                                Decline
-                              </Button>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </CardContent>
