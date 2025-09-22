@@ -343,6 +343,42 @@ export type Database = {
           },
         ]
       }
+      ceremony_themes: {
+        Row: {
+          ceremony_type: string
+          color_scheme: Json
+          created_at: string
+          decorative_elements: Json
+          font_settings: Json
+          id: string
+          is_active: boolean | null
+          theme_name: string
+          updated_at: string
+        }
+        Insert: {
+          ceremony_type: string
+          color_scheme: Json
+          created_at?: string
+          decorative_elements: Json
+          font_settings: Json
+          id?: string
+          is_active?: boolean | null
+          theme_name: string
+          updated_at?: string
+        }
+        Update: {
+          ceremony_type?: string
+          color_scheme?: Json
+          created_at?: string
+          decorative_elements?: Json
+          font_settings?: Json
+          id?: string
+          is_active?: boolean | null
+          theme_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chat_connections: {
         Row: {
           booking_id: string | null
@@ -607,6 +643,48 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          booking_updates: boolean | null
+          created_at: string
+          email_enabled: boolean | null
+          frequency: string | null
+          id: string
+          payment_reminders: boolean | null
+          promotional: boolean | null
+          push_enabled: boolean | null
+          sms_enabled: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          booking_updates?: boolean | null
+          created_at?: string
+          email_enabled?: boolean | null
+          frequency?: string | null
+          id?: string
+          payment_reminders?: boolean | null
+          promotional?: boolean | null
+          push_enabled?: boolean | null
+          sms_enabled?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          booking_updates?: boolean | null
+          created_at?: string
+          email_enabled?: boolean | null
+          frequency?: string | null
+          id?: string
+          payment_reminders?: boolean | null
+          promotional?: boolean | null
+          push_enabled?: boolean | null
+          sms_enabled?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string | null
@@ -651,6 +729,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      payment_reminders: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+          milestone_number: number
+          next_reminder_at: string | null
+          reminder_type: string
+          sent_at: string | null
+          status: string | null
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id?: string
+          milestone_number: number
+          next_reminder_at?: string | null
+          reminder_type: string
+          sent_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+          milestone_number?: number
+          next_reminder_at?: string | null
+          reminder_type?: string
+          sent_at?: string | null
+          status?: string | null
+        }
+        Relationships: []
       }
       payment_schedules: {
         Row: {
@@ -1346,6 +1457,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_theme_preferences: {
+        Row: {
+          ceremony_type: string
+          created_at: string
+          custom_settings: Json | null
+          id: string
+          theme_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ceremony_type: string
+          created_at?: string
+          custom_settings?: Json | null
+          id?: string
+          theme_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ceremony_type?: string
+          created_at?: string
+          custom_settings?: Json | null
+          id?: string
+          theme_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {
