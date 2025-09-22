@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useRef, useState } from "react";
+import { useTranslation } from 'react-i18next';
 
 
 const eventImages = [
@@ -37,6 +38,7 @@ const Hero = () => {
   const navigate = useNavigate();
   const { session } = useSessionContext();
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const { t } = useTranslation();
   const autoplayRef = useRef(
     Autoplay({ delay: 4000, stopOnInteraction: true })
   );
@@ -82,10 +84,10 @@ const Hero = () => {
         <div className="absolute inset-0 z-10 flex items-center justify-center text-white p-4">
           <div className="max-w-4xl bg-black/80 backdrop-blur-md p-8 rounded-xl shadow-2xl border border-white/10 animate-slide-up-fade">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-lg">
-              Sacred Ceremonies & Traditional Indian Services
+              {t('hero.title')}
             </h1>
             <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl font-body text-white/90 drop-shadow-lg" aria-describedby="hero-description">
-              Book trusted pandits, photographers, caterers & decorators for authentic Indian weddings, pooja rituals, mehendi ceremonies & traditional events across India
+              {t('hero.subtitle')}
             </p>
             {session && serviceProvider ? (
               <div className="flex flex-col sm:flex-row gap-4 justify-start">

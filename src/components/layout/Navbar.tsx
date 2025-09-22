@@ -12,11 +12,13 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { session } = useSessionContext();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const { data: userProfile } = useQuery({
     queryKey: ["user-profile"],
@@ -111,14 +113,14 @@ const Navbar = () => {
             className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/about")}
           >
-            About Us
+            {t('nav.about')}
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="text-foreground hover:text-primary font-medium px-4">
-                Services
+                {t('nav.services')}
                 <ChevronDown className="h-4 w-4 ml-1" />
               </Button>
             </DropdownMenuTrigger>
@@ -156,7 +158,7 @@ const Navbar = () => {
             className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/blog")}
           >
-            Blog
+            {t('nav.blog')}
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
@@ -164,7 +166,7 @@ const Navbar = () => {
             className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/contact")}
           >
-            Contact
+            {t('nav.contact')}
           </NavigationMenuLink>
         </NavigationMenuItem>
         
@@ -175,7 +177,7 @@ const Navbar = () => {
             onClick={() => navigate("/track-booking")}
           >
             <Search className="h-4 w-4 inline-block mr-2" />
-            Track Booking
+            {t('nav.trackBooking')}
           </NavigationMenuLink>
         </NavigationMenuItem>
 
@@ -186,7 +188,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="text-foreground hover:text-primary font-medium px-4">
                   <Briefcase className="h-4 w-4 mr-2" />
-                  Dashboard
+                  {t('nav.dashboard')}
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
