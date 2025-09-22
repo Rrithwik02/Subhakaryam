@@ -6,8 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
-import NotificationPreferences from "@/components/notifications/NotificationPreferences";
-import ThemeCustomizer from "@/components/theme/ThemeCustomizer";
+import SimpleNotificationSettings from "@/components/notifications/SimpleNotificationSettings";
+import SimpleThemeSelector from "@/components/theme/SimpleThemeSelector";
 import ChatInterface from "@/components/chat/ChatInterface";
 import PaymentRequestButton from "@/components/payments/PaymentRequestButton";
 import { Button } from "@/components/ui/button";
@@ -222,11 +222,11 @@ const UserProfile = () => {
           </TabsContent>
 
           <TabsContent value="notifications">
-            <NotificationPreferences />
+            <SimpleNotificationSettings />
           </TabsContent>
 
           <TabsContent value="themes">
-            <ThemeCustomizer />
+            <SimpleThemeSelector />
           </TabsContent>
         </Tabs>
 
