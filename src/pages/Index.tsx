@@ -23,6 +23,7 @@ import AdvertCarousel from "@/components/home/AdvertCarousel";
 import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
 import FAQSchema from "@/components/seo/FAQSchema";
+import MetaTags from "@/components/seo/MetaTags";
 import QuickBookingWidget from "@/components/booking/QuickBookingWidget";
 import { useToast } from "@/hooks/use-toast";
 
@@ -117,13 +118,21 @@ const Index = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" role="status" aria-label="Loading">
+          <span className="sr-only">Loading...</span>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen pt-16">
+      <MetaTags
+        title="Sacred Ceremonies - Traditional Indian Services & Authentic Religious Ceremonies"
+        description="Book trusted pandits, photographers, caterers & decorators for authentic Indian weddings, pooja rituals, mehendi ceremonies & traditional events across India. Professional religious services available."
+        keywords="Indian wedding services, pooja ceremonies, mehendi artists, traditional decorators, wedding photography, catering services, function halls, pandit booking"
+        canonical="https://yourdomainhere.com/"
+      />
       <FAQSchema />
 
       <Hero />
