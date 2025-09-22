@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import Breadcrumbs from "@/components/ui/breadcrumbs";
 
 const ContactUs = () => {
   const { toast } = useToast();
@@ -64,9 +65,16 @@ const ContactUs = () => {
   return (
     <div className="min-h-screen bg-white pt-20">
       <div className="container mx-auto px-4 py-16">
-        <h1 className="text-4xl md:text-5xl font-display font-bold text-center text-ceremonial-maroon mb-8">
-          Contact Us
-        </h1>
+        <Breadcrumbs className="mb-6" />
+        
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-ceremonial-maroon mb-4">
+            Contact Us
+          </h1>
+          <p className="text-lg text-ceremonial-brown max-w-2xl mx-auto">
+            Have questions about our services? We're here to help! Reach out to us anytime.
+          </p>
+        </div>
 
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div>
@@ -75,27 +83,49 @@ const ContactUs = () => {
             </h2>
             
             <div className="space-y-6">
-              <Card className="p-4 flex items-start space-x-4">
+              <Card className="p-6 flex items-start space-x-4 hover:shadow-md transition-shadow">
                 <Mail className="w-6 h-6 text-ceremonial-gold mt-1" />
                 <div>
-                  <h3 className="font-semibold text-ceremonial-maroon">Email</h3>
-                  <p className="text-gray-600">support@subhakaryam.com</p>
+                  <h3 className="font-semibold text-ceremonial-maroon mb-1">Email Support</h3>
+                  <p className="text-gray-600 mb-2">support@subhakaryam.com</p>
+                  <p className="text-sm text-gray-500">We typically respond within 2-4 hours</p>
                 </div>
               </Card>
 
-              <Card className="p-4 flex items-start space-x-4">
+              <Card className="p-6 flex items-start space-x-4 hover:shadow-md transition-shadow">
                 <Phone className="w-6 h-6 text-ceremonial-gold mt-1" />
                 <div>
-                  <h3 className="font-semibold text-ceremonial-maroon">Phone</h3>
-                  <p className="text-gray-600">+91 (800) 123-4567</p>
+                  <h3 className="font-semibold text-ceremonial-maroon mb-1">Phone Support</h3>
+                  <p className="text-gray-600 mb-2">+91 (800) 123-4567</p>
+                  <p className="text-sm text-gray-500">Available Mon-Sat, 9 AM - 7 PM IST</p>
                 </div>
               </Card>
 
-              <Card className="p-4 flex items-start space-x-4">
+              <Card className="p-6 flex items-start space-x-4 hover:shadow-md transition-shadow">
                 <MapPin className="w-6 h-6 text-ceremonial-gold mt-1" />
                 <div>
-                  <h3 className="font-semibold text-ceremonial-maroon">Location</h3>
-                  <p className="text-gray-600">Hyderabad, Telangana, India</p>
+                  <h3 className="font-semibold text-ceremonial-maroon mb-1">Our Office</h3>
+                  <p className="text-gray-600 mb-2">Hyderabad, Telangana, India</p>
+                  <p className="text-sm text-gray-500">Serving across South India</p>
+                </div>
+              </Card>
+
+              <Card className="p-6 flex items-start space-x-4 hover:shadow-md transition-shadow">
+                <Clock className="w-6 h-6 text-ceremonial-gold mt-1" />
+                <div>
+                  <h3 className="font-semibold text-ceremonial-maroon mb-1">Business Hours</h3>
+                  <p className="text-gray-600 mb-1">Monday - Saturday: 9:00 AM - 7:00 PM</p>
+                  <p className="text-gray-600 mb-2">Sunday: 10:00 AM - 5:00 PM</p>
+                  <p className="text-sm text-gray-500">Emergency support available 24/7</p>
+                </div>
+              </Card>
+
+              <Card className="p-6 flex items-start space-x-4 hover:shadow-md transition-shadow bg-ceremonial-cream">
+                <MessageCircle className="w-6 h-6 text-ceremonial-gold mt-1" />
+                <div>
+                  <h3 className="font-semibold text-ceremonial-maroon mb-1">Live Chat</h3>
+                  <p className="text-gray-600 mb-2">Get instant help with our chatbot</p>
+                  <p className="text-sm text-gray-500">Available 24/7 for quick questions</p>
                 </div>
               </Card>
             </div>

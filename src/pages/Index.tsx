@@ -25,6 +25,11 @@ import Chatbot from "@/components/chat/Chatbot";
 import FAQSchema from "@/components/seo/FAQSchema";
 import MetaTags from "@/components/seo/MetaTags";
 import QuickBookingWidget from "@/components/booking/QuickBookingWidget";
+import ScrollToTop from "@/components/ui/scroll-to-top";
+import TrustIndicators from "@/components/home/TrustIndicators";
+import QuickStats from "@/components/home/QuickStats";
+import CTASection from "@/components/home/CTASection";
+import FeaturedProviders from "@/components/home/FeaturedProviders";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -137,11 +142,15 @@ const Index = () => {
 
       <Hero />
       <QuickBookingWidget />
+      <QuickStats />
       <AdvertCarousel />
       <Services />
+      <FeaturedProviders />
       <EssentialsPreview />
+      <TrustIndicators />
       <HowItWorks />
       <Testimonials />
+      <CTASection />
       
       {session && !isServiceProvider && (
         <div className="max-w-md mx-auto px-4 py-12">
@@ -164,6 +173,7 @@ const Index = () => {
       )}
       
       <Chatbot />
+      <ScrollToTop />
       <Footer />
     </div>
   );
