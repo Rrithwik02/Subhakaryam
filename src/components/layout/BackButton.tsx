@@ -27,18 +27,8 @@ const BackButton = () => {
   };
 
   const handleBack = () => {
-    // Try browser back first, with fallback to context-aware navigation
-    try {
-      if (window.history.length > 1 && document.referrer && 
-          new URL(document.referrer).origin === window.location.origin) {
-        navigate(-1);
-      } else {
-        navigate(getBackRoute());
-      }
-    } catch {
-      // Fallback for any errors
-      navigate(getBackRoute());
-    }
+    const backRoute = getBackRoute();
+    navigate(backRoute);
   };
 
   return (

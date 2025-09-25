@@ -33,7 +33,14 @@ const NotFound: React.FC = () => {
         <CardContent className="space-y-4">
           <div className="flex gap-2">
             <Button 
-              onClick={() => navigate(-1)}
+              onClick={() => {
+                // Try to go back, fallback to home if no history
+                if (window.history.length > 1) {
+                  navigate(-1);
+                } else {
+                  navigate('/');
+                }
+              }}
               variant="outline"
               className="flex-1"
             >
