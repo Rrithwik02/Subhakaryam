@@ -104,13 +104,17 @@ export const ModernSearchFilters = ({
   }, []);
 
   const clearAllFilters = () => {
+    // Clear all filter states
     setSearchTerm('');
     setCity('all');
     setServiceType('all');
     setSortBy('rating_desc');
     setPriceRange([0, 100000]);
     setRating(0);
-    setSearchParams({});
+    
+    // Clear URL search parameters completely
+    const newParams = new URLSearchParams();
+    setSearchParams(newParams, { replace: true });
   };
 
   const activeFilterCount = useMemo(() => {
