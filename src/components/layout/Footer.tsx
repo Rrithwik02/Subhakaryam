@@ -26,18 +26,34 @@ const Footer = () => {
             
             {/* Social Media Links */}
             <div className="flex space-x-3">
-              <a href="#" className="text-white/80 hover:text-ceremonial-gold transition-colors">
+              <button 
+                onClick={() => window.open('https://facebook.com/subhakaryam', '_blank')}
+                className="text-white/80 hover:text-ceremonial-gold transition-colors"
+                aria-label="Follow us on Facebook"
+              >
                 <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-white/80 hover:text-ceremonial-gold transition-colors">
+              </button>
+              <button 
+                onClick={() => window.open('https://twitter.com/subhakaryam', '_blank')}
+                className="text-white/80 hover:text-ceremonial-gold transition-colors"
+                aria-label="Follow us on Twitter"
+              >
                 <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-white/80 hover:text-ceremonial-gold transition-colors">
+              </button>
+              <button 
+                onClick={() => window.open('https://instagram.com/subhakaryam', '_blank')}
+                className="text-white/80 hover:text-ceremonial-gold transition-colors"
+                aria-label="Follow us on Instagram"
+              >
                 <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-white/80 hover:text-ceremonial-gold transition-colors">
+              </button>
+              <button 
+                onClick={() => window.open('https://youtube.com/@subhakaryam', '_blank')}
+                className="text-white/80 hover:text-ceremonial-gold transition-colors"
+                aria-label="Subscribe to our YouTube channel"
+              >
                 <Youtube className="h-5 w-5" />
-              </a>
+              </button>
             </div>
           </div>
           

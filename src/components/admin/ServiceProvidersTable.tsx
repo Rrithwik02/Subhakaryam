@@ -394,14 +394,12 @@ const ServiceProvidersTable = () => {
                   </h3>
                   {selectedProvider?.portfolio_link ? (
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <a 
-                        href={selectedProvider.portfolio_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => window.open(selectedProvider.portfolio_link, '_blank')}
                         className="text-ceremonial-gold hover:underline font-medium break-all"
                       >
                         {selectedProvider.portfolio_link}
-                      </a>
+                      </button>
                     </div>
                   ) : (
                     <p className="text-gray-500 py-4">No portfolio link provided</p>

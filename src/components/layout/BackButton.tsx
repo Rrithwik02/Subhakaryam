@@ -9,9 +9,36 @@ const BackButton = () => {
   // Don't show back button on home page
   if (location.pathname === "/") return null;
 
+  const getBackRoute = () => {
+    const path = location.pathname;
+    
+    // Context-aware back navigation
+    if (path.startsWith("/provider/")) return "/search";
+    if (path.startsWith("/services/")) return "/";
+    if (path.startsWith("/blog/") && path !== "/blog") return "/blog";
+    if (path.startsWith("/auth/")) return "/";
+    if (path.startsWith("/profile/")) return "/";
+    if (path === "/search") return "/";
+    if (path === "/contact") return "/";
+    if (path === "/about") return "/";
+    
+    // Default fallback
+    return "/";
+  };
+
   const handleBack = () => {
-    // Always try to go back first
-    navigate(-1);
+    // Try browser back first, with fallback to context-aware navigation
+    try {
+      if (window.history.length > 1 && document.referrer && 
+          new URL(document.referrer).origin === window.location.origin) {
+        navigate(-1);
+      } else {
+        navigate(getBackRoute());
+      }
+    } catch {
+      // Fallback for any errors
+      navigate(getBackRoute());
+    }
   };
 
   return (
