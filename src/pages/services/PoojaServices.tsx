@@ -59,7 +59,7 @@ const PoojaServices = () => {
     }
   ];
 
-  const cities = ["Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", "Pune", "Kolkata", "Ahmedabad"];
+  const cities = ["Visakhapatnam", "Vijayawada", "Hyderabad"];
 
   const faqs = [
     {

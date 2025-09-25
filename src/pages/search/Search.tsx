@@ -165,8 +165,8 @@ const Search = () => {
                 <div className="h-16 w-16 bg-muted rounded-full mx-auto mb-4 flex items-center justify-center">
                   <Loader2 className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">No services found</h3>
-                <p className="text-muted-foreground mb-4">Try adjusting your search criteria or explore different service types</p>
+                <h3 className="text-xl font-semibold text-foreground mb-2">No services available yet</h3>
+                <p className="text-muted-foreground mb-4">We're currently expanding to more areas. Try a different city or check back soon!</p>
                 <Button 
                   variant="outline" 
                   onClick={() => {

@@ -59,7 +59,7 @@ const WeddingPhotography = () => {
     }
   ];
 
-  const cities = ["Mumbai", "Delhi", "Goa", "Udaipur", "Jaipur", "Bangalore", "Chennai", "Hyderabad", "Pune", "Kerala"];
+  const cities = ["Visakhapatnam", "Vijayawada", "Hyderabad"];
 
   return (
     <ServiceInfoPage

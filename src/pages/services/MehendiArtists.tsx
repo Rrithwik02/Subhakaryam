@@ -60,7 +60,7 @@ const MehendiArtists = () => {
     }
   ];
 
-  const cities = ["Mumbai", "Delhi", "Jaipur", "Udaipur", "Bangalore", "Hyderabad", "Chennai", "Pune", "Ahmedabad", "Kolkata"];
+  const cities = ["Visakhapatnam", "Vijayawada", "Hyderabad"];
 
   // Mehendi Care Tips Section
   const careSection = (

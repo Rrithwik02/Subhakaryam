@@ -34,14 +34,7 @@ const cities = [
   { id: "all", name: "All Cities" },
   { id: "vizag", name: "Visakhapatnam" },
   { id: "vijayawada", name: "Vijayawada" },
-  { id: "hyderabad", name: "Hyderabad" },
-  { id: "mumbai", name: "Mumbai" },
-  { id: "delhi", name: "Delhi" },
-  { id: "bangalore", name: "Bangalore" },
-  { id: "chennai", name: "Chennai" },
-  { id: "kolkata", name: "Kolkata" },
-  { id: "pune", name: "Pune" },
-  { id: "ahmedabad", name: "Ahmedabad" }
+  { id: "hyderabad", name: "Hyderabad" }
 ];
 
 export const ModernSearchFilters = ({

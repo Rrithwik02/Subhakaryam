@@ -59,7 +59,7 @@ const FunctionHallServices = () => {
     }
   ];
 
-  const cities = ["Visakhapatnam", "Vijayawada", "Hyderabad", "Chennai", "Bangalore", "Mumbai", "Delhi", "Pune", "Ahmedabad"];
+  const cities = ["Visakhapatnam", "Vijayawada", "Hyderabad"];
 
   return (
     <ServiceInfoPage

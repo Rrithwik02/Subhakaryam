@@ -141,13 +141,9 @@ export const EnhancedSearchFilters = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Cities</SelectItem>
-            <SelectItem value="Mumbai">Mumbai</SelectItem>
-            <SelectItem value="Delhi">Delhi</SelectItem>
-            <SelectItem value="Bangalore">Bangalore</SelectItem>
-            <SelectItem value="Hyderabad">Hyderabad</SelectItem>
-            <SelectItem value="Chennai">Chennai</SelectItem>
-            <SelectItem value="Kolkata">Kolkata</SelectItem>
-            <SelectItem value="Pune">Pune</SelectItem>
+            <SelectItem value="vizag">Visakhapatnam</SelectItem>
+            <SelectItem value="vijayawada">Vijayawada</SelectItem>
+            <SelectItem value="hyderabad">Hyderabad</SelectItem>
             <SelectItem value="Ahmedabad">Ahmedabad</SelectItem>
           </SelectContent>
         </Select>
