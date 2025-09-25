@@ -1,12 +1,11 @@
 
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
-import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { EmailConfirmationStatus } from "@/components/auth/EmailConfirmationStatus";
+import CustomRegistrationForm from "@/components/auth/CustomRegistrationForm";
+import { Button } from "@/components/ui/button";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -140,9 +139,13 @@ const Register = () => {
     );
   }
 
+  const handleRegistrationSuccess = () => {
+    setShowEmailConfirmation(true);
+  };
+
   return (
     <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
-      <Card className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg">
+      <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <h1 className="text-3xl font-display font-bold text-ceremonial-maroon mb-2">
             Create Account
@@ -150,39 +153,21 @@ const Register = () => {
           <p className="text-gray-600 mb-6">Join our community today</p>
         </div>
         
-        <div className="space-y-6">
-            <Auth
-              supabaseClient={supabase}
-              appearance={{
-                theme: ThemeSupa,
-                variables: {
-                  default: {
-                    colors: {
-                      brand: '#B8860B',
-                      brandAccent: '#966F08',
-                    }
-                  }
-                },
-                className: {
-                  container: 'w-full',
-                  button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
-                  divider: 'my-6',
-                }
-              }}
-              theme="light"
-              providers={["google"]}
-              view="sign_up"
-              showLinks={false}
-              redirectTo={`${window.location.origin}/auth/callback`}
-            />
-        </div>
+        <CustomRegistrationForm onSuccess={handleRegistrationSuccess} />
 
         <div className="mt-4 p-4 bg-ceremonial-cream/50 rounded-lg">
           <p className="text-sm text-gray-600 text-center">
-            Note: You'll be redirected to complete your provider profile after authentication.
+            Already have an account?{" "}
+            <Button
+              variant="link"
+              className="p-0 h-auto text-ceremonial-gold hover:text-ceremonial-gold/80"
+              onClick={() => navigate("/auth/login")}
+            >
+              Sign in here
+            </Button>
           </p>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

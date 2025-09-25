@@ -10,10 +10,9 @@ import { BasicInformation } from "@/components/service-provider/BasicInformation
 import { ServiceAreas } from "@/components/service-provider/ServiceAreas";
 import { ServiceManagerComponent } from "@/components/service-provider/ServiceManagerComponent";
 import { supabase } from "@/integrations/supabase/client";
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import CustomRegistrationForm from "@/components/auth/CustomRegistrationForm";
 
 const ServiceProviderRegister = () => {
   const navigate = useNavigate();
@@ -162,28 +161,12 @@ const ServiceProviderRegister = () => {
         
           {showAuthForm ? (
             <div className="p-8 space-y-6">
-              <Auth
-                supabaseClient={supabase}
-                appearance={{
-                  theme: ThemeSupa,
-                  variables: {
-                    default: {
-                      colors: {
-                        brand: '#B8860B',
-                        brandAccent: '#966F08',
-                      }
-                    }
-                  },
-                  className: {
-                    container: 'w-full',
-                    button: 'w-full bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white',
-                    divider: 'my-6',
-                  }
-                }}
-                theme="light"
-                providers={["google"]}
-                view="sign_up"
-              />
+              <div className="w-full max-w-md mx-auto">
+                <CustomRegistrationForm 
+                  isServiceProvider={true}
+                  onSuccess={() => setShowAuthForm(false)} 
+                />
+              </div>
             </div>
           ) : (
             <>

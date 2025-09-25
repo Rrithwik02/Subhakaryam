@@ -137,21 +137,34 @@ const UserProfile = () => {
         </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">
-              <Calendar className="w-4 h-4 mr-2" />
-              Bookings
+          <TabsList className="grid w-full grid-cols-4 h-auto p-1 bg-white border shadow-sm">
+            <TabsTrigger 
+              value="overview" 
+              className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:text-sm data-[state=active]:bg-ceremonial-gold data-[state=active]:text-white rounded-md transition-all"
+            >
+              <Calendar className="w-4 h-4" />
+              <span className="leading-tight">Bookings</span>
             </TabsTrigger>
-            <TabsTrigger value="quotations">
-              <Quote className="w-4 h-4 mr-2" />
-              Quotations
+            <TabsTrigger 
+              value="quotations" 
+              className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:text-sm data-[state=active]:bg-ceremonial-gold data-[state=active]:text-white rounded-md transition-all"
+            >
+              <Quote className="w-4 h-4" />
+              <span className="leading-tight">Quotes</span>
             </TabsTrigger>
-            <TabsTrigger value="messages">
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Messages
+            <TabsTrigger 
+              value="messages" 
+              className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:text-sm data-[state=active]:bg-ceremonial-gold data-[state=active]:text-white rounded-md transition-all"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span className="leading-tight">Messages</span>
             </TabsTrigger>
-            <TabsTrigger value="notifications">
-              Notifications
+            <TabsTrigger 
+              value="notifications" 
+              className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:text-sm data-[state=active]:bg-ceremonial-gold data-[state=active]:text-white rounded-md transition-all"
+            >
+              <AlertCircle className="w-4 h-4" />
+              <span className="leading-tight">Alerts</span>
             </TabsTrigger>
           </TabsList>
 
