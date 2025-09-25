@@ -1655,7 +1655,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
-          display_name?: never
+          display_name?: string | null
           id?: string | null
           is_premium?: boolean | null
           portfolio_images?: string[] | null
@@ -1670,7 +1670,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
-          display_name?: never
+          display_name?: string | null
           id?: string | null
           is_premium?: boolean | null
           portfolio_images?: string[] | null
