@@ -225,66 +225,116 @@ const ProviderDetail = () => {
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Services Section */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 space-y-6">
+              {/* Step 1: Service Selection */}
               <Card className="p-6">
-                <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon mb-4">
-                  Available Services
-                </h2>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 bg-ceremonial-gold text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    1
+                  </div>
+                  <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon">
+                    Choose Your Services
+                  </h2>
+                </div>
                 <p className="text-gray-600 mb-6">
-                  Select the services you're interested in to view pricing information.
+                  Select the services you're interested in to view pricing and check availability.
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   {allServices.map((service) => (
                     <div
                       key={service.type}
                       className={cn(
-                        "border rounded-lg p-4 cursor-pointer transition-all",
+                        "border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md",
                         selectedServices.includes(service.type)
-                          ? "border-ceremonial-gold bg-ceremonial-gold/5"
+                          ? "border-ceremonial-gold bg-ceremonial-gold/5 shadow-sm"
                           : "border-gray-200 hover:border-ceremonial-gold/50"
                       )}
                       onClick={() => handleServiceToggle(service.type)}
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold capitalize">
-                          {service.type?.replace('_', ' ') || 'Service'}
-                          {service.subcategory && (
-                            <span className="text-sm font-normal text-gray-500 ml-1">
-                              → {service.subcategory?.replace('_', ' ') || service.subcategory}
-                            </span>
-                          )}
-                        </h3>
-                        <input
-                          type="checkbox"
-                          checked={selectedServices.includes(service.type)}
-                          onChange={() => handleServiceToggle(service.type)}
-                          className="text-ceremonial-gold"
-                        />
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <input
+                              type="checkbox"
+                              checked={selectedServices.includes(service.type)}
+                              onChange={() => handleServiceToggle(service.type)}
+                              className="w-5 h-5 text-ceremonial-gold rounded focus:ring-ceremonial-gold"
+                            />
+                            <h3 className="font-semibold text-lg capitalize">
+                              {service.type?.replace('_', ' ') || 'Service'}
+                            </h3>
+                            {service.subcategory && (
+                              <Badge variant="outline" className="text-xs">
+                                {service.subcategory?.replace('_', ' ') || service.subcategory}
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-gray-600 mb-3">{service.description}</p>
+                          <div className="text-ceremonial-gold font-semibold">
+                            ₹{service.min_price?.toLocaleString()} 
+                            {service.max_price && service.max_price !== service.min_price && 
+                              ` - ₹${service.max_price.toLocaleString()}`}
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-600">{service.description}</p>
                     </div>
                   ))}
                 </div>
 
-                {/* Price Range Display */}
+                {/* Step Summary */}
                 {selectedServices.length > 0 && (
-                  <div className="mt-6 p-4 bg-ceremonial-gold/10 rounded-lg">
-                    <h3 className="font-semibold text-ceremonial-maroon mb-2">
-                      Estimated Price Range
-                    </h3>
-                    <p className="text-2xl font-bold text-ceremonial-gold">
-                      {getPriceRange()}
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Final pricing will be discussed during booking based on your specific requirements.
-                    </p>
+                  <div className="mt-6 p-4 bg-gradient-to-r from-ceremonial-gold/10 to-ceremonial-teal/10 rounded-lg border border-ceremonial-gold/20">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-ceremonial-maroon mb-1">
+                          Selected Services ({selectedServices.length})
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {selectedServices.map(s => s.replace('_', ' ')).join(', ')}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-600">Estimated Total</p>
+                        <p className="text-xl font-bold text-ceremonial-gold">
+                          {getPriceRange()}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </Card>
 
-              {/* Calendar Section */}
-              <ProviderCalendar providerId={provider.id} isPublic={true} />
+              {/* Step 2: Calendar Section - Only show when services are selected */}
+              {selectedServices.length > 0 && (
+                <Card className="p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 bg-ceremonial-teal text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      2
+                    </div>
+                    <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon">
+                      Check Availability
+                    </h2>
+                  </div>
+                  <p className="text-gray-600 mb-6">
+                    Select your preferred date to check availability for your chosen services.
+                  </p>
+                  <ProviderCalendar providerId={provider.id} isPublic={true} />
+                </Card>
+              )}
+
+              {/* Prompt to select services */}
+              {selectedServices.length === 0 && (
+                <Card className="p-8 text-center border-dashed border-2 border-gray-300">
+                  <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                    Select Services First
+                  </h3>
+                  <p className="text-gray-500">
+                    Choose the services you're interested in above to view availability calendar and proceed with booking.
+                  </p>
+                </Card>
+              )}
 
               {/* Reviews Section */}
               <Card className="p-6">
@@ -456,11 +506,14 @@ const ProviderDetail = () => {
         serviceData={allServices}
       />
 
-      <FloatingBookingButton
-        providerId={provider.id}
-        serviceType={provider.service_type}
-        basePrice={provider.base_price}
-      />
+      {/* Mobile Floating Button - Only show when services are selected */}
+      {isMobile && selectedServices.length > 0 && (
+        <FloatingBookingButton
+          providerId={provider.id}
+          serviceType={provider.service_type}
+          basePrice={provider.base_price}
+        />
+      )}
     </div>
   );
 };
