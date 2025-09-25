@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import SimpleNotificationSettings from "@/components/notifications/SimpleNotificationSettings";
-import SimpleThemeSelector from "@/components/theme/SimpleThemeSelector";
+
 import ChatInterface from "@/components/chat/ChatInterface";
 import PaymentRequestButton from "@/components/payments/PaymentRequestButton";
 import { Button } from "@/components/ui/button";
@@ -137,7 +137,7 @@ const UserProfile = () => {
         </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">
               <Calendar className="w-4 h-4 mr-2" />
               Bookings
@@ -152,9 +152,6 @@ const UserProfile = () => {
             </TabsTrigger>
             <TabsTrigger value="notifications">
               Notifications
-            </TabsTrigger>
-            <TabsTrigger value="themes">
-              Themes
             </TabsTrigger>
           </TabsList>
 
@@ -225,9 +222,6 @@ const UserProfile = () => {
             <SimpleNotificationSettings />
           </TabsContent>
 
-          <TabsContent value="themes">
-            <SimpleThemeSelector />
-          </TabsContent>
         </Tabs>
 
         <Card className="bg-red-50">
