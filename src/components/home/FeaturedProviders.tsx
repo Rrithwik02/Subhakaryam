@@ -23,8 +23,7 @@ const FeaturedProviders = () => {
           rating,
           base_price,
           profile_image,
-          description,
-          profiles!inner(full_name)
+          description
         `)
         .eq('status', 'approved')
         .eq('is_premium', true)

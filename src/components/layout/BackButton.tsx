@@ -32,7 +32,7 @@ const BackButton = () => {
   };
 
   return (
-    <div className="sticky top-16 z-40 bg-white/80 backdrop-blur-sm border-b">
+    <div className="sticky top-16 z-40 bg-white/80 backdrop-blur-sm border-b mb-4">
       <div className="container mx-auto px-4">
         <Button
           variant="ghost"

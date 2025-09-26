@@ -59,7 +59,7 @@ export function ImageUpload({
       }, 100);
 
       const { error: uploadError, data } = await supabase.storage
-        .from('portfolio_images')
+        .from('profile_images')
         .upload(filePath, file, {
           cacheControl: '3600',
           upsert: false
@@ -73,7 +73,7 @@ export function ImageUpload({
       }
 
       const { data: { publicUrl } } = supabase.storage
-        .from('portfolio_images')
+        .from('profile_images')
         .getPublicUrl(filePath);
 
       onUploadComplete(publicUrl);

@@ -38,7 +38,6 @@ const ProviderDetail = () => {
         .from("service_providers")
         .select(`
           *,
-          profiles(full_name, phone),
           additional_services(id, service_type, subcategory, description, status, min_price, max_price, portfolio_images)
         `)
         .eq("id", id)
@@ -57,8 +56,7 @@ const ProviderDetail = () => {
       const { data, error } = await supabase
         .from("reviews")
         .select(`
-          *,
-          profiles(full_name)
+          *
         `)
         .eq("provider_id", id)
         .eq("status", "approved")
@@ -180,7 +178,7 @@ const ProviderDetail = () => {
                   {provider.business_name}
                 </h1>
                 <p className="text-lg text-gray-600 mt-1">
-                  By {provider.profiles?.full_name}
+                  {provider.service_type?.replace('_', ' ') || 'Service'} Provider
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -190,7 +188,7 @@ const ProviderDetail = () => {
                 <SocialSharing 
                   url={window.location.href}
                   title={`${provider.business_name} - ${provider.service_type} Services`}
-                  description={provider.description || `Professional ${provider.service_type} services by ${provider.profiles?.full_name}`}
+                  description={provider.description || `Professional ${provider.service_type} services`}
                   image={provider.portfolio_images?.[0] ? `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/portfolio_images/${provider.portfolio_images[0]}` : undefined}
                 />
                 <FavoriteButton providerId={provider.id} />
@@ -381,12 +379,12 @@ const ProviderDetail = () => {
                               <div className="flex items-start gap-3">
                                 <div className="w-10 h-10 bg-ceremonial-gold/20 rounded-full flex items-center justify-center">
                                   <span className="text-sm font-medium text-ceremonial-gold">
-                                    {review.profiles?.full_name?.charAt(0) || 'U'}
+                                    U
                                   </span>
                                 </div>
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 mb-2">
-                                    <span className="font-medium">{review.profiles?.full_name}</span>
+                                    <span className="font-medium">User Review</span>
                                     <div className="flex items-center">
                                       {[...Array(5)].map((_, i) => (
                                         <Star
@@ -460,7 +458,7 @@ const ProviderDetail = () => {
                       onClick={handleShowPhone}
                       className="text-ceremonial-teal hover:underline"
                     >
-                      {anonymizePhone(provider.profiles?.phone)}
+                      Contact for details
                     </button>
                   </div>
 
