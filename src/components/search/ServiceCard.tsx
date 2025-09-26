@@ -15,10 +15,6 @@ interface ServiceCardProps {
   service: {
     id: string;
     business_name: string;
-    profiles?: {
-      full_name: string;
-      phone?: string;
-    };
     city: string;
     rating: number;
     is_premium: boolean;
@@ -82,7 +78,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
               {service.business_name}
             </h3>
             <p className="text-sm text-gray-600">
-              By {service.profiles?.full_name}
+              {service.service_type?.replace('_', ' ') || 'Service'} Provider
             </p>
           </div>
           <div className="flex items-center gap-2">
