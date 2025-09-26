@@ -37,7 +37,7 @@ export const SecureAuthForm = ({ mode, onModeChange, redirectTo }: SecureAuthFor
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectTo || `${window.location.origin}/auth/callback`
+          redirectTo: redirectTo || 'https://subhakaryam.org/auth/callback'
         }
       });
 
@@ -71,7 +71,7 @@ export const SecureAuthForm = ({ mode, onModeChange, redirectTo }: SecureAuthFor
           email,
           password,
           options: {
-            emailRedirectTo: redirectTo || `${window.location.origin}/auth/callback`
+            emailRedirectTo: redirectTo || 'https://subhakaryam.org/auth/callback'
           }
         });
 

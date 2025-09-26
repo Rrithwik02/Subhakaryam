@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { HelmetProvider } from "react-helmet-async";
@@ -45,6 +45,44 @@ const App: React.FC = () => {
 };
 
 const AppContent: React.FC = () => {
+  useEffect(() => {
+    // Handle immediate session state changes for better user experience
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        console.log('User signed in:', session.user);
+        
+        // Check user type and redirect accordingly
+        try {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("user_type")
+            .eq("id", session.user.id)
+            .single();
+
+          if (profile?.user_type === 'admin') {
+            window.location.href = '/admin';
+          } else {
+            const { data: provider } = await supabase
+              .from("service_providers")
+              .select("id")
+              .eq("profile_id", session.user.id)
+              .maybeSingle();
+
+            if (provider) {
+              window.location.href = '/dashboard';
+            } else {
+              window.location.href = '/';
+            }
+          }
+        } catch (error) {
+          console.error('Error checking user type:', error);
+          window.location.href = '/';
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <Router>
