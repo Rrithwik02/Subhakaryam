@@ -74,7 +74,7 @@ const WeddingPhotography = () => {
       cities={cities}
       metaDescription="Capture your special moments with professional wedding photographers. Pre-wedding shoots, wedding day coverage, traditional ceremonies. Expert photographers across India."
       keywords="wedding photography, pre-wedding shoot, wedding videography, candid photography, traditional wedding photography, destination wedding photographer"
-      canonicalUrl="https://subhakaryam.org/services/wedding-photography"
+      canonicalUrl="https://subhakary.com/services/wedding-photography"
       priceRange="₹15,000-₹5,00,000"
     />
   );

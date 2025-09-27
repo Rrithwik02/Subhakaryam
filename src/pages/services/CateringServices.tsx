@@ -74,7 +74,7 @@ const CateringServices = () => {
       cities={cities}
       metaDescription="Professional wedding catering services with authentic Indian cuisine. Traditional South Indian, North Indian feasts, live counters. Expert chefs across India."
       keywords="wedding catering, South Indian catering, North Indian food, live counter catering, traditional wedding food, buffet catering"
-      canonicalUrl="https://subhakaryam.org/services/catering"
+      canonicalUrl="https://subhakary.com/services/catering"
       priceRange="₹250-₹1500 per person"
     />
   );

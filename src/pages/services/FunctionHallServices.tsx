@@ -74,7 +74,7 @@ const FunctionHallServices = () => {
       cities={cities}
       metaDescription="Premium function halls and wedding venues with modern facilities. Small to large capacity venues, banquet halls, outdoor venues across India."
       keywords="function hall, wedding venue, banquet hall, marriage hall, event venue, wedding resort, community hall, reception venue"
-      canonicalUrl="https://subhakaryam.org/services/function-hall"
+      canonicalUrl="https://subhakary.com/services/function-hall"
       priceRange="₹15,000-₹5,00,000"
     />
   );

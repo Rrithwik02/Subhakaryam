@@ -76,7 +76,7 @@ const PWAInstall = ({ className }: PWAInstallProps) => {
           
           <div className="flex-1">
             <h3 className="font-semibold text-sm text-gray-900 mb-1">
-              Install Subhakaryam App
+              Install Subhakary App
             </h3>
             <p className="text-xs text-gray-600 mb-3">
               {isIOS 

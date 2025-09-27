@@ -242,8 +242,8 @@ const Navbar = () => {
             onClick={() => navigate("/")}
           >
             <img 
-              src="/lovable-uploads/eae6e160-ff8e-40a8-b8b9-5d3f1eaafee1.png" 
-              alt="Subhakaryam Logo" 
+              src="/logo.png" 
+              alt="Subhakary Logo" 
               className="h-12"
             />
           </Button>

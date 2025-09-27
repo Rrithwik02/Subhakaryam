@@ -12,7 +12,7 @@ const CateringIdeas = () => {
         <title>Top 7 Wedding Catering Ideas to Delight Your Guests in 2025 | Subhakaryam</title>
         <meta name="description" content="Discover creative wedding catering ideas for 2025. From regional food counters to fusion menus, explore trending catering concepts for unforgettable celebrations." />
         <meta name="keywords" content="wedding catering ideas, Indian wedding food, live cooking stations, fusion catering, wedding menu planning" />
-        <link rel="canonical" href="https://subhakaryam.org/blog/catering-ideas" />
+        <link rel="canonical" href="https://subhakary.com/blog/catering-ideas" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">

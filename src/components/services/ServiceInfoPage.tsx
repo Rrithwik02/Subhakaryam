@@ -64,7 +64,7 @@ const ServiceInfoPage: React.FC<ServiceInfoPageProps> = ({
   return (
     <>
       <Helmet>
-        <title>{title} | Subhakaryam</title>
+        <title>{title} | Subhakary</title>
         <meta name="description" content={metaDescription} />
         <meta name="keywords" content={keywords} />
         <link rel="canonical" href={canonicalUrl} />

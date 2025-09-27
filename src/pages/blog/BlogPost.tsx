@@ -223,7 +223,7 @@ const BlogPost = () => {
         <title>{post.title} | Subhakaryam Blog</title>
         <meta name="description" content={post.excerpt} />
         <meta name="keywords" content={post.tags.join(', ')} />
-        <link rel="canonical" href={`https://subhakaryam.org/blog/${slug}`} />
+        <link rel="canonical" href={`https://subhakary.com/blog/${slug}`} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">

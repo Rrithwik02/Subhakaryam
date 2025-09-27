@@ -94,7 +94,7 @@ const PoojaServices = () => {
       faqs={faqs}
       metaDescription="Book verified pandits for all Hindu ceremonies. Griha Pravesh, Satyanarayan Puja, Ganesh Chaturthi & more. Expert priests available across India with authentic rituals."
       keywords="pooja services, pandit booking, hindu ceremonies, griha pravesh, satyanarayan puja, ganesh chaturthi, online pandit booking"
-      canonicalUrl="https://subhakaryam.org/services/pooja-services"
+      canonicalUrl="https://subhakary.com/services/pooja-services"
       priceRange="₹1,500-₹15,000"
     />
   );

@@ -83,7 +83,7 @@ const TrustIndicators = () => {
         {/* Features List */}
         <div className="bg-ceremonial-cream rounded-xl p-8">
           <h3 className="text-xl font-semibold text-ceremonial-maroon mb-6 text-center">
-            Why Choose Subhakaryam?
+            Why Choose Subhakary?
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {features.map((feature, index) => (

@@ -10,7 +10,7 @@ const LocationSchema = ({ city, state, serviceName }: LocationSchemaProps) => {
   const locationData = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": `Subhakaryam - ${serviceName} in ${city}`,
+    "name": `Subhakary - ${serviceName} in ${city}`,
     "description": `Professional ${serviceName} services available in ${city}, ${state}. Book verified service providers for traditional ceremonies and events.`,
     "areaServed": {
       "@type": "City",
@@ -35,8 +35,8 @@ const LocationSchema = ({ city, state, serviceName }: LocationSchemaProps) => {
     },
     "provider": {
       "@type": "Organization",
-      "name": "Subhakaryam",
-      "url": "https://subhakaryam.org"
+      "name": "Subhakary",
+      "url": "https://subhakary.com"
     }
   };
 

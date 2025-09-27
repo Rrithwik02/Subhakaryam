@@ -108,7 +108,7 @@ export const EmailConfirmationStatus = ({
             <ul className="text-sm space-y-1 ml-4">
               <li>• Check your spam/junk folder</li>
               <li>• Look in the promotions tab (Gmail)</li>
-              <li>• Add noreply@subhakaryam.org to your contacts</li>
+              <li>• Add noreply@subhakary.com to your contacts</li>
               <li>• Wait a few minutes for delivery</li>
             </ul>
           </AlertDescription>
@@ -144,10 +144,10 @@ export const EmailConfirmationStatus = ({
           <p className="text-xs text-gray-500">
             Still having trouble? Contact{" "}
             <a 
-              href="mailto:support@subhakaryam.org" 
+              href="mailto:admin@subhakary.com" 
               className="text-ceremonial-gold hover:underline"
             >
-              support@subhakaryam.org
+              admin@subhakary.com
             </a>
           </p>
         </div>

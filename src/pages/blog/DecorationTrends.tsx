@@ -12,7 +12,7 @@ const DecorationTrends = () => {
         <title>10 Stunning Wedding Decoration Trends for 2025 Every Couple Must See | Subhakaryam</title>
         <meta name="description" content="Discover the latest wedding decoration trends for 2025. From sustainable décor to minimalist elegance, explore stunning ideas for your dream wedding." />
         <meta name="keywords" content="wedding decoration trends 2025, mandap decoration, wedding décor ideas, floral arrangements, sustainable wedding décor" />
-        <link rel="canonical" href="https://subhakaryam.org/blog/decoration-trends" />
+        <link rel="canonical" href="https://subhakary.com/blog/decoration-trends" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">

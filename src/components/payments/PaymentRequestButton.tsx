@@ -80,7 +80,7 @@ const PaymentRequestButton = ({
         key: data.keyId,
         amount: data.amount,
         currency: data.currency,
-        name: 'Subhakaryam',
+        name: 'Subhakary',
         description: upiOnly ? 'Pay using UPI' : (description || `${paymentType} payment`),
         order_id: data.orderId,
         handler: function (response: any) {

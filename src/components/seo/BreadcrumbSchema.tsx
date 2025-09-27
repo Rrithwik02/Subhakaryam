@@ -17,7 +17,7 @@ const BreadcrumbSchema = ({ items }: BreadcrumbSchemaProps) => {
       "@type": "ListItem",
       "position": index + 1,
       "name": item.name,
-      "item": `https://subhakaryam.org${item.url}`
+      "item": `https://subhakary.com${item.url}`
     }))
   };
 

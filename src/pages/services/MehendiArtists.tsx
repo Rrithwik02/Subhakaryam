@@ -123,7 +123,7 @@ const MehendiArtists = () => {
       additionalSections={careSection}
       metaDescription="Book expert mehendi artists for weddings and events. Bridal mehendi, Arabic designs, traditional patterns. Professional henna artists across India with natural henna."
       keywords="mehendi artists, bridal mehendi, henna designs, arabic mehendi, wedding mehendi, traditional henna, mehendi booking"
-      canonicalUrl="https://subhakaryam.org/services/mehendi-artists"
+      canonicalUrl="https://subhakary.com/services/mehendi-artists"
       priceRange="₹1,500-₹25,000"
     />
   );

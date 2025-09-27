@@ -18,7 +18,7 @@ Allow: /assets/
 Allow: /lovable-uploads/
 
 # Sitemap location
-Sitemap: https://subhakaryam.org/sitemap.xml
+Sitemap: https://subhakary.com/sitemap.xml
 
 # Crawl delay (optional)
 Crawl-delay: 1

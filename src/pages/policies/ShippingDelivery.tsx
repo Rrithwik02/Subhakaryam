@@ -11,7 +11,7 @@ const ShippingDelivery = () => {
         <title>Shipping & Delivery Policy | Subhakaryam</title>
         <meta name="description" content="Learn about our shipping and delivery policies for service-related materials and booking confirmations. Fast, reliable delivery across India." />
         <meta name="keywords" content="shipping policy, delivery, service materials, booking confirmation, subhakaryam" />
-        <link rel="canonical" href="https://subhakaryam.org/policies/shipping-delivery" />
+        <link rel="canonical" href="https://subhakary.com/policies/shipping-delivery" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">
@@ -87,7 +87,7 @@ const ShippingDelivery = () => {
                     <h3 className="font-semibold text-ceremonial-maroon mb-3">Customer Support</h3>
                     <div className="space-y-2 text-sm">
                       <p><strong>Phone:</strong> +91-XXXX-XXXX-XX</p>
-                      <p><strong>Email:</strong> support@subhakaryam.org</p>
+                      <p><strong>Email:</strong> admin@subhakary.com</p>
                       <p><strong>Hours:</strong> 24/7 for urgent bookings</p>
                       <p><strong>WhatsApp:</strong> Available for quick queries</p>
                     </div>

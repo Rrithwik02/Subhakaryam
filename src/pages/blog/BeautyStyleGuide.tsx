@@ -12,7 +12,7 @@ const BeautyStyleGuide = () => {
         <title>Indian Wedding Beauty & Style Guide: Tips for Brides & Grooms | Subhakaryam</title>
         <meta name="description" content="Discover the ultimate Indian wedding beauty & style guide. From bridal makeup to groom styling, explore timeless tips and modern trends." />
         <meta name="keywords" content="bridal makeup, wedding style guide, groom fashion, Indian wedding beauty, bridal outfits, wedding hair" />
-        <link rel="canonical" href="https://subhakaryam.org/blog/beauty-style-guide" />
+        <link rel="canonical" href="https://subhakary.com/blog/beauty-style-guide" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">

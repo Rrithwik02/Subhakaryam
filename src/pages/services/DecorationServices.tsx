@@ -74,7 +74,7 @@ const DecorationServices = () => {
       cities={cities}
       metaDescription="Professional wedding decoration services including mandap, stage, hall, floral decorations. Creative designs and themes across India."
       keywords="wedding decoration, mandap decoration, stage decoration, floral decoration, wedding themes, venue decoration, marriage decoration"
-      canonicalUrl="https://subhakaryam.org/services/decoration"
+      canonicalUrl="https://subhakary.com/services/decoration"
       priceRange="₹15,000-₹5,00,000"
     />
   );

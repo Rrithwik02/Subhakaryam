@@ -13,7 +13,7 @@ const TimelessWeddingTraditions = () => {
         <title>Timeless Indian Wedding Traditions You Should Know | Subhakaryam</title>
         <meta name="description" content="Discover timeless Indian wedding traditions and rituals. From pre-wedding ceremonies to post-wedding customs, explore their meanings and significance." />
         <meta name="keywords" content="Indian wedding traditions, Hindu marriage customs, wedding rituals, pre-wedding ceremonies, post-wedding traditions" />
-        <link rel="canonical" href="https://subhakaryam.org/blog/timeless-wedding-traditions" />
+        <link rel="canonical" href="https://subhakary.com/blog/timeless-wedding-traditions" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">

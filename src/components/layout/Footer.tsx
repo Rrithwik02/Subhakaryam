@@ -8,7 +8,7 @@ const Footer = () => {
     if (servicesSection) {
       servicesSection.scrollIntoView({ behavior: 'smooth' });
     } else {
-      window.location.href = 'https://subhakaryam.org/#services-section';
+      window.location.href = 'https://subhakary.com/#services-section';
     }
   };
 
@@ -19,7 +19,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
           <div>
-            <h3 className="font-display font-bold text-xl mb-4 text-white">Subhakaryam</h3>
+            <h3 className="font-display font-bold text-xl mb-4 text-white">Subhakary</h3>
             <p className="text-sm text-white/80 mb-4">
               Making sacred ceremonies accessible and memorable for everyone. Connecting families with trusted traditional service providers across India.
             </p>
@@ -27,28 +27,28 @@ const Footer = () => {
             {/* Social Media Links */}
             <div className="flex space-x-3">
               <button 
-                onClick={() => window.open('https://facebook.com/subhakaryam', '_blank')}
+                onClick={() => window.open('https://facebook.com/subhakary', '_blank')}
                 className="text-white/80 hover:text-ceremonial-gold transition-colors"
                 aria-label="Follow us on Facebook"
               >
                 <Facebook className="h-5 w-5" />
               </button>
               <button 
-                onClick={() => window.open('https://twitter.com/subhakaryam', '_blank')}
+                onClick={() => window.open('https://twitter.com/subhakary', '_blank')}
                 className="text-white/80 hover:text-ceremonial-gold transition-colors"
                 aria-label="Follow us on Twitter"
               >
                 <Twitter className="h-5 w-5" />
               </button>
               <button 
-                onClick={() => window.open('https://instagram.com/subhakaryam', '_blank')}
+                onClick={() => window.open('https://instagram.com/subhakary', '_blank')}
                 className="text-white/80 hover:text-ceremonial-gold transition-colors"
                 aria-label="Follow us on Instagram"
               >
                 <Instagram className="h-5 w-5" />
               </button>
               <button 
-                onClick={() => window.open('https://youtube.com/@subhakaryam', '_blank')}
+                onClick={() => window.open('https://youtube.com/@subhakary', '_blank')}
                 className="text-white/80 hover:text-ceremonial-gold transition-colors"
                 aria-label="Subscribe to our YouTube channel"
               >
@@ -94,7 +94,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-ceremonial-gold" />
-                <span className="text-sm text-white/80">info@subhakaryam.org</span>
+                <span className="text-sm text-white/80">admin@subhakary.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-ceremonial-gold" />
@@ -125,7 +125,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="text-center text-sm text-white/80">
-          <p>© 2024 Subhakaryam. All rights reserved. | Made with ❤️ for Traditional Indian Ceremonies</p>
+          <p>© 2024 Subhakary. All rights reserved. | Made with ❤️ for Traditional Indian Ceremonies</p>
         </div>
       </div>
     </footer>

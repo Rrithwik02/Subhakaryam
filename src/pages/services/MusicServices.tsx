@@ -74,7 +74,7 @@ const MusicServices = () => {
       cities={cities}
       metaDescription="Professional wedding music services including classical musicians, DJ, live bands, nadaswaram, dhol. Traditional and modern music across India."
       keywords="wedding music, nadaswaram, dhol, wedding DJ, live band, classical music, traditional wedding music, sound system"
-      canonicalUrl="https://subhakaryam.org/services/music"
+      canonicalUrl="https://subhakary.com/services/music"
       priceRange="₹15,000-₹2,00,000"
     />
   );

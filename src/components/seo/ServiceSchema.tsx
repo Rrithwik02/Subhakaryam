@@ -20,8 +20,8 @@ const ServiceSchema = ({
     "description": description,
     "provider": {
       "@type": "Organization",
-      "name": "Subhakaryam",
-      "url": "https://subhakaryam.org"
+      "name": "Subhakary",
+      "url": "https://subhakary.com"
     },
     "areaServed": {
       "@type": "Country",

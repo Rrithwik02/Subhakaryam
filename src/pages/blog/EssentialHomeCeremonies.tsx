@@ -12,7 +12,7 @@ const EssentialHomeCeremonies = () => {
         <title>Essential Indian Home Ceremonies: A Complete Guide | Subhakaryam</title>
         <meta name="description" content="Discover the most important Indian home ceremonies, their meanings, and how to perform them. From pujas to festivals, learn step-by-step traditions." />
         <meta name="keywords" content="Indian home ceremonies, griha pravesh, satyanarayan puja, naming ceremony, home rituals" />
-        <link rel="canonical" href="https://subhakaryam.org/blog/essential-home-ceremonies" />
+        <link rel="canonical" href="https://subhakary.com/blog/essential-home-ceremonies" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">

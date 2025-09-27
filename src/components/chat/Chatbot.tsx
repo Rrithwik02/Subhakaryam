@@ -80,7 +80,7 @@ const Chatbot = () => {
           <div className="px-6 py-4 bg-ceremonial-gold text-white flex justify-between items-center border-b border-ceremonial-gold/20">
             <div className="flex items-center gap-3">
               <MessageSquare className="w-6 h-6" />
-              <h3 className="font-display text-lg">Subhakaryam Assistant</h3>
+              <h3 className="font-display text-lg">Subhakary Assistant</h3>
             </div>
             <Button
               variant="ghost"

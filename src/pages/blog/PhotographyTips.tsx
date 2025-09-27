@@ -12,7 +12,7 @@ const PhotographyTips = () => {
         <title>Top Wedding Photography Tips for Picture-Perfect Memories | Subhakaryam</title>
         <meta name="description" content="Discover expert wedding photography tips for stunning shots. From candid moments to perfect lighting, learn how to capture timeless wedding memories." />
         <meta name="keywords" content="wedding photography tips, candid photography, bridal photography, Indian wedding photos, photography techniques" />
-        <link rel="canonical" href="https://subhakaryam.org/blog/photography-tips" />
+        <link rel="canonical" href="https://subhakary.com/blog/photography-tips" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">

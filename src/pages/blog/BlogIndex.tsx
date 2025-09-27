@@ -56,7 +56,7 @@ const BlogIndex = () => {
         <title>Indian Wedding & Ceremony Blog | Tradition Guides | Subhakaryam</title>
         <meta name="description" content="Expert guides on Hindu wedding ceremonies, pooja rituals, festival celebrations, and traditional customs. Learn about Indian traditions, ceremony planning, and cultural practices." />
         <meta name="keywords" content="hindu wedding traditions, pooja rituals, indian ceremonies, festival celebrations, wedding planning blog, traditional customs" />
-        <link rel="canonical" href="https://subhakaryam.org/blog" />
+        <link rel="canonical" href="https://subhakary.com/blog" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-ceremonial-cream to-white">

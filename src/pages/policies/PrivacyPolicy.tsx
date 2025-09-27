@@ -57,7 +57,7 @@ const PrivacyPolicy = () => {
 
           <div className="mb-8">
             <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon mb-4 mt-8">5. Your Rights</h2>
-            <p className="text-lg mb-4 leading-relaxed">You have the right to access, update, or delete your personal information. Contact us at info@subhakaryam.org to exercise these rights.</p>
+            <p className="text-lg mb-4 leading-relaxed">You have the right to access, update, or delete your personal information. Contact us at admin@subhakary.com to exercise these rights.</p>
           </div>
         </div>
       </div>

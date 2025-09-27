@@ -1,6 +1,6 @@
 {
-  "name": "Subhakaryam - Sacred Ceremonies & Traditional Services",
-  "short_name": "Subhakaryam",
+  "name": "Subhakary - Sacred Ceremonies & Traditional Services",
+  "short_name": "Subhakary",
   "description": "Book trusted pandits, photographers, caterers & decorators for authentic Indian ceremonies",
   "start_url": "/",
   "display": "standalone",
@@ -8,7 +8,7 @@
   "theme_color": "#8B4513",
   "orientation": "portrait-primary",
   "scope": "/",
-  "id": "subhakaryam-app",
+  "id": "subhakary-app",
   "lang": "en",
   "dir": "ltr",
   "icons": [
@@ -32,7 +32,7 @@
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Mobile view of Subhakaryam app"
+      "label": "Mobile view of Subhakary app"
     }
   ],
   "shortcuts": [
