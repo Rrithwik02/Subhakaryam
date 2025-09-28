@@ -85,8 +85,8 @@ serve(async (req) => {
     console.error('Error in generate-logo function:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
-        details: error.stack 
+        error: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.stack : String(error)
       }),
       { 
         headers: { 
