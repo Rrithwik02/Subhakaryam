@@ -9,7 +9,7 @@ const CateringIdeas = () => {
   return (
     <>
       <Helmet>
-        <title>Top 7 Wedding Catering Ideas to Delight Your Guests in 2025 | Subhakaryam</title>
+        <title>Top 7 Wedding Catering Ideas to Delight Your Guests in 2025 | Subhakary</title>
         <meta name="description" content="Discover creative wedding catering ideas for 2025. From regional food counters to fusion menus, explore trending catering concepts for unforgettable celebrations." />
         <meta name="keywords" content="wedding catering ideas, Indian wedding food, live cooking stations, fusion catering, wedding menu planning" />
         <link rel="canonical" href="https://subhakary.com/blog/catering-ideas" />
@@ -208,7 +208,7 @@ const CateringIdeas = () => {
             
             <div className="bg-ceremonial-gold/10 p-6 rounded-lg mt-6 border-l-4 border-ceremonial-gold">
               <p className="font-semibold text-ceremonial-maroon mb-2">Ready to plan your dream wedding menu?</p>
-              <p>With Subhakaryam, you can connect with professional wedding caterers who bring both creativity and authenticity to the table. Book trusted catering services today and make your wedding feast unforgettable.</p>
+              <p>With Subhakary, you can connect with professional wedding caterers who bring both creativity and authenticity to the table. Book trusted catering services today and make your wedding feast unforgettable.</p>
             </div>
           </div>
         </article>

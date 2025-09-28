@@ -34,7 +34,7 @@ serve(async (req) => {
         {
           taskType: "imageInference",
           taskUUID: crypto.randomUUID(),
-          positivePrompt: "professional logo design for 'Subhakaryam', featuring an elegant havan kund with sacred fire in maroon and gold colors, minimalist style, clean lines, modern typography, suitable for a Hindu ceremonies booking platform, high-end luxury feel, vector art style",
+          positivePrompt: "professional logo design for 'Subhakary', featuring an elegant havan kund with sacred fire in maroon and gold colors, minimalist style, clean lines, modern typography, suitable for a Hindu ceremonies booking platform, high-end luxury feel, vector art style",
           model: "runware:100@1",
           width: 1024,
           height: 512,

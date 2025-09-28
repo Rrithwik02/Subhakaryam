@@ -9,7 +9,7 @@ const DecorationTrends = () => {
   return (
     <>
       <Helmet>
-        <title>10 Stunning Wedding Decoration Trends for 2025 Every Couple Must See | Subhakaryam</title>
+        <title>10 Stunning Wedding Decoration Trends for 2025 Every Couple Must See | Subhakary</title>
         <meta name="description" content="Discover the latest wedding decoration trends for 2025. From sustainable décor to minimalist elegance, explore stunning ideas for your dream wedding." />
         <meta name="keywords" content="wedding decoration trends 2025, mandap decoration, wedding décor ideas, floral arrangements, sustainable wedding décor" />
         <link rel="canonical" href="https://subhakary.com/blog/decoration-trends" />
@@ -240,7 +240,7 @@ const DecorationTrends = () => {
             
             <div className="bg-ceremonial-gold/10 p-6 rounded-lg mt-6 border-l-4 border-ceremonial-gold">
               <p className="font-semibold text-ceremonial-maroon mb-2">Ready to design your dream wedding décor?</p>
-              <p>With Subhakaryam, you can explore expert decorators who bring your dream wedding setup to life. Browse trusted decoration services now and design the perfect backdrop for your big day.</p>
+              <p>With Subhakary, you can explore expert decorators who bring your dream wedding setup to life. Browse trusted decoration services now and design the perfect backdrop for your big day.</p>
             </div>
           </div>
         </article>

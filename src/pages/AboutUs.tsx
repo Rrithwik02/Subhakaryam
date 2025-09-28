@@ -6,12 +6,12 @@ const AboutUs = () => {
     <div className="min-h-screen bg-white pt-20">
       <div className="container mx-auto px-4 py-16">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-center text-ceremonial-maroon mb-8">
-          About Subhakaryam
+          About Subhakary
         </h1>
         
         <div className="max-w-3xl mx-auto text-lg text-gray-700 mb-12 text-center">
           <p className="mb-4">
-            Subhakaryam is your trusted partner in celebrating life's most sacred moments. 
+            Subhakary is your trusted partner in celebrating life's most sacred moments. 
             We bridge the gap between traditional ceremonial service providers and modern families 
             seeking authentic spiritual experiences.
           </p>

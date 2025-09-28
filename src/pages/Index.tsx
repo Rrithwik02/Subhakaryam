@@ -135,10 +135,10 @@ const Index = () => {
   return (
     <div className="min-h-screen pt-16">
       <MetaTags
-        title="Sacred Ceremonies - Traditional Indian Services & Authentic Religious Ceremonies"
-        description="Book trusted pandits, photographers, caterers & decorators for authentic Indian weddings, pooja rituals, mehendi ceremonies & traditional events across India. Professional religious services available."
-        keywords="Indian wedding services, pooja ceremonies, mehendi artists, traditional decorators, wedding photography, catering services, function halls, pandit booking"
-        canonical="https://yourdomainhere.com/"
+        title="Subhakary - Sacred Ceremonies & Traditional Indian Services | #1 Platform for Authentic Rituals"
+        description="India's premier platform for booking trusted pandits, photographers, caterers & decorators. Authentic Indian weddings, pooja rituals, mehendi ceremonies & traditional events across India. Expert religious services available 24/7."
+        keywords="subhakary, indian wedding services, pooja ceremonies, pandit booking, mehendi artists, traditional decorators, wedding photography, catering services, function halls, religious ceremonies india"
+        canonical="https://subhakary.com/"
       />
       <FAQSchema />
 

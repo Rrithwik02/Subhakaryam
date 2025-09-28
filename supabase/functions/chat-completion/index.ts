@@ -8,16 +8,16 @@ const corsHeaders = {
 
 // Pre-defined Q&A for common queries about our services
 const commonQuestions = {
-  "hi": "Hello! Welcome to Subhakaryam. How can I assist you with our ceremonial services today?",
-  "hello": "Hi there! Welcome to Subhakaryam. How can I help you with your ceremonial needs?",
+  "hi": "Hello! Welcome to Subhakary. How can I assist you with our ceremonial services today?",
+  "hello": "Hi there! Welcome to Subhakary. How can I help you with your ceremonial needs?",
   "poojari services": "Our poojari services include experienced priests who can perform various religious ceremonies including pujas, homams, and other traditional rituals. Would you like to know about specific ceremonies or booking process?",
   "booking": "To book a poojari service: \n1. Browse available priests\n2. Select your preferred date and time\n3. Make advance payment to confirm\n4. Receive confirmation\n\nWould you like me to help you start the booking process?",
   "catering": "Our catering services specialize in traditional prasadam and ceremonial food preparations. We offer:\n- Customized menu planning\n- Pure vegetarian options\n- Traditional prasadam items\n- Special dietary accommodations\n\nWould you like to know more about our catering packages?",
   "services": "We offer various ceremonial services including:\n1. Pooja Services\n2. Wedding Ceremonies\n3. Naming Ceremonies\n4. House Warming\n5. Catering Services\n6. Traditional Music\n7. Decoration Services\n\nWhich service would you like to know more about?",
-  "contact": "You can reach us through:\n- Phone: Available in your profile\n- Email: support@subhakaryam.com\n- Chat: Right here!\n\nOur customer service team is available 7 days a week.",
+  "contact": "You can reach us through:\n- Phone: Available in your profile\n- Email: admin@subhakary.com\n- Chat: Right here!\n\nOur customer service team is available 7 days a week.",
   "prices": "Our service prices vary based on:\n- Type of ceremony\n- Duration\n- Additional requirements\n\nPooja services typically start from ₹2,000. Would you like a detailed quote for a specific service?",
   "locations": "We currently serve in various cities including:\n- Hyderabad\n- Bangalore\n- Chennai\n- Mumbai\n\nWe can arrange ceremonies at temples, homes, or venues of your choice.",
-  "about": "Subhakaryam is your trusted platform for authentic ceremonial services. We connect you with verified priests, caterers, and other service providers to ensure traditional ceremonies are performed with utmost devotion and authenticity.",
+  "about": "Subhakary is your trusted platform for authentic ceremonial services. We connect you with verified priests, caterers, and other service providers to ensure traditional ceremonies are performed with utmost devotion and authenticity.",
   "i need to book poojari services": "I'll help you book a poojari service. To get started, I'll need to know:\n1. What type of puja do you need?\n2. When do you need the service?\n3. What's your preferred location?\n\nPlease provide these details, and I'll guide you through the booking process.",
   "give information about poojari services": "Our poojari services include:\n1. Daily Pujas\n2. Graha Shanti\n3. Satyanarayana Swamy Vratham\n4. Griha Pravesam\n5. Naming Ceremony\n6. Wedding Ceremony\n7. Special Festival Pujas\n\nAll our priests are well-versed in traditional rituals and ceremonies. Would you like specific information about any of these services?"
 };
@@ -69,7 +69,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are a helpful assistant for Subhakaryam, a platform for ceremonial services. 
+            content: `You are a helpful assistant for Subhakary, a platform for ceremonial services. 
             Focus on providing information about our services which include:
             - Pooja services
             - Wedding ceremonies

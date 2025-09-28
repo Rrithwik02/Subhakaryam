@@ -220,7 +220,7 @@ const BlogPost = () => {
   return (
     <>
       <Helmet>
-        <title>{post.title} | Subhakaryam Blog</title>
+        <title>{post.title} | Subhakary Blog</title>
         <meta name="description" content={post.excerpt} />
         <meta name="keywords" content={post.tags.join(', ')} />
         <link rel="canonical" href={`https://subhakary.com/blog/${slug}`} />

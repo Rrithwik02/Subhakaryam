@@ -61,7 +61,7 @@ const TermsConditions = () => {
 
           <div className="mb-8">
             <h2 className="text-2xl font-display font-semibold text-ceremonial-maroon mb-4 mt-8">6. Limitation of Liability</h2>
-            <p className="text-lg mb-4 leading-relaxed">Subhakaryam acts as a platform connecting users with service providers. We are not responsible for the quality of services provided by third-party vendors.</p>
+            <p className="text-lg mb-4 leading-relaxed">Subhakary acts as a platform connecting users with service providers. We are not responsible for the quality of services provided by third-party vendors.</p>
           </div>
         </div>
       </div>

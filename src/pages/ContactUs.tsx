@@ -87,7 +87,7 @@ const ContactUs = () => {
                 <Mail className="w-6 h-6 text-ceremonial-gold mt-1" />
                 <div>
                   <h3 className="font-semibold text-ceremonial-maroon mb-1">Email Support</h3>
-                  <p className="text-gray-600 mb-2">support@subhakaryam.com</p>
+                  <p className="text-gray-600 mb-2">admin@subhakary.com</p>
                   <p className="text-sm text-gray-500">We typically respond within 2-4 hours</p>
                 </div>
               </Card>

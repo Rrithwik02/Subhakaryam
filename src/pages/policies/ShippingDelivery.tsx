@@ -8,9 +8,9 @@ const ShippingDelivery = () => {
   return (
     <>
       <Helmet>
-        <title>Shipping & Delivery Policy | Subhakaryam</title>
+        <title>Shipping & Delivery Policy | Subhakary</title>
         <meta name="description" content="Learn about our shipping and delivery policies for service-related materials and booking confirmations. Fast, reliable delivery across India." />
-        <meta name="keywords" content="shipping policy, delivery, service materials, booking confirmation, subhakaryam" />
+        <meta name="keywords" content="shipping policy, delivery, service materials, booking confirmation, subhakary" />
         <link rel="canonical" href="https://subhakary.com/policies/shipping-delivery" />
       </Helmet>
 
@@ -46,7 +46,7 @@ const ShippingDelivery = () => {
               </CardHeader>
               <CardContent className="text-ceremonial-brown space-y-4">
                 <p>
-                  Subhakaryam primarily provides <strong>service-based offerings</strong> rather than physical products. 
+                  Subhakary primarily provides <strong>service-based offerings</strong> rather than physical products. 
                   Our main services include connecting customers with verified service providers for:
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">

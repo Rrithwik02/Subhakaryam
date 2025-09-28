@@ -9,7 +9,7 @@ const FestivalCelebrations = () => {
   return (
     <>
       <Helmet>
-        <title>How to Celebrate Indian Festivals in Style: Traditions & Modern Trends | Subhakaryam</title>
+        <title>How to Celebrate Indian Festivals in Style: Traditions & Modern Trends | Subhakary</title>
         <meta name="description" content="Explore Indian festival celebrations with rituals, traditions, and modern trends. From Diwali to Holi, learn how to celebrate festivals with joy and style." />
         <meta name="keywords" content="Indian festivals, Diwali celebrations, Holi traditions, Navratri, festival rituals, Indian culture" />
         <link rel="canonical" href="https://subhakary.com/blog/festival-celebrations" />

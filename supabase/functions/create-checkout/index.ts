@@ -63,8 +63,8 @@ serve(async (req) => {
         },
       ],
       mode: 'payment',
-      success_url: `https://subhakaryam.org/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `https://subhakaryam.org/payment-cancelled`,
+      success_url: `https://subhakary.com/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://subhakary.com/payment-cancelled`,
       metadata: {
         bookingId,
         paymentType,

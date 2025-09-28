@@ -28,16 +28,16 @@ const handler = async (req: Request): Promise<Response> => {
       switch (type) {
         case 'confirmation':
           return {
-            subject: "Confirm your Subhakaryam account",
+            subject: "Confirm your Subhakary account",
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <div style="text-align: center; margin-bottom: 30px;">
-                  <h1 style="color: #8B4513; font-size: 28px; margin: 0;">Subhakaryam</h1>
+                  <h1 style="color: #8B4513; font-size: 28px; margin: 0;">Subhakary</h1>
                   <p style="color: #666; margin: 10px 0;">Traditional Services Platform</p>
                 </div>
                 
                 <div style="background: #f9f9f9; padding: 30px; border-radius: 8px; margin: 20px 0;">
-                  <h2 style="color: #333; margin-top: 0;">Welcome to Subhakaryam!</h2>
+                  <h2 style="color: #333; margin-top: 0;">Welcome to Subhakary!</h2>
                   <p style="color: #666; line-height: 1.6;">
                     Thank you for joining our platform. Please confirm your email address to activate your account.
                   </p>
@@ -57,10 +57,10 @@ const handler = async (req: Request): Promise<Response> => {
                 
                 <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
                   <p style="color: #999; font-size: 12px; margin: 0;">
-                    If you didn't create an account with Subhakaryam, you can safely ignore this email.
+                    If you didn't create an account with Subhakary, you can safely ignore this email.
                   </p>
                   <p style="color: #999; font-size: 12px; margin: 10px 0 0 0;">
-                    This email was sent from a trusted source. For support, contact us at support@subhakaryam.org
+                    This email was sent from a trusted source. For support, contact us at admin@subhakary.com
                   </p>
                 </div>
               </div>
@@ -68,11 +68,11 @@ const handler = async (req: Request): Promise<Response> => {
           };
         case 'password_reset':
           return {
-            subject: "Reset your Subhakaryam password",
+            subject: "Reset your Subhakary password",
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <div style="text-align: center; margin-bottom: 30px;">
-                  <h1 style="color: #8B4513; font-size: 28px; margin: 0;">Subhakaryam</h1>
+                  <h1 style="color: #8B4513; font-size: 28px; margin: 0;">Subhakary</h1>
                   <p style="color: #666; margin: 10px 0;">Password Reset Request</p>
                 </div>
                 
@@ -105,11 +105,11 @@ const handler = async (req: Request): Promise<Response> => {
           };
         default:
           return {
-            subject: "Subhakaryam - Action Required",
+            subject: "Subhakary - Action Required",
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <div style="text-align: center; margin-bottom: 30px;">
-                  <h1 style="color: #8B4513; font-size: 28px; margin: 0;">Subhakaryam</h1>
+                  <h1 style="color: #8B4513; font-size: 28px; margin: 0;">Subhakary</h1>
                 </div>
                 
                 <div style="background: #f9f9f9; padding: 30px; border-radius: 8px; margin: 20px 0;">
@@ -134,7 +134,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailContent = getEmailContent(type);
 
     const emailResponse = await resend.emails.send({
-      from: "Subhakaryam <noreply@subhakaryam.org>",
+      from: "Subhakary <admin@subhakary.com>",
       to: [email],
       subject: emailContent.subject,
       html: emailContent.html,
