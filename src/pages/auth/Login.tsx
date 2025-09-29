@@ -86,7 +86,7 @@ const Login = () => {
         <SecureAuthForm
           mode={authMode}
           onModeChange={setAuthMode}
-          redirectTo={`https://subhakary.com/auth/callback`}
+          redirectTo={`${window.location.origin}/auth/callback`}
         />
       </div>
     );
