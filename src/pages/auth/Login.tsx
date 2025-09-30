@@ -9,87 +9,70 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { session, isLoading } = useSessionContext();
+  const [redirecting, setRedirecting] = useState(false);
   const [authMode, setAuthMode] = useState<"sign_in" | "sign_up">("sign_in");
-  const [checkingRedirect, setCheckingRedirect] = useState(false);
 
   useEffect(() => {
-    if (isLoading) {
-      console.log("⏳ Session is still loading...");
-      return;
-    }
-
-    console.log("🔑 Session state:", session);
-
-    if (!session) {
-      console.log("❌ No active session, showing login form.");
-      return; // Stay on login page
-    }
+    if (!session || redirecting) return;
 
     const checkUserTypeAndRedirect = async () => {
       try {
-        setCheckingRedirect(true);
-
-        // Check admin status via RPC
-        const { data: isAdminResult, error: adminError } = await supabase.rpc(
-          "is_user_admin" as any,
-          { user_id: session.user.id }
-        );
-
+        setRedirecting(true);
+        
+        // Use the new admin function to avoid RLS recursion
+        const { data: isAdminResult, error: adminError } = await supabase
+          .rpc('is_user_admin' as any, { user_id: session.user.id });
+        
         if (adminError) {
-          console.warn("⚠️ Admin check error:", adminError.message);
+          // Continue with non-admin flow if admin check fails
         } else if (Boolean(isAdminResult)) {
-          console.log("✅ User is admin, redirecting to /admin");
-          navigate("/admin", { replace: true });
+          navigate("/admin");
           toast({
             title: "Admin Login Successful",
-            description: "Welcome to your admin dashboard",
+            description: "Welcome to your admin dashboard"
           });
           return;
         }
-
-        // Check if user is a service provider
+        
+        // Check if user is a service provider - using direct query with error handling
         const { data: provider, error: providerError } = await supabase
           .from("service_providers")
           .select("id")
           .eq("profile_id", session.user.id)
           .maybeSingle();
-
-        if (providerError && providerError.code !== "PGRST116") {
-          console.warn("⚠️ Provider check error:", providerError.message);
+        
+        if (providerError && providerError.code !== 'PGRST116') {
+          // Continue with regular user flow even if there's an error
         }
-
+        
         if (provider) {
-          console.log("✅ User is a service provider, redirecting to /dashboard");
-          navigate("/dashboard", { replace: true });
+          navigate("/dashboard");
           toast({
             title: "Provider Login Successful",
-            description: "Welcome to your service provider dashboard",
+            description: "Welcome to your service provider dashboard"
           });
         } else {
-          console.log("✅ Regular user, redirecting to home /");
-          navigate("/", { replace: true });
+          navigate("/");
           toast({
             title: "Login Successful",
-            description: "Welcome back!",
+            description: "Welcome back!"
           });
         }
-      } catch (err) {
-        console.error("❌ Unexpected error during login redirect:", err);
-        navigate("/", { replace: true });
+      } catch (error) {
+        navigate("/");
         toast({
           title: "Login Successful",
-          description: "Welcome back!",
+          description: "Welcome back!"
         });
       } finally {
-        setCheckingRedirect(false);
+        setRedirecting(false);
       }
     };
-
+    
     checkUserTypeAndRedirect();
-  }, [session, isLoading, navigate, toast]);
+  }, [session, navigate, toast]);
 
-  // Loading while checking session
-  if (isLoading || checkingRedirect) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
@@ -97,7 +80,6 @@ const Login = () => {
     );
   }
 
-  // No session → show login form
   if (!session) {
     return (
       <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
@@ -110,7 +92,6 @@ const Login = () => {
     );
   }
 
-  // Already logged in but waiting for redirect
   return (
     <div className="min-h-screen bg-ceremonial-cream flex items-center justify-center px-4">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ceremonial-gold"></div>
