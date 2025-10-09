@@ -19,8 +19,7 @@ const ServiceProviderRegister = () => {
   const { toast } = useToast();
   const { session } = useSessionContext();
   const [services, setServices] = useState<any[]>([]);
-  const [primaryLocation, setPrimaryLocation] = useState("");
-  const [secondaryLocation, setSecondaryLocation] = useState("");
+  const [serviceCities, setServiceCities] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAuthForm, setShowAuthForm] = useState(true);
 
@@ -87,18 +86,37 @@ const ServiceProviderRegister = () => {
 
       // Create the service provider record with the primary service
       const primaryService = services[0];
+      
+      // Parse service cities from hidden input
+      const serviceCitiesStr = formData.get('service_cities') as string;
+      const parsedCities = serviceCitiesStr ? JSON.parse(serviceCitiesStr) : [];
+      const primaryCity = parsedCities[0] || '';
+      const secondaryCity = parsedCities[1] || null;
+      
       const serviceProviderData = {
         profile_id: user.id,
         service_type: primaryService.service_type === 'other' ? primaryService.custom_service_name : primaryService.service_type,
         subcategory: primaryService.subcategory === 'other' ? primaryService.custom_subcategory_name : primaryService.subcategory,
         business_name: formData.get('business_name') as string,
         description: formData.get('description') as string,
-        city: primaryLocation,
-        secondary_city: secondaryLocation || null,
+        city: primaryCity,
+        secondary_city: secondaryCity,
+        service_cities: parsedCities,
         base_price: primaryService.min_price, // Use min price as base price
         portfolio_images: portfolioImages,
         portfolio_link: portfolioLink,
-        status: 'pending'
+        status: 'pending',
+        // New global fields
+        logo_url: formData.get('logo_url') as string || null,
+        gst_number: formData.get('gst_number') as string || null,
+        whatsapp_number: formData.get('whatsapp_number') as string || null,
+        website_url: formData.get('website_url') as string || null,
+        facebook_url: formData.get('facebook_url') as string || null,
+        instagram_url: formData.get('instagram_url') as string || null,
+        youtube_url: formData.get('youtube_url') as string || null,
+        verification_document_url: formData.get('verification_document_url') as string || null,
+        terms_accepted: formData.get('terms_accepted') === 'true',
+        terms_accepted_at: formData.get('terms_accepted') === 'true' ? new Date().toISOString() : null,
       };
 
 
@@ -188,8 +206,8 @@ const ServiceProviderRegister = () => {
                     
                     <ServiceAreas 
                       className="space-y-6" 
-                      onPrimaryLocationChange={setPrimaryLocation}
-                      onSecondaryLocationChange={setSecondaryLocation}
+                      value={serviceCities}
+                      onChange={setServiceCities}
                     />
                     
                     <div className="space-y-3">

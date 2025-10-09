@@ -62,6 +62,7 @@ export type Database = {
           description: string
           id: string
           max_price: number
+          metadata: Json | null
           min_price: number
           portfolio_images: string[] | null
           provider_id: string
@@ -76,6 +77,7 @@ export type Database = {
           description: string
           id?: string
           max_price: number
+          metadata?: Json | null
           min_price: number
           portfolio_images?: string[] | null
           provider_id: string
@@ -90,6 +92,7 @@ export type Database = {
           description?: string
           id?: string
           max_price?: number
+          metadata?: Json | null
           min_price?: number
           portfolio_images?: string[] | null
           provider_id?: string
@@ -1232,7 +1235,9 @@ export type Database = {
           end_time: string
           id: string
           is_available: boolean | null
+          is_blocked: boolean | null
           provider_id: string
+          specific_date: string | null
           start_time: string
           updated_at: string | null
         }
@@ -1242,7 +1247,9 @@ export type Database = {
           end_time: string
           id?: string
           is_available?: boolean | null
+          is_blocked?: boolean | null
           provider_id: string
+          specific_date?: string | null
           start_time: string
           updated_at?: string | null
         }
@@ -1252,7 +1259,9 @@ export type Database = {
           end_time?: string
           id?: string
           is_available?: boolean | null
+          is_blocked?: boolean | null
           provider_id?: string
+          specific_date?: string | null
           start_time?: string
           updated_at?: string | null
         }
@@ -1275,14 +1284,20 @@ export type Database = {
       }
       service_providers: {
         Row: {
+          advance_booking_days: number | null
           advance_payment_percentage: number | null
           base_price: number
           business_name: string
           city: string
           created_at: string
           description: string | null
+          facebook_url: string | null
+          gst_number: string | null
           id: string
+          instagram_url: string | null
           is_premium: boolean | null
+          languages: string[] | null
+          logo_url: string | null
           portfolio_images: string[] | null
           portfolio_link: string | null
           profile_id: string | null
@@ -1290,20 +1305,34 @@ export type Database = {
           rating: number | null
           requires_advance_payment: boolean | null
           secondary_city: string | null
+          service_cities: string[] | null
           service_type: string
           specializations: string[] | null
           status: string | null
           subcategory: string | null
+          terms_accepted: boolean | null
+          terms_accepted_at: string | null
+          travel_charges_applicable: boolean | null
+          verification_document_url: string | null
+          website_url: string | null
+          whatsapp_number: string | null
+          youtube_url: string | null
         }
         Insert: {
+          advance_booking_days?: number | null
           advance_payment_percentage?: number | null
           base_price: number
           business_name: string
           city: string
           created_at?: string
           description?: string | null
+          facebook_url?: string | null
+          gst_number?: string | null
           id?: string
+          instagram_url?: string | null
           is_premium?: boolean | null
+          languages?: string[] | null
+          logo_url?: string | null
           portfolio_images?: string[] | null
           portfolio_link?: string | null
           profile_id?: string | null
@@ -1311,20 +1340,34 @@ export type Database = {
           rating?: number | null
           requires_advance_payment?: boolean | null
           secondary_city?: string | null
+          service_cities?: string[] | null
           service_type: string
           specializations?: string[] | null
           status?: string | null
           subcategory?: string | null
+          terms_accepted?: boolean | null
+          terms_accepted_at?: string | null
+          travel_charges_applicable?: boolean | null
+          verification_document_url?: string | null
+          website_url?: string | null
+          whatsapp_number?: string | null
+          youtube_url?: string | null
         }
         Update: {
+          advance_booking_days?: number | null
           advance_payment_percentage?: number | null
           base_price?: number
           business_name?: string
           city?: string
           created_at?: string
           description?: string | null
+          facebook_url?: string | null
+          gst_number?: string | null
           id?: string
+          instagram_url?: string | null
           is_premium?: boolean | null
+          languages?: string[] | null
+          logo_url?: string | null
           portfolio_images?: string[] | null
           portfolio_link?: string | null
           profile_id?: string | null
@@ -1332,10 +1375,18 @@ export type Database = {
           rating?: number | null
           requires_advance_payment?: boolean | null
           secondary_city?: string | null
+          service_cities?: string[] | null
           service_type?: string
           specializations?: string[] | null
           status?: string | null
           subcategory?: string | null
+          terms_accepted?: boolean | null
+          terms_accepted_at?: string | null
+          travel_charges_applicable?: boolean | null
+          verification_document_url?: string | null
+          website_url?: string | null
+          whatsapp_number?: string | null
+          youtube_url?: string | null
         }
         Relationships: [
           {

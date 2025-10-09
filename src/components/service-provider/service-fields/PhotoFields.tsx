@@ -2,15 +2,22 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ImagePlus, Link, X } from "lucide-react";
+import { LanguagesSelector } from "../shared-fields/LanguagesSelector";
+import { AdvancePaymentField } from "../shared-fields/AdvancePaymentField";
 
 export function PhotoFields() {
   const [showPortfolioImages, setShowPortfolioImages] = useState(true);
   const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
   const [portfolioLink, setPortfolioLink] = useState("");
+  const [droneAvailable, setDroneAvailable] = useState(false);
+  const [outstationAvailable, setOutstationAvailable] = useState(false);
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [advancePayment, setAdvancePayment] = useState(30);
 
   const handleImageUpload = (url: string) => {
     setPortfolioImages((prev) => [...prev, url]);
@@ -40,6 +47,64 @@ export function PhotoFields() {
           name="photography_style"
         />
       </div>
+
+      <div className="space-y-2">
+        <Label>Delivery Time (Days)</Label>
+        <Input
+          type="number"
+          name="delivery_time_days"
+          placeholder="How many days to deliver final photos/videos"
+          required
+          min="1"
+          className="w-full"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Team Size</Label>
+        <Input
+          type="number"
+          name="team_size"
+          placeholder="Number of photographers/videographers"
+          required
+          min="1"
+          className="w-full"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="drone" className="text-base">
+            Drone Available
+          </Label>
+          <Switch
+            id="drone"
+            checked={droneAvailable}
+            onCheckedChange={setDroneAvailable}
+          />
+        </div>
+        <input type="hidden" name="drone_available" value={droneAvailable.toString()} />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="outstation" className="text-base">
+            Outstation Shoots Available
+          </Label>
+          <Switch
+            id="outstation"
+            checked={outstationAvailable}
+            onCheckedChange={setOutstationAvailable}
+          />
+        </div>
+        <input type="hidden" name="outstation_available" value={outstationAvailable.toString()} />
+      </div>
+
+      <LanguagesSelector value={languages} onChange={setLanguages} />
+      <input type="hidden" name="languages" value={JSON.stringify(languages)} />
+
+      <AdvancePaymentField value={advancePayment} onChange={setAdvancePayment} />
+      <input type="hidden" name="advance_payment" value={advancePayment} />
       
       <div className="space-y-4">
         <Label>Portfolio</Label>

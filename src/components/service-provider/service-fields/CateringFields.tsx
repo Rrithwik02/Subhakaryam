@@ -2,14 +2,30 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ImagePlus, Link, X } from "lucide-react";
+import { AdvancePaymentField } from "../shared-fields/AdvancePaymentField";
+
+const MENU_TYPES = [
+  { id: "veg", name: "Vegetarian" },
+  { id: "non-veg", name: "Non-Vegetarian" },
+  { id: "jain", name: "Jain" },
+  { id: "custom", name: "Custom Menu" },
+];
 
 export function CateringFields() {
   const [showPortfolioImages, setShowPortfolioImages] = useState(true);
   const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
+  const [menuTypes, setMenuTypes] = useState<string[]>([]);
+  const [onsiteCooking, setOnsiteCooking] = useState(false);
+  const [waiterService, setWaiterService] = useState(false);
+  const [serviceStyle, setServiceStyle] = useState("");
+  const [advancePayment, setAdvancePayment] = useState(30);
 
   const handleImageUpload = (url: string) => {
     setPortfolioImages((prev) => [...prev, url]);
@@ -41,8 +57,80 @@ export function CateringFields() {
       </div>
       <div className="space-y-2">
         <Label>Food License Number</Label>
-        <Input required className="w-full" />
+        <Input name="food_license_number" required className="w-full" />
       </div>
+
+      <div className="space-y-3">
+        <Label className="text-base">Menu Types Offered</Label>
+        <div className="grid grid-cols-2 gap-3">
+          {MENU_TYPES.map((menu) => (
+            <div key={menu.id} className="flex items-center space-x-2">
+              <Checkbox
+                id={menu.id}
+                checked={menuTypes.includes(menu.id)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setMenuTypes([...menuTypes, menu.id]);
+                  } else {
+                    setMenuTypes(menuTypes.filter((m) => m !== menu.id));
+                  }
+                }}
+              />
+              <label htmlFor={menu.id} className="text-sm cursor-pointer">
+                {menu.name}
+              </label>
+            </div>
+          ))}
+        </div>
+        <input type="hidden" name="menu_types" value={JSON.stringify(menuTypes)} />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="onsite-cooking" className="text-base">
+            On-Site Cooking Available
+          </Label>
+          <Switch
+            id="onsite-cooking"
+            checked={onsiteCooking}
+            onCheckedChange={setOnsiteCooking}
+          />
+        </div>
+        <input type="hidden" name="onsite_cooking" value={onsiteCooking.toString()} />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Service Style</Label>
+        <Select value={serviceStyle} onValueChange={setServiceStyle}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select service style" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="buffet">Buffet</SelectItem>
+            <SelectItem value="seated">Seated Service</SelectItem>
+            <SelectItem value="self-serve">Self Serve</SelectItem>
+            <SelectItem value="mix">Mix of Both</SelectItem>
+          </SelectContent>
+        </Select>
+        <input type="hidden" name="service_style" value={serviceStyle} />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="waiter-service" className="text-base">
+            Waiter Service Included
+          </Label>
+          <Switch
+            id="waiter-service"
+            checked={waiterService}
+            onCheckedChange={setWaiterService}
+          />
+        </div>
+        <input type="hidden" name="waiter_service" value={waiterService.toString()} />
+      </div>
+
+      <AdvancePaymentField value={advancePayment} onChange={setAdvancePayment} />
+      <input type="hidden" name="advance_payment" value={advancePayment} />
       
       <div className="space-y-4">
         <Label>Portfolio</Label>

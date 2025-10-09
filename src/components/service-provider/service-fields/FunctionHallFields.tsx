@@ -1,6 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +12,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 export function FunctionHallFields() {
   const [showPortfolioImages, setShowPortfolioImages] = useState(true);
   const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
+  const [hasAc, setHasAc] = useState(false);
+  const [cateringPolicy, setCateringPolicy] = useState("");
 
   const handleImageUpload = (url: string) => {
     setPortfolioImages((prev) => [...prev, url]);
@@ -106,8 +110,63 @@ export function FunctionHallFields() {
       </div>
 
       <div className="space-y-2">
+        <Label>Parking Capacity</Label>
+        <Input
+          type="number"
+          name="parking_capacity"
+          placeholder="Number of vehicles"
+          required
+          min="0"
+          className="w-full"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="ac" className="text-base">
+            Air Conditioning
+          </Label>
+          <Switch
+            id="ac"
+            checked={hasAc}
+            onCheckedChange={setHasAc}
+          />
+        </div>
+        <input type="hidden" name="has_ac" value={hasAc.toString()} />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Catering Policy</Label>
+        <Select value={cateringPolicy} onValueChange={setCateringPolicy}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select catering policy" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="included">Catering Included</SelectItem>
+            <SelectItem value="allowed">Outside Catering Allowed</SelectItem>
+            <SelectItem value="not-allowed">Outside Catering Not Allowed</SelectItem>
+          </SelectContent>
+        </Select>
+        <input type="hidden" name="catering_policy" value={cateringPolicy} />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Google Maps Location URL</Label>
+        <Input
+          type="url"
+          name="map_location_url"
+          placeholder="https://maps.google.com/..."
+          className="w-full"
+        />
+        <p className="text-sm text-muted-foreground">
+          Paste the Google Maps link for your hall location
+        </p>
+      </div>
+
+      <div className="space-y-2">
         <Label>License Number</Label>
         <Input
+          name="license_number"
           placeholder="Business/Municipal license number"
           required
           className="w-full"
