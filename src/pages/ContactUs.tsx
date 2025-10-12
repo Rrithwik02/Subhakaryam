@@ -8,6 +8,34 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, Clock, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import Breadcrumbs from "@/components/ui/breadcrumbs";
+import { z } from 'zod';
+
+// Contact form validation schema
+const contactFormSchema = z.object({
+  name: z.string()
+    .trim()
+    .min(2, 'Name must be at least 2 characters')
+    .max(100, 'Name must be less than 100 characters')
+    .regex(/^[a-zA-Z\s]+$/, 'Name should only contain letters and spaces'),
+  
+  email: z.string()
+    .trim()
+    .email('Please enter a valid email address')
+    .max(255, 'Email must be less than 255 characters')
+    .toLowerCase(),
+  
+  phone: z.string()
+    .trim()
+    .regex(/^[6-9]\d{9}$/, 'Please enter a valid 10-digit Indian phone number')
+    .length(10, 'Phone number must be exactly 10 digits'),
+  
+  message: z.string()
+    .trim()
+    .min(10, 'Message must be at least 10 characters')
+    .max(1000, 'Message must be less than 1000 characters')
+});
+
+type ContactFormData = z.infer<typeof contactFormSchema>;
 
 const ContactUs = () => {
   const { toast } = useToast();
@@ -18,20 +46,25 @@ const ContactUs = () => {
     phone: "",
     message: ""
   });
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setValidationErrors({});
 
     try {
-      // Insert form data to contact_submissions table
+      // Validate form data
+      const validatedData = contactFormSchema.parse(formData);
+
+      // Insert validated data to contact_submissions table
       const { error } = await supabase
         .from('contact_submissions')
         .insert({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          message: formData.message
+          name: validatedData.name,
+          email: validatedData.email,
+          phone: validatedData.phone,
+          message: validatedData.message
         });
 
       if (error) throw error;
@@ -44,12 +77,29 @@ const ContactUs = () => {
       // Reset form after successful submission
       setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
-      
-      toast({
-        variant: "destructive",
-        title: "Submission Failed",
-        description: "There was an error sending your message. Please try again.",
-      });
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const errors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            errors[err.path[0] as string] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+        
+        toast({
+          variant: "destructive",
+          title: "Validation Error",
+          description: "Please check the form and try again.",
+        });
+      } else {
+        console.error('Submission error:', error);
+        toast({
+          variant: "destructive",
+          title: "Submission Failed",
+          description: "There was an error sending your message. Please try again.",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -148,8 +198,11 @@ const ContactUs = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full"
+                    className={`w-full ${validationErrors.name ? 'border-red-500' : ''}`}
                   />
+                  {validationErrors.name && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.name}</p>
+                  )}
                 </div>
 
                 <div>
@@ -163,8 +216,11 @@ const ContactUs = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full"
+                    className={`w-full ${validationErrors.email ? 'border-red-500' : ''}`}
                   />
+                  {validationErrors.email && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.email}</p>
+                  )}
                 </div>
 
                 <div>
@@ -178,8 +234,11 @@ const ContactUs = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full"
+                    className={`w-full ${validationErrors.phone ? 'border-red-500' : ''}`}
                   />
+                  {validationErrors.phone && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.phone}</p>
+                  )}
                 </div>
 
                 <div>
@@ -192,8 +251,11 @@ const ContactUs = () => {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    className="w-full min-h-[150px]"
+                    className={`w-full min-h-[150px] ${validationErrors.message ? 'border-red-500' : ''}`}
                   />
+                  {validationErrors.message && (
+                    <p className="text-red-500 text-sm mt-1">{validationErrors.message}</p>
+                  )}
                 </div>
 
                 <Button 

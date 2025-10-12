@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.47.8'
+import { createErrorResponse, validateRequiredParams, isValidUUID, ErrorCode } from '../_shared/errorHandler.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,10 +22,11 @@ Deno.serve(async (req) => {
     // Get auth token from request headers
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
+      const error = createErrorResponse(ErrorCode.UNAUTHORIZED);
       return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Create regular client to verify admin status
@@ -47,11 +49,11 @@ Deno.serve(async (req) => {
     // Verify the user is an admin
     const { data: userData, error: userError } = await supabase.auth.getUser()
     if (userError || !userData.user) {
-      console.error('Auth error:', userError)
+      const error = createErrorResponse(ErrorCode.UNAUTHORIZED, userError);
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Check if user is admin
@@ -62,22 +64,33 @@ Deno.serve(async (req) => {
       .single()
 
     if (profileError || profile?.user_type !== 'admin') {
-      console.error('Admin check failed:', profileError)
+      const error = createErrorResponse(ErrorCode.FORBIDDEN, profileError);
       return new Response(
-        JSON.stringify({ error: 'Admin access required' }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Parse request body
     const body: RequestBody = await req.json()
     const { userId } = body
 
-    if (!userId) {
+    // Validate userId parameter
+    const validationError = validateRequiredParams({ userId }, ['userId']);
+    if (validationError) {
       return new Response(
-        JSON.stringify({ error: 'User ID is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+        JSON.stringify(validationError.response),
+        { status: validationError.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate UUID format
+    if (!isValidUUID(userId)) {
+      const error = createErrorResponse(ErrorCode.INVALID_INPUT, `Invalid user ID format: ${userId}`);
+      return new Response(
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Create admin client for user deletion
@@ -87,11 +100,11 @@ Deno.serve(async (req) => {
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId)
     
     if (deleteError) {
-      console.error('Delete user error:', deleteError)
+      const error = createErrorResponse(ErrorCode.OPERATION_FAILED, deleteError);
       return new Response(
-        JSON.stringify({ error: 'Failed to delete user' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log('User deleted successfully:', userId)
@@ -101,10 +114,10 @@ Deno.serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Function error:', error)
+    const errorResponse = createErrorResponse(ErrorCode.INTERNAL_ERROR, error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+      JSON.stringify(errorResponse.response),
+      { status: errorResponse.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 })

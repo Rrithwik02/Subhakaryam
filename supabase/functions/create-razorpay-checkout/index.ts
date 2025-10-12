@@ -1,5 +1,12 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { 
+  createErrorResponse, 
+  validateRequiredParams, 
+  isValidUUID, 
+  isValidNumber,
+  ErrorCode 
+} from "../_shared/errorHandler.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,12 +25,55 @@ serve(async (req) => {
     
     console.log("Request data:", { bookingId, paymentType, amount });
 
+    // Validate required parameters
+    const validationError = validateRequiredParams(
+      { bookingId, paymentType, amount },
+      ['bookingId', 'paymentType', 'amount']
+    );
+    if (validationError) {
+      return new Response(
+        JSON.stringify(validationError.response),
+        { status: validationError.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate bookingId format
+    if (!isValidUUID(bookingId)) {
+      const error = createErrorResponse(ErrorCode.INVALID_INPUT, `Invalid booking ID format: ${bookingId}`);
+      return new Response(
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate amount
+    if (!isValidNumber(amount) || amount <= 0) {
+      const error = createErrorResponse(ErrorCode.INVALID_INPUT, `Invalid amount: ${amount}`);
+      return new Response(
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate paymentType
+    if (!['advance', 'final'].includes(paymentType)) {
+      const error = createErrorResponse(ErrorCode.INVALID_INPUT, `Invalid payment type: ${paymentType}`);
+      return new Response(
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Get user from auth header first
     const authHeader = req.headers.get("Authorization");
     console.log("Auth header present:", !!authHeader);
     
     if (!authHeader) {
-      throw new Error("No authorization header found");
+      const error = createErrorResponse(ErrorCode.UNAUTHORIZED);
+      return new Response(
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Create Supabase client with proper auth context
@@ -44,13 +94,12 @@ serve(async (req) => {
 
     console.log("Auth result:", { user: !!user, authError });
 
-    if (authError) {
-      console.error("Auth error:", authError);
-      throw new Error(`Authentication failed: ${authError.message}`);
-    }
-
-    if (!user) {
-      throw new Error("User not found");
+    if (authError || !user) {
+      const error = createErrorResponse(ErrorCode.UNAUTHORIZED, authError);
+      return new Response(
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log("User authenticated:", user.id);
@@ -92,14 +141,12 @@ serve(async (req) => {
       }
     }
 
-    if (bookingError) {
-      console.error("Booking error:", bookingError);
-      throw new Error(`Booking lookup failed: ${bookingError.message}`);
-    }
-
-    if (!booking) {
-      console.error("No booking found for:", { bookingId, userId: user.id });
-      throw new Error("Booking not found for this user");
+    if (bookingError || !booking) {
+      const error = createErrorResponse(ErrorCode.NOT_FOUND, bookingError);
+      return new Response(
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log("Booking found:", booking.id);
@@ -109,7 +156,11 @@ serve(async (req) => {
     const razorpayKeySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
     
     if (!razorpayKeyId || !razorpayKeySecret) {
-      throw new Error("Razorpay credentials not configured");
+      const error = createErrorResponse(ErrorCode.EXTERNAL_SERVICE_ERROR, 'Razorpay credentials not configured');
+      return new Response(
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Generate a short receipt ID that stays under 40 characters
@@ -156,7 +207,11 @@ serve(async (req) => {
         statusText: razorpayOrder.statusText,
         response: errorText
       });
-      throw new Error(`Failed to create Razorpay order: ${razorpayOrder.status} - ${errorText}`);
+      const error = createErrorResponse(ErrorCode.EXTERNAL_SERVICE_ERROR, `Razorpay API error: ${razorpayOrder.status}`);
+      return new Response(
+        JSON.stringify(error.response),
+        { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const orderData = await razorpayOrder.json();
@@ -179,8 +234,11 @@ serve(async (req) => {
         .eq("id", existingPayment.id);
 
       if (updateError) {
-        console.error("Payment update error:", updateError);
-        throw new Error(`Failed to update payment record: ${updateError.message}`);
+        const error = createErrorResponse(ErrorCode.OPERATION_FAILED, updateError);
+        return new Response(
+          JSON.stringify(error.response),
+          { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
     } else {
       // Create new payment record
@@ -195,8 +253,11 @@ serve(async (req) => {
         });
 
       if (paymentError) {
-        console.error("Payment record error:", paymentError);
-        throw new Error(`Failed to create payment record: ${paymentError.message}`);
+        const error = createErrorResponse(ErrorCode.OPERATION_FAILED, paymentError);
+        return new Response(
+          JSON.stringify(error.response),
+          { status: error.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
     }
 
@@ -215,13 +276,10 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error("Error creating Razorpay checkout:", error);
+    const errorResponse = createErrorResponse(ErrorCode.INTERNAL_ERROR, error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
+      JSON.stringify(errorResponse.response),
+      { status: errorResponse.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
