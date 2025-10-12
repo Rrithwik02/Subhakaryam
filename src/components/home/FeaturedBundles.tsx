@@ -7,7 +7,7 @@ import { Package, Users, Calendar, Star, ArrowRight } from 'lucide-react';
 import { PublicBundleCard } from '../bundles/PublicBundleCard';
 import { useNavigate } from 'react-router-dom';
 
-export const FeaturedBundles = () => {
+const FeaturedBundles = () => {
   const navigate = useNavigate();
 
   const { data: bundles, isLoading } = useQuery({
@@ -91,3 +91,5 @@ export const FeaturedBundles = () => {
     </section>
   );
 };
+
+export default FeaturedBundles;

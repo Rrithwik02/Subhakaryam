@@ -30,7 +30,7 @@ import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
 
 // Lazy load below-the-fold components
 const FeaturedProviders = lazy(() => import("@/components/home/FeaturedProviders"));
-const FeaturedBundles = lazy(() => import("@/components/home/FeaturedBundles").then(module => ({ default: module.FeaturedBundles })));
+const FeaturedBundles = lazy(() => import("@/components/home/FeaturedBundles"));
 const EssentialsPreview = lazy(() => import("@/components/home/EssentialsPreview"));
 const Testimonials = lazy(() => import("@/components/home/Testimonials"));
 const CTASection = lazy(() => import("@/components/home/CTASection"));
