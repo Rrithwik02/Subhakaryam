@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -296,7 +297,12 @@ const BlogPost = () => {
           {/* Article Content */}
           <div className="prose prose-lg max-w-none">
             <div 
-              dangerouslySetInnerHTML={{ __html: post.content }} 
+              dangerouslySetInnerHTML={{ 
+                __html: DOMPurify.sanitize(post.content, {
+                  ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'p', 'a', 'ul', 'ol', 'li', 'strong', 'em', 'br', 'blockquote', 'code', 'pre'],
+                  ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+                }) 
+              }} 
               className="text-ceremonial-brown leading-relaxed"
             />
           </div>

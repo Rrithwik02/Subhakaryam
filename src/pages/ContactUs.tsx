@@ -80,9 +80,9 @@ const ContactUs = () => {
       if (error instanceof z.ZodError) {
         // Handle validation errors
         const errors: Record<string, string> = {};
-        error.errors.forEach((err) => {
-          if (err.path[0]) {
-            errors[err.path[0] as string] = err.message;
+        error.issues.forEach((issue) => {
+          if (issue.path[0]) {
+            errors[issue.path[0] as string] = issue.message;
           }
         });
         setValidationErrors(errors);
