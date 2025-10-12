@@ -54,6 +54,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_account_deletion_requests_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       additional_services: {
@@ -239,6 +246,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "bookings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       bundle_bookings: {
@@ -301,6 +315,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_bundle_bookings_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -488,6 +509,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "chat_messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "chat_messages_sender_id_fkey"
             columns: ["sender_id"]
             isOneToOne: false
@@ -499,6 +527,13 @@ export type Database = {
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -644,6 +679,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "favorites_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       notification_preferences: {
@@ -729,6 +771,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1157,6 +1206,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       service_bundles: {
@@ -1403,6 +1459,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "service_providers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       service_requests: {
@@ -1465,6 +1528,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "service_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       service_suggestions: {
@@ -1507,7 +1577,35 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "service_suggestions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_service_provider_profiles"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
       }
       user_theme_preferences: {
         Row: {
@@ -1589,6 +1687,15 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      public_service_provider_profiles: {
+        Row: {
+          created_at: string | null
+          full_name: string | null
+          id: string | null
+          profile_image: string | null
+        }
+        Relationships: []
       }
       public_service_providers: {
         Row: {
@@ -1714,6 +1821,13 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -1732,6 +1846,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "service_provider" | "customer"
       payment_method_type: "bank_account" | "upi" | "qr_code"
     }
     CompositeTypes: {
@@ -1860,6 +1975,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "service_provider", "customer"],
       payment_method_type: ["bank_account", "upi", "qr_code"],
     },
   },
