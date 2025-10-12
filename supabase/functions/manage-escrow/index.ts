@@ -20,6 +20,72 @@ serve(async (req) => {
 
     const { action, paymentId, bookingId, amount, reason } = await req.json();
 
+    // Authentication required for all actions except auto_release_check
+    if (action !== "auto_release_check") {
+      const authHeader = req.headers.get("Authorization");
+      if (!authHeader) {
+        return new Response(
+          JSON.stringify({ error: "Unauthorized: No authorization header" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+        );
+      }
+
+      const token = authHeader.replace("Bearer ", "");
+      const { data: userData, error: authError } = await supabaseAdmin.auth.getUser(token);
+      
+      if (authError || !userData.user) {
+        return new Response(
+          JSON.stringify({ error: "Unauthorized: Invalid token" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+        );
+      }
+
+      // Store authenticated user ID for authorization checks
+      const authenticatedUserId = userData.user.id;
+
+      // Verify user owns the booking for create_escrow and dispute_escrow
+      if (action === "create_escrow" || action === "dispute_escrow") {
+        const { data: booking, error: bookingError } = await supabaseAdmin
+          .from("bookings")
+          .select("user_id, provider_id")
+          .eq("id", bookingId)
+          .single();
+
+        if (bookingError || !booking) {
+          return new Response(
+            JSON.stringify({ error: "Booking not found" }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
+          );
+        }
+
+        // Check if user is admin
+        const { data: isAdmin } = await supabaseAdmin.rpc(
+          "is_user_admin",
+          { user_id: authenticatedUserId }
+        );
+
+        // Check if user is the booking owner
+        const isBookingOwner = booking.user_id === authenticatedUserId;
+
+        // Check if user is the provider
+        const { data: provider } = await supabaseAdmin
+          .from("service_providers")
+          .select("profile_id")
+          .eq("id", booking.provider_id)
+          .single();
+        
+        const isProvider = provider?.profile_id === authenticatedUserId;
+
+        // Only booking owner, provider, or admin can perform these actions
+        if (!isAdmin && !isBookingOwner && !isProvider) {
+          return new Response(
+            JSON.stringify({ error: "Forbidden: You do not have permission to perform this action" }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+          );
+        }
+      }
+    }
+
     if (action === "create_escrow") {
       // Create escrow payment
       const autoReleaseDate = new Date();
@@ -60,9 +126,8 @@ serve(async (req) => {
     }
 
     if (action === "release_escrow") {
-      const authHeader = req.headers.get("Authorization");
-      if (!authHeader) throw new Error("No authorization header");
-
+      // Auth already validated above
+      const authHeader = req.headers.get("Authorization")!;
       const token = authHeader.replace("Bearer ", "");
       const { data: userData } = await supabaseAdmin.auth.getUser(token);
       const userId = userData.user?.id;
