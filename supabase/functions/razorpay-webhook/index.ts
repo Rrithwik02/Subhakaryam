@@ -4,6 +4,43 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 serve(async (req) => {
   try {
     const body = await req.text();
+    
+    // Verify webhook signature
+    const webhookSignature = req.headers.get("x-razorpay-signature");
+    const webhookSecret = Deno.env.get("RAZORPAY_WEBHOOK_SECRET");
+    
+    if (!webhookSecret) {
+      console.error("RAZORPAY_WEBHOOK_SECRET not configured");
+      return new Response(
+        JSON.stringify({ error: "Webhook secret not configured" }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    if (!webhookSignature) {
+      console.error("Missing webhook signature");
+      return new Response(
+        JSON.stringify({ error: "Missing signature" }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    // Generate expected signature
+    const crypto = await import("https://deno.land/std@0.190.0/node/crypto.ts");
+    const expectedSignature = crypto
+      .createHmac("sha256", webhookSecret)
+      .update(body)
+      .digest("hex");
+    
+    // Verify signature
+    if (webhookSignature !== expectedSignature) {
+      console.error("Invalid webhook signature");
+      return new Response(
+        JSON.stringify({ error: "Invalid signature" }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
     const event = JSON.parse(body);
 
     const supabaseClient = createClient(

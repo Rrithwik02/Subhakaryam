@@ -54,15 +54,18 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Check if user is admin
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('user_type')
-      .eq('id', userData.user.id)
-      .single()
+    // Check if user is admin using secure RPC
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: { persistSession: false }
+    })
+    
+    const { data: isAdmin, error: adminCheckError } = await supabaseAdmin.rpc(
+      'is_user_admin',
+      { user_id: userData.user.id }
+    )
 
-    if (profileError || profile?.user_type !== 'admin') {
-      console.error('Admin check failed:', profileError)
+    if (adminCheckError || !isAdmin) {
+      console.error('Admin check failed:', adminCheckError)
       return new Response(
         JSON.stringify({ error: 'Admin access required' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
