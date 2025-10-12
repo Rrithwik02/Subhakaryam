@@ -15,25 +15,16 @@ const FeaturedProviders = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('service_providers')
-        .select(`
-          id,
-          business_name,
-          service_type,
-          city,
-          rating,
-          base_price,
-          profile_image,
-          description
-        `)
+        .select('id,business_name,service_type,city,rating,base_price,profile_image')
         .eq('status', 'approved')
         .eq('is_premium', true)
         .order('rating', { ascending: false })
-        .limit(6);
+        .limit(3);
 
       if (error) throw error;
       return data;
     },
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 
   if (isLoading) {
@@ -99,7 +90,7 @@ const FeaturedProviders = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-4 mb-3">
+                <div className="flex items-center gap-4 mb-4">
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 text-ceremonial-gold fill-current" />
                     <span className="text-sm font-medium">{provider.rating || 4.5}</span>
@@ -109,12 +100,6 @@ const FeaturedProviders = () => {
                     <span className="text-sm">{provider.city}</span>
                   </div>
                 </div>
-                
-                {provider.description && (
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                    {provider.description}
-                  </p>
-                )}
                 
                 <div className="flex items-center justify-between">
                   <div className="text-ceremonial-gold font-semibold">

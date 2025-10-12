@@ -1,9 +1,8 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense, lazy } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
-import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
@@ -17,109 +16,58 @@ import SuggestionForm from "@/components/suggestions/SuggestionForm";
 import Hero from "@/components/home/Hero";
 import Services from "@/components/home/Services";
 import HowItWorks from "@/components/home/HowItWorks";
-import Testimonials from "@/components/home/Testimonials";
 import Footer from "@/components/layout/Footer";
 import AdvertCarousel from "@/components/home/AdvertCarousel";
-import EssentialsPreview from "@/components/home/EssentialsPreview";
 import Chatbot from "@/components/chat/Chatbot";
 import FAQSchema from "@/components/seo/FAQSchema";
 import MetaTags from "@/components/seo/MetaTags";
 import QuickBookingWidget from "@/components/booking/QuickBookingWidget";
 import ScrollToTop from "@/components/ui/scroll-to-top";
 import TrustIndicators from "@/components/home/TrustIndicators";
-
-import CTASection from "@/components/home/CTASection";
-import FeaturedProviders from "@/components/home/FeaturedProviders";
 import PWAInstall from "@/components/ui/pwa-install";
-import { FeaturedBundles } from "@/components/home/FeaturedBundles";
 import { useToast } from "@/hooks/use-toast";
+import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
+
+// Lazy load below-the-fold components
+const FeaturedProviders = lazy(() => import("@/components/home/FeaturedProviders"));
+const FeaturedBundles = lazy(() => import("@/components/home/FeaturedBundles").then(module => ({ default: module.FeaturedBundles })));
+const EssentialsPreview = lazy(() => import("@/components/home/EssentialsPreview"));
+const Testimonials = lazy(() => import("@/components/home/Testimonials"));
+const CTASection = lazy(() => import("@/components/home/CTASection"));
 
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { session, isLoading } = useSessionContext();
   
-  const [isAdmin, setIsAdmin] = React.useState(false);
   const [isServiceProvider, setIsServiceProvider] = React.useState(false);
-  const [serviceProviderId, setServiceProviderId] = React.useState<string | null>(null);
-
-  const { data: serviceProvider } = useQuery({
-    queryKey: ["service-provider"],
-    queryFn: async () => {
-      if (!session?.user) return null;
-      
-      const { data, error } = await supabase
-        .from("service_providers")
-        .select("id")
-        .eq("profile_id", session.user.id)
-        .maybeSingle();
-
-      // Handle PGRST116 error (no rows found) silently
-      if (error) {
-        if (error.code === 'PGRST116') {
-          return null;
-        }
-        throw error;
-      }
-      return data;
-    },
-    enabled: !!session?.user,
-    retry: false,
-    meta: {
-      onError: (error: any) => {
-        
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to check service provider status",
-        });
-      },
-    },
-  });
 
   useEffect(() => {
+    // Defer non-critical user status check
+    if (!session?.user) return;
+    
     const checkUserStatus = async () => {
-      if (session?.user) {
-        try {
-          // Use the new admin function to avoid RLS recursion
-          const { data: isAdminResult, error: adminError } = await supabase
-            .rpc('is_user_admin' as any, { user_id: session.user.id });
-          
-          if (adminError) {
-            
-          } else {
-            setIsAdmin(Boolean(isAdminResult));
-          }
-
-          const { data: providerData, error: providerError } = await supabase
-            .from('service_providers')
-            .select('id')
-            .eq('profile_id', session.user.id)
-            .maybeSingle();
-          
-          // Only log error if it's not a "no rows found" error
-          if (providerError && providerError.code !== 'PGRST116') {
-            
-            return;
-          }
-          
-          setIsServiceProvider(!!providerData);
-          if (providerData) {
-            setServiceProviderId(providerData.id);
-          }
-        } catch (error) {
-          
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Failed to check user status",
-          });
-        }
+      try {
+        const { data, error } = await supabase
+          .from('service_providers')
+          .select('id')
+          .eq('profile_id', session.user.id)
+          .maybeSingle();
+        
+        if (error && error.code !== 'PGRST116') return;
+        setIsServiceProvider(!!data);
+      } catch {
+        // Silently fail
       }
     };
 
-    checkUserStatus();
-  }, [session, toast]);
+    // Use requestIdleCallback for non-critical work
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(checkUserStatus);
+    } else {
+      setTimeout(checkUserStatus, 100);
+    }
+  }, [session]);
 
 
   if (isLoading) {
@@ -147,13 +95,47 @@ const Index = () => {
       
       <AdvertCarousel />
       <Services />
-      <FeaturedProviders />
-      <FeaturedBundles />
-      <EssentialsPreview />
+      
+      <Suspense fallback={
+        <div className="container mx-auto px-4 py-12">
+          <EnhancedSkeleton className="h-8 w-64 mb-4" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <EnhancedSkeleton key={i} className="h-64 w-full" />
+            ))}
+          </div>
+        </div>
+      }>
+        <FeaturedProviders />
+      </Suspense>
+      
+      <Suspense fallback={
+        <div className="container mx-auto px-4 py-12">
+          <EnhancedSkeleton className="h-8 w-64 mb-4" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <EnhancedSkeleton key={i} className="h-64 w-full" />
+            ))}
+          </div>
+        </div>
+      }>
+        <FeaturedBundles />
+      </Suspense>
+      
+      <Suspense fallback={<EnhancedSkeleton className="h-96 w-full" />}>
+        <EssentialsPreview />
+      </Suspense>
+      
       <TrustIndicators />
       <HowItWorks />
-      <Testimonials />
-      <CTASection />
+      
+      <Suspense fallback={<EnhancedSkeleton className="h-96 w-full" />}>
+        <Testimonials />
+      </Suspense>
+      
+      <Suspense fallback={<EnhancedSkeleton className="h-64 w-full" />}>
+        <CTASection />
+      </Suspense>
       
       {session && !isServiceProvider && (
         <div className="max-w-md mx-auto px-4 py-12">

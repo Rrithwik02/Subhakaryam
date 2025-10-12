@@ -16,24 +16,22 @@ export const FeaturedBundles = () => {
       const { data, error } = await supabase
         .from('service_bundles')
         .select(`
-          *,
-          bundle_items (*),
-          service_providers (
-            id,
-            business_name,
-            city,
-            rating,
-            service_type,
-            profile_image
-          )
+          id,
+          bundle_name,
+          description,
+          base_price,
+          discounted_price,
+          portfolio_images,
+          service_providers!inner(id,business_name,city,rating,profile_image)
         `)
         .eq('is_active', true)
         .order('discount_percentage', { ascending: false })
-        .limit(6);
+        .limit(3);
 
       if (error) throw error;
       return data;
     },
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 
   if (isLoading) {
