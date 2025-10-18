@@ -16,11 +16,8 @@ const Testimonials = () => {
           rating,
           comment,
           created_at,
-          profiles!reviews_user_id_fkey(full_name),
-          service_providers!reviews_provider_id_fkey(
-            service_type,
-            city
-          )
+          user_id,
+          provider_id
         `)
         .eq("status", "approved")
         .not("comment", "is", null)
@@ -28,7 +25,34 @@ const Testimonials = () => {
         .limit(6);
 
       if (error) throw error;
-      return data;
+      
+      // Fetch user and provider details separately
+      if (!data || data.length === 0) return [];
+      
+      const enrichedReviews = await Promise.all(
+        data.map(async (review) => {
+          const [userResult, providerResult] = await Promise.all([
+            supabase
+              .from("profiles")
+              .select("full_name")
+              .eq("id", review.user_id)
+              .maybeSingle(),
+            supabase
+              .from("service_providers")
+              .select("service_type, city")
+              .eq("id", review.provider_id)
+              .maybeSingle()
+          ]);
+          
+          return {
+            ...review,
+            profiles: userResult.data,
+            service_providers: providerResult.data
+          };
+        })
+      );
+      
+      return enrichedReviews;
     },
   });
 
