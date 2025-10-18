@@ -24,8 +24,8 @@ const TrustIndicators = () => {
     {
       icon: <Award className="h-8 w-8 text-ceremonial-gold" />,
       number: "5+ Years",
-      label: "Experience",
-      subtext: "Serving traditional ceremonies"
+      label: "Provider Experience",
+      subtext: "Experienced service professionals"
     }
   ];
 
