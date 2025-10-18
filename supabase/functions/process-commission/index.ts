@@ -18,9 +18,59 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Authentication required' }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: userData, error: authError } = await supabaseAdmin.auth.getUser(token);
+
+    if (authError || !userData.user) {
+      console.error('Auth error:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Invalid token' }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
+
+    // Verify admin status using secure RPC
+    const { data: isAdmin, error: roleError } = await supabaseAdmin.rpc(
+      'is_user_admin',
+      { user_id: userData.user.id }
+    );
+
+    if (roleError) {
+      console.error('Role check error:', roleError);
+      return new Response(
+        JSON.stringify({ error: 'Authorization check failed' }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      );
+    }
+
+    if (!isAdmin) {
+      console.error('Non-admin user attempted access:', userData.user.id);
+      return new Response(
+        JSON.stringify({ error: 'Forbidden - Admin access required' }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+      );
+    }
+
     const { paymentId, action } = await req.json();
 
     if (action === "verify_payment") {
+      // Validate payment ID
+      if (!paymentId || typeof paymentId !== 'string') {
+        return new Response(
+          JSON.stringify({ error: 'Invalid payment ID' }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+        );
+      }
+
       // Simple payment verification (no commission calculation)
       const { data: payment, error: paymentError } = await supabaseAdmin
         .from("payments")
@@ -38,6 +88,9 @@ serve(async (req) => {
         })
         .eq("id", paymentId);
 
+      // Audit log
+      console.log(`Admin ${userData.user.id} verified payment ${paymentId}`);
+
       return new Response(
         JSON.stringify({
           success: true,
@@ -53,6 +106,21 @@ serve(async (req) => {
     if (action === "process_payout") {
       const { providerId, amount } = await req.json();
 
+      // Validate inputs
+      if (!providerId || typeof providerId !== 'string') {
+        return new Response(
+          JSON.stringify({ error: 'Invalid provider ID' }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+        );
+      }
+
+      if (!amount || typeof amount !== 'number' || amount <= 0) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid amount' }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+        );
+      }
+
       // Create payout record (no commission deduction)
       const { data: payout, error: payoutError } = await supabaseAdmin
         .from("payouts")
@@ -67,6 +135,9 @@ serve(async (req) => {
         .single();
 
       if (payoutError) throw payoutError;
+
+      // Audit log
+      console.log(`Admin ${userData.user.id} created payout ${payout.id} for provider ${providerId}, amount: ${amount}`);
 
       return new Response(
         JSON.stringify({
