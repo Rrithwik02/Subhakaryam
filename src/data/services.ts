@@ -28,17 +28,32 @@ export const serviceCategories: ServiceCategory[] = [
   },
   {
     id: "mehendi",
-    name: "Mehendi & Makeup",
-    description: "Professional beauty services for your special day",
+    name: "Mehendi Artists",
+    description: "Traditional mehendi art for your special occasions",
     icon: Brush,
-    basePrice: 8000,
+    basePrice: 3000,
     subcategories: [
-      { id: "bridal", name: "Bridal Mehendi & Makeup", priceRange: { min: 15000, max: 50000 } },
-      { id: "party", name: "Party Makeup", priceRange: { min: 3000, max: 12000 } },
+      { id: "bridal", name: "Bridal Mehendi", priceRange: { min: 8000, max: 30000 } },
+      { id: "arabic", name: "Arabic Mehendi", priceRange: { min: 2000, max: 8000 } },
+      { id: "traditional", name: "Traditional Mehendi", priceRange: { min: 1500, max: 6000 } },
       { id: "festival", name: "Festival Mehendi", priceRange: { min: 1000, max: 5000 } },
       { id: "simple", name: "Simple Mehendi", priceRange: { min: 800, max: 3000 } },
-      { id: "engagement", name: "Engagement Look", priceRange: { min: 5000, max: 20000 } },
-      { id: "other", name: "Other Occasions", priceRange: { min: 1500, max: 8000 } }
+      { id: "other", name: "Other Occasions", priceRange: { min: 1000, max: 5000 } }
+    ]
+  },
+  {
+    id: "makeup",
+    name: "Makeup Artists",
+    description: "Professional makeup services for all occasions",
+    icon: Brush,
+    basePrice: 5000,
+    subcategories: [
+      { id: "bridal", name: "Bridal Makeup", priceRange: { min: 15000, max: 50000 } },
+      { id: "party", name: "Party Makeup", priceRange: { min: 3000, max: 12000 } },
+      { id: "engagement", name: "Engagement Makeup", priceRange: { min: 5000, max: 20000 } },
+      { id: "hd", name: "HD Makeup", priceRange: { min: 8000, max: 25000 } },
+      { id: "airbrush", name: "Airbrush Makeup", priceRange: { min: 10000, max: 30000 } },
+      { id: "other", name: "Other Occasions", priceRange: { min: 2000, max: 10000 } }
     ]
   },
   {

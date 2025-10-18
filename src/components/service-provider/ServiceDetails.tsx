@@ -1,5 +1,6 @@
 import { PoojariFields } from "./service-fields/PoojariFields";
 import { MehendiFields } from "./service-fields/MehendiFields";
+import { MakeupFields } from "./service-fields/MakeupFields";
 import { PhotoFields } from "./service-fields/PhotoFields";
 import { CateringFields } from "./service-fields/CateringFields";
 import { MusicFields } from "./service-fields/MusicFields";
@@ -18,6 +19,8 @@ export function ServiceDetails({ selectedService, className }: ServiceDetailsPro
         return <PoojariFields />;
       case "mehendi":
         return <MehendiFields />;
+      case "makeup":
+        return <MakeupFields />;
       case "photo":
         return <PhotoFields />;
       case "catering":

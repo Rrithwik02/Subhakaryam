@@ -52,13 +52,12 @@ const AppContent: React.FC = () => {
         
         // Check user type and redirect accordingly
         try {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("user_type")
-            .eq("id", session.user.id)
-            .single();
+          const { data: isAdmin } = await supabase.rpc(
+            'is_user_admin',
+            { user_id: session.user.id }
+          );
 
-          if (profile?.user_type === 'admin') {
+          if (isAdmin) {
             window.location.href = '/admin';
           } else {
             const { data: provider } = await supabase

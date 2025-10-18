@@ -22,6 +22,7 @@ const Services = () => {
             const getServiceLink = (serviceId: string) => {
               switch(serviceId) {
                 case "mehendi": return "/services/mehendi-artists";
+                case "makeup": return "/search?service=makeup";
                 case "photo": return "/services/wedding-photography";
                 default: return `/search?service=${serviceId}`;
               }

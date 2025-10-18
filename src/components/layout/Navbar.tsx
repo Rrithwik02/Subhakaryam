@@ -20,6 +20,22 @@ const Navbar = () => {
   const { toast } = useToast();
   const { t } = useTranslation();
 
+  const { data: isAdmin } = useQuery({
+    queryKey: ["is-admin"],
+    queryFn: async () => {
+      if (!session?.user) return false;
+      
+      const { data, error } = await supabase.rpc(
+        'is_user_admin',
+        { user_id: session.user.id }
+      );
+
+      if (error) throw error;
+      return data || false;
+    },
+    enabled: !!session?.user,
+  });
+
   const { data: userProfile } = useQuery({
     queryKey: ["user-profile"],
     queryFn: async () => {
@@ -91,7 +107,7 @@ const Navbar = () => {
   };
 
   const isServiceProvider = userProfile?.user_type === "service_provider" && serviceProvider?.status === "approved";
-  const isAdmin = userProfile?.user_type === "admin";
+  const isAdminUser = isAdmin || false;
   const isGuest = userProfile?.user_type === "guest" || !userProfile?.user_type;
 
   const MenuLink = ({ icon: Icon, text, onClick, className = "" }) => (
@@ -133,6 +149,9 @@ const Navbar = () => {
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/services/mehendi-artists')}>
                 Mehendi Artists
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/search?service=makeup')}>
+                Makeup Artists
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/services/catering')}>
                 Catering Services
@@ -182,7 +201,7 @@ const Navbar = () => {
         </NavigationMenuItem>
 
         {/* Dashboard Dropdown */}
-        {session && (isAdmin || isServiceProvider) && (
+        {session && (isAdminUser || isServiceProvider) && (
           <NavigationMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -193,7 +212,7 @@ const Navbar = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-popover border-border">
-                {isAdmin && (
+                {isAdminUser && (
                   <DropdownMenuItem onClick={() => navigate("/admin")} className="text-foreground hover:bg-accent">
                     <HomeIcon className="h-4 w-4 mr-2" />
                     Admin Dashboard
@@ -356,7 +375,7 @@ const Navbar = () => {
                             className="text-primary"
                           />
                         )}
-                        {isAdmin && (
+                        {isAdminUser && (
                           <MenuLink 
                             icon={HomeIcon}
                             text="Admin Dashboard"

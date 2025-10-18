@@ -30,13 +30,12 @@ const AuthCallback = () => {
           });
           
           // Check user type and redirect accordingly
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("user_type")
-            .eq("id", data.session.user.id)
-            .single();
+          const { data: isAdmin } = await supabase.rpc(
+            'is_user_admin',
+            { user_id: data.session.user.id }
+          );
 
-          if (profile?.user_type === 'admin') {
+          if (isAdmin) {
             navigate("/admin");
           } else {
             const { data: provider } = await supabase

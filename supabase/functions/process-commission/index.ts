@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createErrorResponse, ErrorCode } from "../_shared/errorHandler.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -161,12 +162,13 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error("Payment processing error:", error);
+    const { response, status } = createErrorResponse(
+      ErrorCode.INTERNAL_ERROR,
+      error
+    );
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
+      JSON.stringify(response),
+      { status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createErrorResponse, ErrorCode } from "../_shared/errorHandler.ts";
 
 serve(async (req) => {
   try {
@@ -100,9 +101,13 @@ serve(async (req) => {
     });
   } catch (err) {
     console.error("Error processing webhook:", err);
+    const { response, status } = createErrorResponse(
+      ErrorCode.INTERNAL_ERROR,
+      err
+    );
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : String(err) }),
-      { status: 400, headers: { "Content-Type": "application/json" } },
+      JSON.stringify(response),
+      { status, headers: { "Content-Type": "application/json" } }
     );
   }
 });

@@ -35,15 +35,14 @@ const Register = () => {
           try {
             setRedirecting(true);
             
-            const { data: profile, error } = await supabase
-              .from("profiles")
-              .select("user_type")
-              .eq("id", session?.user.id)
-              .single();
+            const { data: isAdmin, error } = await supabase.rpc(
+              'is_user_admin',
+              { user_id: session?.user.id }
+            );
             
             if (error) throw error;
             
-            if (profile?.user_type === 'admin') {
+            if (isAdmin) {
               navigate("/admin");
               toast({
                 title: "Admin Login Successful",
