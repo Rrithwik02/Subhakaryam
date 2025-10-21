@@ -7,6 +7,14 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { Send } from "lucide-react";
+import { z } from "zod";
+
+const messageSchema = z.object({
+  message: z.string()
+    .trim()
+    .min(1, "Message cannot be empty")
+    .max(1000, "Message must be less than 1000 characters"),
+});
 
 interface ChatInterfaceProps {
   bookingId: string;
@@ -133,11 +141,14 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
     if (!newMessage.trim() || !session?.user || !isInitialized) return;
 
     try {
+      // Validate message
+      const validated = messageSchema.parse({ message: newMessage });
+
       const messageData = {
         booking_id: bookingId,
         sender_id: session.user.id,
         receiver_id: receiverId,
-        message: newMessage.trim(),
+        message: validated.message,
       };
 
       const { error: insertError } = await supabase.from("chat_messages").insert(messageData);
@@ -149,6 +160,14 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
 
       setNewMessage("");
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          variant: "destructive",
+          title: "Validation Error",
+          description: error.issues[0].message,
+        });
+        return;
+      }
       
       toast({
         variant: "destructive",
@@ -222,8 +241,9 @@ const ChatInterface = ({ bookingId, receiverId, isDisabled }: ChatInterfaceProps
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && !isDisabled && sendMessage()}
-            placeholder="Type your message..."
+            placeholder="Type your message... (max 1000 characters)"
             disabled={isDisabled}
+            maxLength={1000}
           />
           <Button
             onClick={sendMessage}
