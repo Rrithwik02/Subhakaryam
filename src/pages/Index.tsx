@@ -27,6 +27,7 @@ import TrustIndicators from "@/components/home/TrustIndicators";
 import PWAInstall from "@/components/ui/pwa-install";
 import { useToast } from "@/hooks/use-toast";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
+import SectionErrorBoundary from "@/components/error/SectionErrorBoundary";
 
 // Lazy load below-the-fold components
 const FeaturedProviders = lazy(() => import("@/components/home/FeaturedProviders"));
@@ -96,46 +97,56 @@ const Index = () => {
       <AdvertCarousel />
       <Services />
       
-      <Suspense fallback={
-        <div className="container mx-auto px-4 py-12">
-          <EnhancedSkeleton className="h-8 w-64 mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <EnhancedSkeleton key={i} className="h-64 w-full" />
-            ))}
+      <SectionErrorBoundary sectionName="Featured Providers">
+        <Suspense fallback={
+          <div className="container mx-auto px-4 py-12">
+            <EnhancedSkeleton className="h-8 w-64 mb-4" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <EnhancedSkeleton key={i} className="h-64 w-full" />
+              ))}
+            </div>
           </div>
-        </div>
-      }>
-        <FeaturedProviders />
-      </Suspense>
+        }>
+          <FeaturedProviders />
+        </Suspense>
+      </SectionErrorBoundary>
       
-      <Suspense fallback={
-        <div className="container mx-auto px-4 py-12">
-          <EnhancedSkeleton className="h-8 w-64 mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <EnhancedSkeleton key={i} className="h-64 w-full" />
-            ))}
+      <SectionErrorBoundary sectionName="Featured Bundles">
+        <Suspense fallback={
+          <div className="container mx-auto px-4 py-12">
+            <EnhancedSkeleton className="h-8 w-64 mb-4" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <EnhancedSkeleton key={i} className="h-64 w-full" />
+              ))}
+            </div>
           </div>
-        </div>
-      }>
-        <FeaturedBundles />
-      </Suspense>
+        }>
+          <FeaturedBundles />
+        </Suspense>
+      </SectionErrorBoundary>
       
-      <Suspense fallback={<EnhancedSkeleton className="h-96 w-full" />}>
-        <EssentialsPreview />
-      </Suspense>
+      <SectionErrorBoundary sectionName="Essentials Preview">
+        <Suspense fallback={<EnhancedSkeleton className="h-96 w-full" />}>
+          <EssentialsPreview />
+        </Suspense>
+      </SectionErrorBoundary>
       
       <TrustIndicators />
       <HowItWorks />
       
-      <Suspense fallback={<EnhancedSkeleton className="h-96 w-full" />}>
-        <Testimonials />
-      </Suspense>
+      <SectionErrorBoundary sectionName="Testimonials">
+        <Suspense fallback={<EnhancedSkeleton className="h-96 w-full" />}>
+          <Testimonials />
+        </Suspense>
+      </SectionErrorBoundary>
       
-      <Suspense fallback={<EnhancedSkeleton className="h-64 w-full" />}>
-        <CTASection />
-      </Suspense>
+      <SectionErrorBoundary sectionName="Call to Action">
+        <Suspense fallback={<EnhancedSkeleton className="h-64 w-full" />}>
+          <CTASection />
+        </Suspense>
+      </SectionErrorBoundary>
       
       {session && !isServiceProvider && (
         <div className="max-w-md mx-auto px-4 py-12">

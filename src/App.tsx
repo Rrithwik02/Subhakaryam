@@ -15,19 +15,32 @@ const queryClient = new QueryClient({
     queries: {
       retry: (failureCount, error) => {
         // Don't retry on auth errors
-        if (error?.message?.includes('auth') || error?.message?.includes('401')) {
+        if (error instanceof Error && error.message.includes('auth')) {
           return false;
         }
         return failureCount < 2;
       },
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnMount: false,
+      refetchOnReconnect: true,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes (formerly cacheTime)
+      networkMode: 'online',
     },
     mutations: {
       retry: false,
+      networkMode: 'online',
     },
   },
 });
+
+// Global error handler for unhandled promise rejections
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('🚨 Unhandled promise rejection:', event.reason);
+    event.preventDefault(); // Prevent white page
+  });
+}
 
 const App: React.FC = () => {
   return (
