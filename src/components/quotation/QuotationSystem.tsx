@@ -10,6 +10,17 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { FileText, Send, Clock, CheckCircle, X } from 'lucide-react';
 import { format } from 'date-fns';
+import { z } from 'zod';
+
+const quotationSchema = z.object({
+  description: z.string()
+    .trim()
+    .min(10, "Description must be at least 10 characters")
+    .max(1000, "Description must be less than 1000 characters"),
+  special_requirements: z.string()
+    .max(500, "Special requirements must be less than 500 characters")
+    .optional(),
+});
 
 interface QuotationRequest {
   id?: string;
@@ -74,12 +85,11 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
     e.preventDefault();
     
     try {
-      const requestData = {
-        ...formData,
-        user_id: userId,
-        provider_id: providerId || null,
-        status: 'pending'
-      };
+      // Validate input
+      const validated = quotationSchema.parse({
+        description: formData.description,
+        special_requirements: formData.special_requirements || '',
+      });
 
       const { error } = await supabase
         .from('service_requests')
@@ -87,7 +97,7 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
           user_id: userId,
           provider_id: providerId || null,
           service_type: formData.service_type,
-          description: formData.description,
+          description: validated.description,
           status: 'pending'
         });
 
@@ -108,6 +118,15 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
       setShowRequestForm(false);
       refetch();
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          variant: 'destructive',
+          title: 'Validation Error',
+          description: error.issues[0].message,
+        });
+        return;
+      }
+      
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -190,10 +209,14 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
                 <Textarea
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Describe your requirements in detail..."
+                  placeholder="Describe your requirements in detail... (10-1000 characters)"
                   rows={3}
                   required
+                  maxLength={1000}
                 />
+                <p className="text-xs text-muted-foreground">
+                  {formData.description.trim().length}/1000 characters
+                </p>
               </div>
 
               <div>
@@ -201,9 +224,13 @@ const QuotationSystem = ({ userId, providerId, serviceType }: QuotationSystemPro
                 <Textarea
                   value={formData.special_requirements || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, special_requirements: e.target.value }))}
-                  placeholder="Any additional details or special requirements..."
+                  placeholder="Any additional details or special requirements... (max 500 characters)"
                   rows={2}
+                  maxLength={500}
                 />
+                <p className="text-xs text-muted-foreground">
+                  {(formData.special_requirements || '').trim().length}/500 characters
+                </p>
               </div>
 
               <Button type="submit" className="w-full">

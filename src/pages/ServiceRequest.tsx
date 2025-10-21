@@ -20,6 +20,14 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { CalendarIcon, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { z } from "zod";
+
+const serviceRequestSchema = z.object({
+  description: z.string()
+    .trim()
+    .min(10, "Description must be at least 10 characters")
+    .max(1000, "Description must be less than 1000 characters"),
+});
 
 const ServiceRequest = () => {
   const { toast } = useToast();
@@ -49,16 +57,20 @@ const ServiceRequest = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
+    // Validate input
     try {
+      const validated = serviceRequestSchema.parse({ description: formData.description });
+      
+      setIsSubmitting(true);
+
       // Insert form data to service_requests table
       const { error } = await supabase
         .from('service_requests')
         .insert({
           user_id: session.user.id,
           service_type: formData.service_type,
-          description: formData.description,
+          description: validated.description,
           city: formData.city,
           preferred_date: date ? date.toISOString().split('T')[0] : null,
           preferred_time: formData.preferred_time || null,
@@ -82,6 +94,14 @@ const ServiceRequest = () => {
       });
       setDate(undefined);
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          variant: "destructive",
+          title: "Validation Error",
+          description: error.issues[0].message,
+        });
+        return;
+      }
       
       toast({
         variant: "destructive",
@@ -245,8 +265,12 @@ const ServiceRequest = () => {
                   onChange={handleChange}
                   required
                   className="w-full min-h-[150px]"
-                  placeholder="Please describe your requirements in detail..."
+                  placeholder="Please describe your requirements in detail... (10-1000 characters)"
+                  maxLength={1000}
                 />
+                <p className="text-xs text-muted-foreground">
+                  {formData.description.trim().length}/1000 characters
+                </p>
               </div>
 
               <Button 
