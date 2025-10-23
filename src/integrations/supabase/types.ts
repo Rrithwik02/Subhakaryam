@@ -1747,28 +1747,13 @@ export type Database = {
       }
     }
     Functions: {
-      check_current_user_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      check_user_is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      current_user_is_admin_cached: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      get_current_user_role: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_current_user_type: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      check_current_user_admin: { Args: never; Returns: boolean }
+      check_user_is_admin: { Args: never; Returns: boolean }
+      current_user_is_admin_cached: { Args: never; Returns: boolean }
+      get_current_user_role: { Args: never; Returns: string }
+      get_current_user_type: { Args: never; Returns: string }
       get_public_service_providers: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           full_name: string
           id: string
@@ -1817,10 +1802,7 @@ export type Database = {
           rating: number
         }[]
       }
-      get_security_architecture_info: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_security_architecture_info: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1828,22 +1810,13 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      is_admin: { Args: never; Returns: boolean }
       is_provider_owner: {
         Args: { provider_profile_id: string }
         Returns: boolean
       }
-      is_user_admin: {
-        Args: { user_id: string }
-        Returns: boolean
-      }
-      refresh_admin_cache: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      is_user_admin: { Args: { user_id: string }; Returns: boolean }
+      refresh_admin_cache: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "service_provider" | "customer"
