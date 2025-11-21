@@ -15,26 +15,33 @@ export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'vendor-react';
-            }
-            if (id.includes('@radix-ui')) {
-              return 'vendor-ui';
-            }
-            if (id.includes('@supabase')) {
-              return 'vendor-supabase';
-            }
-            if (id.includes('@tanstack')) {
-              return 'vendor-query';
-            }
-            if (id.includes('lucide-react') || id.includes('feather-icons')) {
-              return 'vendor-icons';
-            }
-            return 'vendor-other';
+      manualChunks: (id) => {
+        if (id.includes('node_modules')) {
+          // Group React and all React-dependent UI libraries together
+          if (id.includes('react') || 
+              id.includes('react-dom') ||
+              id.includes('@radix-ui') ||
+              id.includes('vaul') ||
+              id.includes('sonner') ||
+              id.includes('embla-carousel') ||
+              id.includes('react-resizable-panels') ||
+              id.includes('react-big-calendar') ||
+              id.includes('react-day-picker') ||
+              id.includes('lucide-react')) {
+            return 'vendor-react';
           }
-        },
+          // Keep Supabase separate (large independent chunk)
+          if (id.includes('@supabase')) {
+            return 'vendor-supabase';
+          }
+          // Keep TanStack Query separate (large independent chunk)
+          if (id.includes('@tanstack')) {
+            return 'vendor-query';
+          }
+          // Everything else together
+          return 'vendor-other';
+        }
+      },
       },
     },
     chunkSizeWarningLimit: 1000,
