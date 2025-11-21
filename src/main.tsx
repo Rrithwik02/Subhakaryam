@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import './lib/i18n'
+import { initErrorMonitoring, logError } from './services/errorMonitoring'
 
 // Hide loading screen when React mounts
 const hideLoadingScreen = () => {
@@ -40,6 +41,9 @@ const handleModuleError = (error: Error) => {
   hideLoadingScreen();
 };
 
+// Initialize error monitoring before React renders
+initErrorMonitoring();
+
 // Wrap initialization in try-catch
 try {
   const root = document.getElementById("root");
@@ -50,5 +54,11 @@ try {
   createRoot(root).render(<App />);
   hideLoadingScreen();
 } catch (error) {
+  // Log module loading error to monitoring service
+  logError(error as Error, {
+    context: 'module-loading',
+    location: 'main.tsx',
+  }, 'fatal');
+  
   handleModuleError(error as Error);
 }

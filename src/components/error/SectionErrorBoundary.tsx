@@ -2,6 +2,7 @@ import React, { Component, ReactNode } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { logError, addBreadcrumb } from '@/services/errorMonitoring';
 
 interface Props {
   children: ReactNode;
@@ -26,6 +27,22 @@ class SectionErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error(`Error in ${this.props.sectionName}:`, error, errorInfo);
+    
+    // Log to error monitoring service
+    logError(error, {
+      sectionName: this.props.sectionName,
+      componentStack: errorInfo.componentStack,
+      errorBoundary: 'SectionErrorBoundary',
+      location: window.location.href,
+    }, 'error');
+
+    // Add breadcrumb
+    addBreadcrumb(
+      `Section error: ${this.props.sectionName}`,
+      'error',
+      'error',
+      { errorMessage: error.message }
+    );
   }
 
   handleRetry = () => {

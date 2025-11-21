@@ -1,4 +1,5 @@
 import { toast } from '@/hooks/use-toast';
+import { logError, ErrorSeverity } from '@/services/errorMonitoring';
 
 export type ErrorType = 'auth' | 'network' | 'validation' | 'general';
 
@@ -41,8 +42,6 @@ export class AppError extends Error {
 }
 
 export const handleError = (error: unknown, context?: ErrorContext) => {
-  // In production, you would send this to an error reporting service
-
   let appError: AppError;
 
   if (error instanceof AppError) {
@@ -61,6 +60,16 @@ export const handleError = (error: unknown, context?: ErrorContext) => {
   } else {
     appError = new AppError('Unknown error occurred', 'general', undefined, context);
   }
+
+  // Determine severity for error monitoring
+  const severity: ErrorSeverity = appError.type === 'auth' ? 'warning' : 'error';
+  
+  // Log to error monitoring service (Sentry)
+  logError(appError, {
+    ...context,
+    errorType: appError.type,
+    userMessage: appError.userMessage,
+  }, severity);
 
   // Show user-friendly message
   toast({
