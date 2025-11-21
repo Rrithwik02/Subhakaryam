@@ -80,7 +80,7 @@
     <meta name="target" content="all" />
     
     <!-- Enhanced Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'nonce-razorpay-checkout' 'nonce-gpteng-script' 'nonce-main-script' https://checkout.razorpay.com https://cdn.gpteng.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' data: https: https://fonts.gstatic.com; connect-src 'self' https: wss: blob:; frame-src 'self' https://checkout.razorpay.com; object-src 'none'; base-uri 'self'; form-action 'self' https:; upgrade-insecure-requests;" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'nonce-main-script'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' data: https: https://fonts.gstatic.com; connect-src 'self' https: wss: blob:; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https:; upgrade-insecure-requests;" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()" />
@@ -204,19 +204,9 @@
       }
     }]
     </script>
-    
-    <script src="https://checkout.razorpay.com/v1/checkout.js" 
-            nonce="razorpay-checkout"
-            integrity="sha384-+BmfVLp8t3JNjRNzKw1C3xV+BT9/QjNl9Vfy3uHn3qF9s6r8pJhN4Q7K9q8N5J2P"
-            crossorigin="anonymous"></script>
   </head>
   <body>
     <div id="root"></div>
-    <script src="https://cdn.gpteng.co/gptengineer.js" 
-            type="module" 
-            nonce="gpteng-script"
-            integrity="sha384-rKJ8t7pQ9n4F2h6L8v9X3c5N7m2Y4r8W6p9S1a7B8c9D5e3F7g8H1i2J3k4L5m6N"
-            crossorigin="anonymous"></script>
     <script type="module" src="/src/main.tsx" nonce="main-script"></script>
   </body>
 </html>
