@@ -1,8 +1,7 @@
-
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ServiceCategory } from "@/types/services";
 import { useNavigate } from "react-router-dom";
+import { serviceImages } from "@/data/services";
 
 interface ServiceCardProps {
   service: ServiceCategory;
@@ -11,33 +10,36 @@ interface ServiceCardProps {
 
 const ServiceCard = ({ service, index }: ServiceCardProps) => {
   const navigate = useNavigate();
-  const IconComponent = service.icon;
 
-  const handleFindProviders = (serviceType: string) => {
-    navigate(`/search?service=${encodeURIComponent(serviceType.toLowerCase())}`);
+  const handleClick = () => {
+    navigate(`/search?service=${encodeURIComponent(service.id)}`);
   };
 
   return (
     <Card 
-      className="p-4 transform transition-all duration-300 hover:scale-102 hover:shadow-lg bg-gradient-to-br from-white to-ceremonial-cream shadow-[5px_5px_10px_#b8b8b8,-5px_-5px_10px_#ffffff]"
+      onClick={handleClick}
+      className="group cursor-pointer bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-ceremonial-gold hover:shadow-xl"
       style={{ animationDelay: `${index * 100}ms` }}
     >
-      <div className="flex justify-between items-start">
-        <div className="animate-float filter drop-shadow-[0_4px_8px_rgba(212,175,55,0.3)]">
-          <IconComponent className="w-8 h-8 text-ceremonial-gold" />
-        </div>
+      {/* Image */}
+      <div className="aspect-[4/3] overflow-hidden bg-gray-100">
+        <img
+          src={serviceImages[service.id] || "/placeholder.svg"}
+          alt={service.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
+        />
       </div>
-      <h3 className="text-lg font-display font-semibold mt-3 mb-2 text-ceremonial-maroon">
-        {service.name}
-      </h3>
-      <p className="text-gray-600 mb-6 line-clamp-2 text-sm">{service.description}</p>
-      <Button 
-        variant="outline"
-        className="w-full border-ceremonial-gold text-ceremonial-gold hover:bg-ceremonial-gold hover:text-white transition-colors"
-        onClick={() => handleFindProviders(service.name)}
-      >
-        Find Providers
-      </Button>
+
+      {/* Content */}
+      <div className="p-4 space-y-2">
+        <h3 className="text-xl font-display font-semibold text-ceremonial-maroon">
+          {service.name}
+        </h3>
+        <p className="text-ceremonial-teal font-medium">
+          From ₹{service.basePrice.toLocaleString()}
+        </p>
+      </div>
     </Card>
   );
 };
