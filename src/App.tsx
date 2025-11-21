@@ -9,6 +9,7 @@ import BackButton from "./components/layout/BackButton";
 import Navbar from "./components/layout/Navbar";
 import ErrorBoundary from "./components/error/ErrorBoundary";
 import AppRoutes from "./components/layout/AppRoutes";
+import { initErrorMonitoring, setUserContext, clearUserContext, addBreadcrumb } from "./services/errorMonitoring";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +43,9 @@ if (typeof window !== 'undefined') {
   });
 }
 
+// Initialize error monitoring on app load
+initErrorMonitoring();
+
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
@@ -62,6 +66,16 @@ const AppContent: React.FC = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         console.log('User signed in:', session.user);
+        
+        // Set user context for error monitoring
+        setUserContext({
+          id: session.user.id,
+          email: session.user.email,
+        });
+        
+        addBreadcrumb('User signed in', 'auth', 'info', {
+          userId: session.user.id,
+        });
         
         // Check user type and redirect accordingly
         try {
@@ -89,6 +103,10 @@ const AppContent: React.FC = () => {
           console.error('Error checking user type:', error);
           window.location.href = '/';
         }
+      } else if (event === 'SIGNED_OUT') {
+        // Clear user context on logout
+        clearUserContext();
+        addBreadcrumb('User signed out', 'auth', 'info');
       }
     });
 

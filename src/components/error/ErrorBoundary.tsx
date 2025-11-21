@@ -2,6 +2,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { logError, addBreadcrumb } from '@/services/errorMonitoring';
 
 interface Props {
   children: ReactNode;
@@ -22,8 +23,20 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Error is already captured in state for user display
-    // In production, you would send this to an error reporting service
+    // Log to error monitoring service
+    logError(error, {
+      componentStack: errorInfo.componentStack,
+      errorBoundary: 'RootErrorBoundary',
+      location: window.location.href,
+    }, 'fatal');
+
+    // Add breadcrumb for debugging
+    addBreadcrumb(
+      'Error caught by root error boundary',
+      'error',
+      'error',
+      { errorMessage: error.message }
+    );
   }
 
   private handleReset = () => {
