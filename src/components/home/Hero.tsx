@@ -1,9 +1,3 @@
-
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { useSessionContext } from "@supabase/auth-helpers-react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Carousel,
@@ -13,7 +7,7 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useRef, useState } from "react";
 import { useTranslation } from 'react-i18next';
-
+import FloatingSearchBar from "./FloatingSearchBar";
 
 const eventImages = [
   {
@@ -35,182 +29,68 @@ const eventImages = [
 ];
 
 const Hero = () => {
-  const navigate = useNavigate();
-  const { session } = useSessionContext();
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const { t } = useTranslation();
   const autoplayRef = useRef(
     Autoplay({ delay: 4000, stopOnInteraction: true })
   );
 
-  const { data: userProfile } = useQuery({
-    queryKey: ["user-profile"],
-    queryFn: async () => {
-      if (!session?.user) return null;
-      
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("user_type")
-        .eq("id", session.user.id)
-        .single();
-
-      if (error) throw error;
-      return profile;
-    },
-    enabled: !!session?.user,
-  });
-
-  const { data: serviceProvider } = useQuery({
-    queryKey: ["service-provider"],
-    queryFn: async () => {
-      if (!session?.user) return null;
-      
-      const { data, error } = await supabase
-        .from("service_providers")
-        .select("id")
-        .eq("profile_id", session.user.id)
-        .single();
-
-      if (error && error.code !== 'PGRST116') throw error;
-      return data;
-    },
-    enabled: !!session?.user,
-  });
-
   return (
-    <div className="min-h-[calc(100vh-4rem)] pt-16 bg-white">
-      <div className="relative w-full h-[70vh] overflow-hidden">
-        {/* Hero Content */}
-        <div className="absolute inset-0 z-10 flex items-center justify-center text-white p-4">
-          <div className="max-w-4xl bg-black/80 backdrop-blur-md p-8 rounded-xl shadow-2xl border border-white/10 animate-slide-up-fade">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-lg">
-              {t('hero.title')}
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl font-body text-white/90 drop-shadow-lg" aria-describedby="hero-description">
-              {t('hero.subtitle')}
-            </p>
-            {session && serviceProvider ? (
-              <div className="flex flex-col sm:flex-row gap-4 justify-start">
-                <Button 
-                  size="lg"
-                  className="w-full sm:w-auto bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-black font-semibold transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-xl"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Service Provider Dashboard
-                </Button>
-              </div>
-            ) : (
-              <div className="flex flex-col sm:flex-row gap-4 justify-start">
-                <Button 
-                  size="lg"
-                  className="w-full sm:w-auto bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-black font-semibold transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-xl"
-                  onClick={() => navigate("/search")}
-                >
-                  Get an Estimate
-                </Button>
-                <Button 
-                  size="lg"
-                  variant="outline"
-                  className="w-full sm:w-auto bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-black transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-xl font-semibold"
-                  onClick={() => navigate("/register/service-provider")}
-                >
-                  Become a Provider
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Background Carousel */}
-        <div className="absolute inset-0">
-          {!imagesLoaded && (
-            <div className="absolute inset-0 z-0">
-              <Skeleton className="w-full h-full bg-gradient-to-br from-muted to-muted/50" />
-            </div>
-          )}
-          <Carousel 
-            className="w-full h-full" 
-            plugins={[autoplayRef.current]}
-            opts={{
-              loop: true,
-              align: "start",
-            }}
-            onMouseEnter={() => autoplayRef.current.stop()}
-            onMouseLeave={() => autoplayRef.current.play()}
-          >
-            <CarouselContent>
-              {eventImages.map((image, index) => (
-                <CarouselItem key={index} className="w-full h-full">
-                  <div className="relative w-full h-full group">
-                    <img
-                      src={image.url}
-                      alt={image.alt}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading={index === 0 ? "eager" : "lazy"}
-                      onLoad={() => index === 0 && setImagesLoaded(true)}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder.svg";
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
+    <div className="relative w-full h-[85vh] overflow-hidden">
+      {/* Hero Content */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center text-white p-4">
+        <div className="text-center max-w-4xl animate-slide-up-fade">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-2xl">
+            {t('hero.title')}
+          </h1>
+          <p className="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto font-body text-white/95 drop-shadow-xl" aria-describedby="hero-description">
+            {t('hero.subtitle')}
+          </p>
         </div>
       </div>
 
-      {/* Welcome Back Section */}
-      {session && (
-        <div className="container mx-auto px-4 -mt-20 relative z-10 mb-12">
-          <div className="bg-white shadow-2xl p-6 sm:p-8 rounded-lg border-2 border-ceremonial-gold/20">
-            <h2 className="text-xl sm:text-2xl font-display font-bold text-ceremonial-maroon mb-4 sm:mb-6">
-              Welcome Back
-            </h2>
-            <div className="flex flex-col sm:flex-row gap-4">
-              {serviceProvider ? (
-                <>
-                  <Button 
-                    size="lg"
-                    className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white font-semibold transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    Provider Dashboard
-                  </Button>
-                  <Button 
-                    size="lg"
-                    variant="outline"
-                    className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white font-semibold transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
-                    onClick={() => navigate("/provider/profile")}
-                  >
-                    View Profile
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button 
-                    size="lg"
-                    className="w-full sm:w-auto bg-ceremonial-maroon hover:bg-ceremonial-maroon/90 text-white font-semibold transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
-                    onClick={() => navigate("/search")}
-                  >
-                    Find Services
-                  </Button>
-                  <Button 
-                    size="lg"
-                    variant="outline"
-                    className="w-full sm:w-auto border-2 border-ceremonial-maroon text-ceremonial-maroon hover:bg-ceremonial-maroon hover:text-white font-semibold transition-all duration-300 transform hover:-translate-y-1 rounded-full shadow-lg"
-                    onClick={() => navigate("/profile")}
-                  >
-                    My Profile
-                  </Button>
-                </>
-              )}
-            </div>
+      {/* Background Carousel */}
+      <div className="absolute inset-0">
+        {!imagesLoaded && (
+          <div className="absolute inset-0 z-0">
+            <Skeleton className="w-full h-full bg-gradient-to-br from-muted to-muted/50" />
           </div>
-        </div>
-      )}
+        )}
+        <Carousel 
+          className="w-full h-full" 
+          plugins={[autoplayRef.current]}
+          opts={{
+            loop: true,
+            align: "start",
+          }}
+          onMouseEnter={() => autoplayRef.current.stop()}
+          onMouseLeave={() => autoplayRef.current.play()}
+        >
+          <CarouselContent>
+            {eventImages.map((image, index) => (
+              <CarouselItem key={index} className="w-full h-full">
+                <div className="relative w-full h-full group">
+                  <img
+                    src={image.url}
+                    alt={image.alt}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading={index === 0 ? "eager" : "lazy"}
+                    onLoad={() => index === 0 && setImagesLoaded(true)}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/placeholder.svg";
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </div>
+
+      {/* Floating Search Bar */}
+      <FloatingSearchBar />
     </div>
   );
 };

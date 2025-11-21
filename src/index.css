@@ -7,12 +7,12 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 20 14.3% 4.1%;
+    --background: 48 100% 97%;
+    --foreground: 0 0% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 20 14.3% 4.1%;
+    --card-foreground: 0 0% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 20 14.3% 4.1%;
+    --popover-foreground: 0 0% 12%;
     --primary: 47.9 95.8% 53.1%;
     --primary-foreground: 26 83.3% 14.1%;
     --secondary: 60 4.8% 95.9%;
@@ -58,13 +58,25 @@
   }
  
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-ceremonial-cream text-gray-800 font-body;
     scroll-behavior: smooth;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-semibold;
-    color: hsl(var(--foreground));
+  /* Typography Hierarchy */
+  h1, .heading-1 {
+    @apply font-display text-4xl md:text-5xl lg:text-6xl font-bold text-ceremonial-maroon;
+  }
+
+  h2, .heading-2 {
+    @apply font-display text-3xl md:text-4xl font-bold text-ceremonial-maroon;
+  }
+
+  h3, .heading-3 {
+    @apply font-display text-2xl md:text-3xl font-semibold text-ceremonial-maroon;
+  }
+
+  h4, h5, h6 {
+    @apply font-display font-semibold text-ceremonial-maroon;
   }
 
   /* Enhanced focus styles for accessibility */
@@ -93,6 +105,15 @@
   .stagger-animation > * {
     animation-delay: calc(var(--stagger-delay, 0ms) * var(--index, 0));
   }
+}
+
+/* Section Spacing */
+.section-spacing {
+  @apply py-16 md:py-24;
+}
+
+.content-spacing {
+  @apply space-y-12 md:space-y-16;
 }
 
 .service-card {

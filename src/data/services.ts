@@ -143,3 +143,14 @@ export const getSubcategoryDetails = (serviceId: string, subcategoryId: string) 
   const subcategories = getSubcategories(serviceId);
   return subcategories.find(sub => sub.id === subcategoryId);
 };
+
+export const serviceImages: Record<string, string> = {
+  poojari: "https://images.unsplash.com/photo-1605552955557-8b05236e6a06?w=800&h=600&fit=crop&q=80",
+  mehendi: "https://images.unsplash.com/photo-1610088441520-4352457e7095?w=800&h=600&fit=crop&q=80",
+  makeup: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&h=600&fit=crop&q=80",
+  photo: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop&q=80",
+  catering: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=600&fit=crop&q=80",
+  music: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&h=600&fit=crop&q=80",
+  decoration: "https://images.unsplash.com/photo-1519167758481-83f29da8c8f0?w=800&h=600&fit=crop&q=80",
+  function_hall: "https://images.unsplash.com/photo-1519167758481-83f29da8c8f0?w=800&h=600&fit=crop&q=80"
+};

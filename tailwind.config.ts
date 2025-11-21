@@ -20,10 +20,11 @@ export default {
     extend: {
       colors: {
         ceremonial: {
-          gold: "#D4AF37",
-          maroon: "#800020",
-          teal: "#008080",
-          cream: "#FFFAF0",
+          gold: "hsl(43, 74%, 53%)",
+          maroon: "hsl(345, 100%, 25%)",
+          teal: "hsl(180, 100%, 25%)",
+          cream: "hsl(48, 100%, 97%)",
+          brown: "hsl(30, 25%, 40%)",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

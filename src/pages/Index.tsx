@@ -21,7 +21,6 @@ import AdvertCarousel from "@/components/home/AdvertCarousel";
 import Chatbot from "@/components/chat/Chatbot";
 import FAQSchema from "@/components/seo/FAQSchema";
 import MetaTags from "@/components/seo/MetaTags";
-import QuickBookingWidget from "@/components/booking/QuickBookingWidget";
 import ScrollToTop from "@/components/ui/scroll-to-top";
 import TrustIndicators from "@/components/home/TrustIndicators";
 import PWAInstall from "@/components/ui/pwa-install";
@@ -82,7 +81,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen pt-16">
+    <div className="min-h-screen pt-16 bg-ceremonial-cream">
       <MetaTags
         title="Subhakary - Sacred Ceremonies & Traditional Indian Services | #1 Platform for Authentic Rituals"
         description="India's premier platform for booking trusted pandits, photographers, caterers & decorators. Authentic Indian weddings, pooja rituals, mehendi ceremonies & traditional events across India. Expert religious services available 24/7."
@@ -92,10 +91,10 @@ const Index = () => {
       <FAQSchema />
 
       <Hero />
-      <QuickBookingWidget />
+      <TrustIndicators />
+      <Services />
       
       <AdvertCarousel />
-      <Services />
       
       <SectionErrorBoundary sectionName="Featured Providers">
         <Suspense fallback={
@@ -112,28 +111,6 @@ const Index = () => {
         </Suspense>
       </SectionErrorBoundary>
       
-      <SectionErrorBoundary sectionName="Featured Bundles">
-        <Suspense fallback={
-          <div className="container mx-auto px-4 py-12">
-            <EnhancedSkeleton className="h-8 w-64 mb-4" />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <EnhancedSkeleton key={i} className="h-64 w-full" />
-              ))}
-            </div>
-          </div>
-        }>
-          <FeaturedBundles />
-        </Suspense>
-      </SectionErrorBoundary>
-      
-      <SectionErrorBoundary sectionName="Essentials Preview">
-        <Suspense fallback={<EnhancedSkeleton className="h-96 w-full" />}>
-          <EssentialsPreview />
-        </Suspense>
-      </SectionErrorBoundary>
-      
-      <TrustIndicators />
       <HowItWorks />
       
       <SectionErrorBoundary sectionName="Testimonials">
