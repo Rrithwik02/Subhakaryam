@@ -38,19 +38,19 @@ const Hero = () => {
   return (
     <div className="relative w-full h-[85vh] overflow-hidden">
       {/* Hero Content */}
-      <div className="absolute inset-0 z-10 flex items-start justify-center text-white p-4 pt-24 md:pt-32">
-        <div className="text-center max-w-4xl">
+      <div className="absolute inset-0 z-10 flex flex-col justify-start items-center text-white px-4 pt-16 md:pt-20 pb-8 md:pb-12">
+        <div className="text-center max-w-4xl w-full flex flex-col items-center">
           <h1 
-            className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white opacity-0 animate-hero-title"
+            className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white opacity-0 animate-hero-title"
             style={{ 
               textShadow: '0 4px 20px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.9)' 
             }}
           >
             {t('hero.title')}
           </h1>
-          <div className="inline-block opacity-0 animate-hero-subtitle">
+          <div className="inline-block opacity-0 animate-hero-subtitle mb-8 md:mb-10">
             <p 
-              className="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto font-body text-white px-6 py-3 rounded-2xl backdrop-blur-md bg-white/10 border border-white/20" 
+              className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-2xl mx-auto font-body text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl backdrop-blur-md bg-white/10 border border-white/20" 
               aria-describedby="hero-description"
               style={{ 
                 textShadow: '0 2px 10px rgba(0,0,0,0.7)' 
@@ -58,6 +58,11 @@ const Hero = () => {
             >
               {t('hero.subtitle')}
             </p>
+          </div>
+          
+          {/* Search Bar - now inside content container */}
+          <div className="w-full opacity-0 animate-search-bar-float">
+            <FloatingSearchBar />
           </div>
         </div>
       </div>
@@ -105,10 +110,6 @@ const Hero = () => {
         </Carousel>
       </div>
 
-      {/* Floating Search Bar */}
-      <div className="opacity-0 animate-search-bar-float">
-        <FloatingSearchBar />
-      </div>
     </div>
   );
 };

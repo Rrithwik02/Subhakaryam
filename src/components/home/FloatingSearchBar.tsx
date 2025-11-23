@@ -28,8 +28,8 @@ const FloatingSearchBar = () => {
   };
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 transform translate-y-1/2 z-30 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="relative z-20 w-full max-w-4xl mx-auto px-4">
+      <div className="w-full">
         <div className="bg-white backdrop-blur-md rounded-full shadow-2xl p-2 border border-gray-100">
           {/* Desktop Layout */}
           <div className="hidden md:flex items-center gap-1">
