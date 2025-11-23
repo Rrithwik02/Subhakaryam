@@ -28,7 +28,7 @@ const FloatingSearchBar = () => {
   };
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 transform translate-y-1/2 z-20 px-4">
+    <div className="absolute bottom-0 left-0 right-0 transform translate-y-1/2 z-30 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="bg-white backdrop-blur-md rounded-full shadow-2xl p-2 border border-gray-100">
           {/* Desktop Layout */}
@@ -39,7 +39,7 @@ const FloatingSearchBar = () => {
                 <SelectTrigger className="border-0 focus:ring-0 focus:ring-offset-0 h-12 bg-transparent">
                   <SelectValue placeholder="Service Type" />
                 </SelectTrigger>
-                <SelectContent className="bg-white z-50">
+                <SelectContent className="bg-white z-[100]">
                   {serviceCategories.map((service) => (
                     <SelectItem key={service.id} value={service.id}>
                       {service.name}
@@ -94,7 +94,7 @@ const FloatingSearchBar = () => {
               <SelectTrigger className="border border-gray-200 focus:ring-2 focus:ring-ceremonial-gold h-[48px] bg-white rounded-lg">
                 <SelectValue placeholder="Service Type" />
               </SelectTrigger>
-              <SelectContent className="bg-white z-50">
+              <SelectContent className="bg-white z-[100]">
                 {serviceCategories.map((service) => (
                   <SelectItem key={service.id} value={service.id}>
                     {service.name}
