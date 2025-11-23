@@ -30,14 +30,21 @@ const FloatingSearchBar = () => {
   return (
     <div className="relative z-20 w-full max-w-4xl mx-auto px-4">
       <div className="w-full">
-        <div className="bg-white backdrop-blur-md rounded-full shadow-2xl p-2 border border-gray-100">
+        <div className="bg-white backdrop-blur-md rounded-full shadow-2xl p-2 border border-gray-100 hover:border-ceremonial-gold/30 transition-colors duration-300">
           {/* Desktop Layout */}
           <div className="hidden md:flex items-center gap-1">
             {/* Service Type */}
             <div className="flex-1 px-4 border-r border-gray-200">
+              <label htmlFor="service-type" className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-1 block">
+                Service Type
+              </label>
               <Select value={serviceType} onValueChange={setServiceType}>
-                <SelectTrigger className="border-0 focus:ring-0 focus:ring-offset-0 h-12 bg-transparent">
-                  <SelectValue placeholder="Service Type" />
+                <SelectTrigger 
+                  id="service-type"
+                  className="border-0 focus:ring-0 focus:ring-offset-0 h-10 bg-transparent"
+                  aria-label="Select service type"
+                >
+                  <SelectValue placeholder="What service do you need?" />
                 </SelectTrigger>
                 <SelectContent className="bg-white z-[100]">
                   {serviceCategories.map((service) => (
@@ -49,30 +56,40 @@ const FloatingSearchBar = () => {
               </Select>
             </div>
 
-            {/* Date */}
+            {/* Event Date */}
             <div className="flex-1 px-4 border-r border-gray-200">
+              <label htmlFor="event-date" className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-1 block">
+                Event Date
+              </label>
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-ceremonial-gold" />
+                <Calendar className="w-4 h-4 text-ceremonial-gold flex-shrink-0" />
                 <Input
+                  id="event-date"
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-12 bg-transparent"
-                  placeholder="Select Date"
+                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-10 bg-transparent"
+                  placeholder="When is your event?"
+                  aria-label="Select event date"
                 />
               </div>
             </div>
 
-            {/* Location */}
+            {/* Where */}
             <div className="flex-1 px-4">
+              <label htmlFor="location" className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-1 block">
+                Where
+              </label>
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-ceremonial-gold" />
+                <MapPin className="w-4 h-4 text-ceremonial-gold flex-shrink-0" />
                 <Input
+                  id="location"
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-12 bg-transparent"
-                  placeholder="Location"
+                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-10 bg-transparent"
+                  placeholder="Enter your location"
+                  aria-label="Enter location"
                 />
               </div>
             </div>
@@ -88,43 +105,66 @@ const FloatingSearchBar = () => {
           </div>
 
           {/* Mobile Layout */}
-          <div className="flex flex-col gap-2 md:hidden p-2">
+          <div className="flex flex-col gap-3 md:hidden p-2">
             {/* Service Type */}
-            <Select value={serviceType} onValueChange={setServiceType}>
-              <SelectTrigger className="border border-gray-200 focus:ring-2 focus:ring-ceremonial-gold h-[48px] bg-white rounded-lg">
-                <SelectValue placeholder="Service Type" />
-              </SelectTrigger>
-              <SelectContent className="bg-white z-[100]">
-                {serviceCategories.map((service) => (
-                  <SelectItem key={service.id} value={service.id}>
-                    {service.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Date */}
-            <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-[48px] bg-white">
-              <Calendar className="w-5 h-5 text-ceremonial-gold flex-shrink-0" />
-              <Input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-full bg-transparent"
-                placeholder="Select Date"
-              />
+            <div>
+              <label htmlFor="service-type-mobile" className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-1 block px-1">
+                Service Type
+              </label>
+              <Select value={serviceType} onValueChange={setServiceType}>
+                <SelectTrigger 
+                  id="service-type-mobile"
+                  className="border border-gray-200 focus:ring-2 focus:ring-ceremonial-gold h-[48px] bg-white rounded-lg"
+                  aria-label="Select service type"
+                >
+                  <SelectValue placeholder="What service do you need?" />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-[100]">
+                  {serviceCategories.map((service) => (
+                    <SelectItem key={service.id} value={service.id}>
+                      {service.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            {/* Location */}
-            <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-[48px] bg-white">
-              <MapPin className="w-5 h-5 text-ceremonial-gold flex-shrink-0" />
-              <Input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-full bg-transparent"
-                placeholder="Location"
-              />
+            {/* Event Date */}
+            <div>
+              <label htmlFor="event-date-mobile" className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-1 block px-1">
+                Event Date
+              </label>
+              <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-[48px] bg-white">
+                <Calendar className="w-5 h-5 text-ceremonial-gold flex-shrink-0" />
+                <Input
+                  id="event-date-mobile"
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-full bg-transparent"
+                  placeholder="When is your event?"
+                  aria-label="Select event date"
+                />
+              </div>
+            </div>
+
+            {/* Where */}
+            <div>
+              <label htmlFor="location-mobile" className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-1 block px-1">
+                Where
+              </label>
+              <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-[48px] bg-white">
+                <MapPin className="w-5 h-5 text-ceremonial-gold flex-shrink-0" />
+                <Input
+                  id="location-mobile"
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-full bg-transparent"
+                  placeholder="Enter your location"
+                  aria-label="Enter location"
+                />
+              </div>
             </div>
 
             {/* Search Button */}
