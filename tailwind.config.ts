@@ -19,6 +19,13 @@ export default {
     },
     extend: {
       colors: {
+        heritage: {
+          'deep-maroon': 'hsl(0, 65%, 5%)',      // #1a0505
+          'maroon': 'hsl(357, 76%, 11%)',        // #2D060B
+          'warm-gold': 'hsl(41, 42%, 57%)',      // #C9A05C
+          'cream': 'hsl(42, 100%, 96%)',         // #FFF8E7
+          'maroon-text': 'hsl(355, 67%, 14%)',   // #3D0A0F
+        },
         ceremonial: {
           gold: "hsl(43, 45%, 58%)",
           maroon: "hsl(354, 80%, 24%)",
@@ -83,6 +90,8 @@ export default {
         'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))',
         'gradient-radial-at-t': 'radial-gradient(circle at top, var(--tw-gradient-stops))',
         'gradient-radial-at-b': 'radial-gradient(circle at bottom, var(--tw-gradient-stops))',
+        'heritage-dark': 'linear-gradient(180deg, hsl(0, 65%, 5%) 0%, hsl(357, 76%, 11%) 100%)',
+        'aurora-glow': 'radial-gradient(ellipse 800px 600px at bottom center, hsla(41, 42%, 57%, 0.25) 0%, transparent 70%)',
       },
       keyframes: {
         'accordion-down': {

@@ -126,7 +126,7 @@ const Navbar = () => {
       <NavigationMenuList className="hidden md:flex">
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
+            className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/about")}
           >
             {t('nav.about')}
@@ -135,7 +135,7 @@ const Navbar = () => {
         <NavigationMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="text-gray-300 hover:text-white font-medium px-4">
+              <Button variant="ghost" className="text-heritage-cream/80 hover:text-heritage-cream font-medium px-4">
                 {t('nav.services')}
                 <ChevronDown className="h-4 w-4 ml-1" />
               </Button>
@@ -174,7 +174,7 @@ const Navbar = () => {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
+            className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/blog")}
           >
             {t('nav.blog')}
@@ -182,7 +182,7 @@ const Navbar = () => {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
+            className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/contact")}
           >
             {t('nav.contact')}
@@ -192,7 +192,7 @@ const Navbar = () => {
         {/* Track Booking Link */}
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
+            className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/track-booking")}
           >
             <Search className="h-4 w-4 inline-block mr-2" />
@@ -205,7 +205,7 @@ const Navbar = () => {
           <NavigationMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-gray-300 hover:text-white font-medium px-4">
+                <Button variant="ghost" className="text-heritage-cream/80 hover:text-heritage-cream font-medium px-4">
                   <Briefcase className="h-4 w-4 mr-2" />
                   {t('nav.dashboard')}
                   <ChevronDown className="h-4 w-4 ml-1" />
@@ -239,7 +239,7 @@ const Navbar = () => {
         {session && isGuest && (
           <NavigationMenuItem>
             <NavigationMenuLink
-              className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
+              className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
               onClick={() => navigate("/register/service-provider")}
             >
               <Briefcase className="h-4 w-4 inline-block mr-2" />
@@ -252,7 +252,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a1f] border-b border-white/10 shadow-xl">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-heritage-deep-maroon/95 backdrop-blur-md border-b border-heritage-warm-gold/10 shadow-xl">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Button 
@@ -276,7 +276,7 @@ const Navbar = () => {
               {session ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="hidden md:flex text-gray-300 hover:text-white hover:bg-white/10 transition-colors focus:ring-2 focus:ring-primary">
+                    <Button variant="ghost" size="icon" className="hidden md:flex text-heritage-cream/80 hover:text-heritage-cream hover:bg-heritage-warm-gold/10 transition-colors focus:ring-2 focus:ring-heritage-warm-gold">
                       <UserRound className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -297,14 +297,14 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-gray-300 hover:text-white hover:bg-white/10 transition-colors min-h-[44px] font-medium"
+                    className="text-heritage-cream/80 hover:text-heritage-cream hover:bg-heritage-warm-gold/10 transition-colors min-h-[44px] font-medium"
                     onClick={() => navigate("/auth/login")}
                   >
                     Login
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-transparent border-2 border-purple-500/50 text-white hover:bg-purple-500/20 transition-colors min-h-[44px] font-medium rounded-lg px-6"
+                    className="bg-heritage-warm-gold border-2 border-heritage-warm-gold text-heritage-maroon-text hover:bg-heritage-warm-gold/90 transition-all min-h-[44px] font-semibold rounded-full px-6 shadow-lg"
                     onClick={() => navigate("/register")}
                   >
                     Join Us
@@ -317,7 +317,7 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-gray-300 hover:text-white transition-colors focus:ring-2 focus:ring-primary"
+                    className="md:hidden text-heritage-cream/80 hover:text-heritage-cream transition-colors focus:ring-2 focus:ring-heritage-warm-gold"
                     aria-label="Open navigation menu"
                   >
                     <Menu className="h-5 w-5" />
