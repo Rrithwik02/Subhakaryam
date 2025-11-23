@@ -140,7 +140,7 @@ const Navbar = () => {
                 <ChevronDown className="h-4 w-4 ml-1" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
+            <DropdownMenuContent className="w-56 glass-strong shadow-premium-lg border-ceremonial-gold/20">
               <DropdownMenuItem onClick={() => navigate('/services/pooja-services')}>
                 Pooja Services
               </DropdownMenuItem>
@@ -211,7 +211,7 @@ const Navbar = () => {
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-popover border-border">
+              <DropdownMenuContent className="w-56 glass-strong shadow-premium border-ceremonial-gold/20">
                 {isAdminUser && (
                   <DropdownMenuItem onClick={() => navigate("/admin")} className="text-foreground hover:bg-accent">
                     <HomeIcon className="h-4 w-4 mr-2" />
@@ -252,7 +252,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+    <div className="fixed top-0 left-0 right-0 z-50 glass-strong border-b border-white/30 shadow-glass-lg">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Button 
@@ -280,7 +280,7 @@ const Navbar = () => {
                       <UserRound className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 bg-popover border-border">
+                  <DropdownMenuContent align="end" className="w-48 glass-strong shadow-premium border-ceremonial-gold/20">
                     <DropdownMenuItem onClick={handleProfileClick} className="text-foreground hover:bg-accent">
                       <UserRound className="h-4 w-4 mr-2" />
                       My Profile
@@ -323,13 +323,13 @@ const Navbar = () => {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] bg-background p-0">
-                  <SheetHeader className="p-6 bg-accent/50">
-                    <SheetTitle className="text-2xl font-display text-foreground">
+                <SheetContent side="right" className="w-full h-full p-0 glass-dark border-l-0 animate-in slide-in-from-right duration-300">
+                  <SheetHeader className="p-6 glass border-b border-ceremonial-gold/20">
+                    <SheetTitle className="text-2xl font-display text-ceremonial-maroon text-glass-shadow">
                       Menu
                     </SheetTitle>
                   </SheetHeader>
-                  <div className="flex flex-col py-4">
+                  <div className="flex flex-col py-4 overflow-y-auto h-[calc(100vh-100px)]">
                     <MenuLink 
                       icon={HomeIcon} 
                       text="Home" 

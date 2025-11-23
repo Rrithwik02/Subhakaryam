@@ -7,25 +7,25 @@
 
 @layer base {
   :root {
-    --background: 48 100% 97%;
+    --background: 40 45% 96%;
     --foreground: 0 0% 12%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 12%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 12%;
-    --primary: 47.9 95.8% 53.1%;
-    --primary-foreground: 26 83.3% 14.1%;
-    --secondary: 60 4.8% 95.9%;
-    --secondary-foreground: 24 9.8% 10%;
-    --muted: 60 4.8% 95.9%;
-    --muted-foreground: 25 5.3% 35%;
-    --accent: 60 4.8% 95.9%;
-    --accent-foreground: 24 9.8% 10%;
+    --primary: 354 80% 24%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 43 45% 58%;
+    --secondary-foreground: 0 0% 12%;
+    --muted: 40 30% 90%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 43 45% 58%;
+    --accent-foreground: 0 0% 12%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 60 9.1% 97.8%;
     --border: 20 5.9% 90%;
     --input: 20 5.9% 90%;
-    --ring: 35.5 91.7% 32.9%;
+    --ring: 354 80% 24%;
     --radius: 0.75rem;
     
     /* Enhanced shadow system */
@@ -125,6 +125,37 @@
 .hero-pattern {
   background-color: #FFFAF0;
   background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.1'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ============================================
+   GLASSMORPHISM UTILITIES (iOS/macOS Style)
+   ============================================ */
+
+.glass {
+  background: rgba(255, 255, 255, 0.80);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.glass-dark {
+  background: rgba(250, 246, 241, 0.85);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(201, 169, 97, 0.2);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(107, 15, 26, 0.08);
+}
+
+/* Text shadow for readability on glass */
+.text-glass-shadow {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Improve mobile responsiveness */

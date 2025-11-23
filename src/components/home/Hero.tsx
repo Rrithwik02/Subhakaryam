@@ -39,13 +39,26 @@ const Hero = () => {
     <div className="relative w-full h-[85vh] overflow-hidden">
       {/* Hero Content */}
       <div className="absolute inset-0 z-10 flex items-start justify-center text-white p-4 pt-24 md:pt-32">
-        <div className="text-center max-w-4xl animate-slide-up-fade">
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-2xl">
+        <div className="text-center max-w-4xl">
+          <h1 
+            className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white opacity-0 animate-hero-title"
+            style={{ 
+              textShadow: '0 4px 20px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.9)' 
+            }}
+          >
             {t('hero.title')}
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto font-body text-white/95 drop-shadow-xl" aria-describedby="hero-description">
-            {t('hero.subtitle')}
-          </p>
+          <div className="inline-block opacity-0 animate-hero-subtitle">
+            <p 
+              className="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto font-body text-white px-6 py-3 rounded-2xl backdrop-blur-md bg-white/10 border border-white/20" 
+              aria-describedby="hero-description"
+              style={{ 
+                textShadow: '0 2px 10px rgba(0,0,0,0.7)' 
+              }}
+            >
+              {t('hero.subtitle')}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -81,7 +94,10 @@ const Hero = () => {
                       target.src = "/placeholder.svg";
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+                  {/* Multi-layer Gradient Overlay for Better Text Contrast */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ceremonial-maroon/40 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/20 to-black/40" />
                 </div>
               </CarouselItem>
             ))}
@@ -90,7 +106,9 @@ const Hero = () => {
       </div>
 
       {/* Floating Search Bar */}
-      <FloatingSearchBar />
+      <div className="opacity-0 animate-search-bar-float">
+        <FloatingSearchBar />
+      </div>
     </div>
   );
 };
