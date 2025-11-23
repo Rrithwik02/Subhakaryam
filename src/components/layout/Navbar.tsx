@@ -126,7 +126,7 @@ const Navbar = () => {
       <NavigationMenuList className="hidden md:flex">
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
+            className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/about")}
           >
             {t('nav.about')}
@@ -135,7 +135,7 @@ const Navbar = () => {
         <NavigationMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="text-foreground hover:text-primary font-medium px-4">
+              <Button variant="ghost" className="text-gray-300 hover:text-white font-medium px-4">
                 {t('nav.services')}
                 <ChevronDown className="h-4 w-4 ml-1" />
               </Button>
@@ -174,7 +174,7 @@ const Navbar = () => {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
+            className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/blog")}
           >
             {t('nav.blog')}
@@ -182,7 +182,7 @@ const Navbar = () => {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-foreground hover:text-primary transition-colors cursor-pointer py-2 px-4 font-medium"
+            className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/contact")}
           >
             {t('nav.contact')}
@@ -192,7 +192,7 @@ const Navbar = () => {
         {/* Track Booking Link */}
         <NavigationMenuItem>
           <NavigationMenuLink
-            className="text-primary hover:text-primary/90 transition-colors cursor-pointer py-2 px-4 font-semibold"
+            className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
             onClick={() => navigate("/track-booking")}
           >
             <Search className="h-4 w-4 inline-block mr-2" />
@@ -205,7 +205,7 @@ const Navbar = () => {
           <NavigationMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-foreground hover:text-primary font-medium px-4">
+                <Button variant="ghost" className="text-gray-300 hover:text-white font-medium px-4">
                   <Briefcase className="h-4 w-4 mr-2" />
                   {t('nav.dashboard')}
                   <ChevronDown className="h-4 w-4 ml-1" />
@@ -239,7 +239,7 @@ const Navbar = () => {
         {session && isGuest && (
           <NavigationMenuItem>
             <NavigationMenuLink
-              className="text-primary hover:text-primary/90 transition-colors cursor-pointer py-2 px-4 font-semibold"
+              className="text-gray-300 hover:text-white transition-colors cursor-pointer py-2 px-4 font-medium"
               onClick={() => navigate("/register/service-provider")}
             >
               <Briefcase className="h-4 w-4 inline-block mr-2" />
@@ -252,7 +252,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 glass-strong border-b border-white/30 shadow-glass-lg">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a1f] border-b border-white/10 shadow-xl">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Button 
@@ -276,7 +276,7 @@ const Navbar = () => {
               {session ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="hidden md:flex text-foreground hover:text-primary transition-colors focus:ring-2 focus:ring-primary">
+                    <Button variant="ghost" size="icon" className="hidden md:flex text-gray-300 hover:text-white hover:bg-white/10 transition-colors focus:ring-2 focus:ring-primary">
                       <UserRound className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -293,18 +293,18 @@ const Navbar = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <div className="hidden md:flex items-center gap-2">
+                <div className="hidden md:flex items-center gap-3">
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
-                    className="border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors focus:ring-2 focus:ring-primary min-h-[44px] font-medium"
+                    className="text-gray-300 hover:text-white hover:bg-white/10 transition-colors min-h-[44px] font-medium"
                     onClick={() => navigate("/auth/login")}
                   >
-                    Sign In
+                    Login
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground transition-colors focus:ring-2 focus:ring-primary min-h-[44px] font-medium"
+                    className="bg-transparent border-2 border-purple-500/50 text-white hover:bg-purple-500/20 transition-colors min-h-[44px] font-medium rounded-lg px-6"
                     onClick={() => navigate("/register")}
                   >
                     Join Us
@@ -317,7 +317,7 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden text-foreground hover:text-primary transition-colors focus:ring-2 focus:ring-primary"
+                    className="md:hidden text-gray-300 hover:text-white transition-colors focus:ring-2 focus:ring-primary"
                     aria-label="Open navigation menu"
                   >
                     <Menu className="h-5 w-5" />
