@@ -38,7 +38,7 @@ const Hero = () => {
   return (
     <div className="relative w-full h-[85vh] overflow-hidden">
       {/* Hero Content */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center text-white p-4">
+      <div className="absolute inset-0 z-10 flex items-start justify-center text-white p-4 pt-24 md:pt-32">
         <div className="text-center max-w-4xl animate-slide-up-fade">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight text-white drop-shadow-2xl">
             {t('hero.title')}
