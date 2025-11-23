@@ -81,7 +81,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen pt-16 bg-ceremonial-cream">
+    <div className="min-h-screen bg-ceremonial-cream">
       <MetaTags
         title="Subhakary - Sacred Ceremonies & Traditional Indian Services | #1 Platform for Authentic Rituals"
         description="India's premier platform for booking trusted pandits, photographers, caterers & decorators. Authentic Indian weddings, pooja rituals, mehendi ceremonies & traditional events across India. Expert religious services available 24/7."

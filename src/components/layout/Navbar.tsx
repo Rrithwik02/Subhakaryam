@@ -108,7 +108,7 @@ const Navbar = () => {
   const isServiceProvider = userProfile?.user_type === "service_provider" && serviceProvider?.status === "approved";
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 glass-navbar">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-ceremonial-cream/95 backdrop-blur-md border-b border-ceremonial-maroon/10 shadow-md">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* LEFT: Logo */}
@@ -125,40 +125,40 @@ const Navbar = () => {
           </Button>
 
           {/* CENTER: Menu Items in Pill Container */}
-          <nav className="hidden lg:flex items-center gap-2 glass-pill px-3 py-2">
+          <nav className="hidden lg:flex items-center gap-2 bg-white/50 backdrop-blur-sm border border-ceremonial-maroon/10 rounded-full px-3 py-2">
             <button
               onClick={() => navigate("/about")}
-              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+              className="text-ceremonial-maroon/80 hover:text-ceremonial-maroon transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-ceremonial-maroon/5"
             >
               {t('nav.about')}
             </button>
             
             <button
               onClick={() => navigate("/services")}
-              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+              className="text-ceremonial-maroon/80 hover:text-ceremonial-maroon transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-ceremonial-maroon/5"
             >
               {t('nav.services')}
             </button>
 
             <button
               onClick={() => navigate("/blog")}
-              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+              className="text-ceremonial-maroon/80 hover:text-ceremonial-maroon transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-ceremonial-maroon/5"
             >
               {t('nav.blog')}
             </button>
 
             <button
               onClick={() => navigate("/contact")}
-              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+              className="text-ceremonial-maroon/80 hover:text-ceremonial-maroon transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-ceremonial-maroon/5"
             >
               {t('nav.contact')}
             </button>
 
             <button
               onClick={() => navigate("/track-booking")}
-              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+              className="text-ceremonial-maroon/80 hover:text-ceremonial-maroon transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-ceremonial-maroon/5"
             >
-              {t('nav.track')}
+              {t('nav.trackBooking')}
             </button>
           </nav>
 
@@ -177,7 +177,7 @@ const Navbar = () => {
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="text-glass-white-low hover:text-glass-white-high hover:bg-white/5 transition-all hover-glow"
+                    className="text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 transition-all"
                     aria-label={t('nav.profile')}
                   >
                     <UserRound className="h-5 w-5" />
@@ -185,11 +185,11 @@ const Navbar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent 
                   align="end" 
-                  className="glass-dropdown min-w-[200px]"
+                  className="bg-ceremonial-cream border-ceremonial-maroon/20 min-w-[200px]"
                 >
                   <DropdownMenuItem 
                     onClick={handleProfileClick}
-                    className="text-glass-white-high hover:bg-white/5"
+                    className="text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                   >
                     <UserRound className="mr-2 h-4 w-4" />
                     <span>{t('nav.profile')}</span>
@@ -197,16 +197,16 @@ const Navbar = () => {
                   {(isAdmin || isServiceProvider) && (
                     <DropdownMenuItem 
                       onClick={() => navigate('/dashboard')}
-                      className="text-glass-white-high hover:bg-white/5"
+                      className="text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                     >
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       <span>{t('nav.dashboard')}</span>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuSeparator className="bg-glass-border" />
+                  <DropdownMenuSeparator className="bg-ceremonial-maroon/10" />
                   <DropdownMenuItem 
                     onClick={handleSignOut}
-                    className="text-glass-white-high hover:bg-white/5"
+                    className="text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>{t('nav.logout')}</span>
@@ -217,15 +217,15 @@ const Navbar = () => {
               <>
                 <button
                   onClick={() => navigate("/auth/login")}
-                  className="hidden lg:inline-flex text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium hover-glow px-4 py-2"
+                  className="hidden lg:inline-flex text-ceremonial-maroon/80 hover:text-ceremonial-maroon transition-all text-sm font-medium px-4 py-2"
                 >
-                  {t('nav.login')}
+                  {t('nav.signIn')}
                 </button>
                 <button
                   onClick={() => navigate("/register")}
-                  className="glass-button-gold text-sm px-6 py-2.5 rounded-full"
+                  className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white font-semibold text-sm px-6 py-2.5 rounded-full shadow-lg transition-all"
                 >
-                  {t('nav.join')}
+                  {t('nav.joinUs')}
                 </button>
               </>
             )}
@@ -236,24 +236,24 @@ const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="lg:hidden text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                  className="lg:hidden text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                   aria-label={t('nav.menu')}
                 >
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="glass-strong w-[300px] sm:w-[400px] text-glass-white-high">
+              <SheetContent side="right" className="bg-ceremonial-cream w-[300px] sm:w-[400px] text-ceremonial-maroon">
                 <nav className="flex flex-col gap-4 mt-8">
                   <Button
                     variant="ghost"
-                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    className="justify-start text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                     onClick={() => navigate("/")}
                   >
                     {t('nav.home')}
                   </Button>
                   <Button
                     variant="ghost"
-                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    className="justify-start text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                     onClick={() => navigate("/about")}
                   >
                     {t('nav.about')}
@@ -263,7 +263,7 @@ const Navbar = () => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        className="justify-start text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 w-full"
                       >
                         {t('nav.services')}
                         <ChevronDown className="ml-auto h-4 w-4" />
@@ -272,56 +272,56 @@ const Navbar = () => {
                     <CollapsibleContent className="pl-4 space-y-2 mt-2">
                       <Button
                         variant="ghost"
-                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        className="justify-start text-sm text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 w-full"
                         onClick={() => navigate("/services/photography")}
                       >
                         {t('nav.services_photography')}
                       </Button>
                       <Button
                         variant="ghost"
-                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        className="justify-start text-sm text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 w-full"
                         onClick={() => navigate("/services/catering")}
                       >
                         {t('nav.services_catering')}
                       </Button>
                       <Button
                         variant="ghost"
-                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        className="justify-start text-sm text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 w-full"
                         onClick={() => navigate("/services/decoration")}
                       >
                         {t('nav.services_decoration')}
                       </Button>
                       <Button
                         variant="ghost"
-                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        className="justify-start text-sm text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 w-full"
                         onClick={() => navigate("/services/pooja")}
                       >
                         {t('nav.services_pooja')}
                       </Button>
                       <Button
                         variant="ghost"
-                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        className="justify-start text-sm text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 w-full"
                         onClick={() => navigate("/services/mehendi")}
                       >
                         {t('nav.services_mehendi')}
                       </Button>
                       <Button
                         variant="ghost"
-                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        className="justify-start text-sm text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 w-full"
                         onClick={() => navigate("/services/music")}
                       >
                         {t('nav.services_music')}
                       </Button>
                       <Button
                         variant="ghost"
-                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        className="justify-start text-sm text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 w-full"
                         onClick={() => navigate("/services/function-halls")}
                       >
                         {t('nav.services_halls')}
                       </Button>
                       <Button
                         variant="ghost"
-                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        className="justify-start text-sm text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5 w-full"
                         onClick={() => navigate("/services/bundles")}
                       >
                         {t('nav.services_bundles')}
@@ -331,41 +331,41 @@ const Navbar = () => {
 
                   <Button
                     variant="ghost"
-                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    className="justify-start text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                     onClick={() => navigate("/blog")}
                   >
                     {t('nav.blog')}
                   </Button>
                   <Button
                     variant="ghost"
-                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    className="justify-start text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                     onClick={() => navigate("/contact")}
                   >
                     {t('nav.contact')}
                   </Button>
                   <Button
                     variant="ghost"
-                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    className="justify-start text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                     onClick={() => navigate("/track-booking")}
                   >
-                    {t('nav.track')}
+                    {t('nav.trackBooking')}
                   </Button>
 
                   {!session && (
                     <>
-                      <Separator className="my-2 bg-glass-border" />
+                      <Separator className="my-2 bg-ceremonial-maroon/10" />
                       <Button
                         variant="ghost"
-                        className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                        className="justify-start text-ceremonial-maroon/80 hover:text-ceremonial-maroon hover:bg-ceremonial-maroon/5"
                         onClick={() => navigate("/auth/login")}
                       >
-                        {t('nav.login')}
+                        {t('nav.signIn')}
                       </Button>
                       <button
-                        className="glass-button-gold rounded-full shadow-lg px-6 py-3 text-sm font-semibold"
+                        className="bg-ceremonial-gold hover:bg-ceremonial-gold/90 text-white rounded-full shadow-lg px-6 py-3 text-sm font-semibold transition-all"
                         onClick={() => navigate("/register")}
                       >
-                        {t('nav.join')}
+                        {t('nav.joinUs')}
                       </button>
                     </>
                   )}
