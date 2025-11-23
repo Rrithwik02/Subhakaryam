@@ -1,17 +1,17 @@
 
 import { Button } from "@/components/ui/button";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { useNavigate } from "react-router-dom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserRound, Menu, MessageSquare, HomeIcon, Phone, Info, Plus, Briefcase, LogOut, Search, ChevronDown } from "lucide-react";
+import { UserRound, Menu, LayoutDashboard, LogOut, ChevronDown } from "lucide-react";
 import NotificationBell from "@/components/notifications/NotificationBell";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
@@ -53,7 +53,6 @@ const Navbar = () => {
     enabled: !!session?.user,
   });
 
-  // Check if user is an approved service provider
   const { data: serviceProvider } = useQuery({
     queryKey: ["service-provider-status"],
     queryFn: async () => {
@@ -107,154 +106,12 @@ const Navbar = () => {
   };
 
   const isServiceProvider = userProfile?.user_type === "service_provider" && serviceProvider?.status === "approved";
-  const isAdminUser = isAdmin || false;
-  const isGuest = userProfile?.user_type === "guest" || !userProfile?.user_type;
-
-  const MenuLink = ({ icon: Icon, text, onClick, className = "" }) => (
-    <Button
-      variant="ghost"
-      className={`w-full justify-start gap-2 px-4 py-6 text-lg font-medium text-foreground hover:text-primary hover:bg-accent/50 transition-colors ${className}`}
-      onClick={onClick}
-    >
-      <Icon className="h-5 w-5" />
-      {text}
-    </Button>
-  );
-
-  const NavLinks = () => (
-    <NavigationMenu>
-      <NavigationMenuList className="hidden md:flex">
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
-            onClick={() => navigate("/about")}
-          >
-            {t('nav.about')}
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="text-heritage-cream/80 hover:text-heritage-cream font-medium px-4">
-                {t('nav.services')}
-                <ChevronDown className="h-4 w-4 ml-1" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 glass-strong shadow-premium-lg border-ceremonial-gold/20">
-              <DropdownMenuItem onClick={() => navigate('/services/pooja-services')}>
-                Pooja Services
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/services/wedding-photography')}>
-                Wedding Photography
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/services/mehendi-artists')}>
-                Mehendi Artists
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/search?service=makeup')}>
-                Makeup Artists
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/services/catering')}>
-                Catering Services
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/services/music')}>
-                Music Services
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/services/decoration')}>
-                Decoration Services
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/services/function-hall')}>
-                Function Hall
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/bundles')}>
-                Service Bundles
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
-            onClick={() => navigate("/blog")}
-          >
-            {t('nav.blog')}
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
-            onClick={() => navigate("/contact")}
-          >
-            {t('nav.contact')}
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-        
-        {/* Track Booking Link */}
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
-            onClick={() => navigate("/track-booking")}
-          >
-            <Search className="h-4 w-4 inline-block mr-2" />
-            {t('nav.trackBooking')}
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
-        {/* Dashboard Dropdown */}
-        {session && (isAdminUser || isServiceProvider) && (
-          <NavigationMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-heritage-cream/80 hover:text-heritage-cream font-medium px-4">
-                  <Briefcase className="h-4 w-4 mr-2" />
-                  {t('nav.dashboard')}
-                  <ChevronDown className="h-4 w-4 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 glass-strong shadow-premium border-ceremonial-gold/20">
-                {isAdminUser && (
-                  <DropdownMenuItem onClick={() => navigate("/admin")} className="text-foreground hover:bg-accent">
-                    <HomeIcon className="h-4 w-4 mr-2" />
-                    Admin Dashboard
-                  </DropdownMenuItem>
-                )}
-                {isServiceProvider && (
-                  <>
-                    <DropdownMenuItem onClick={() => navigate("/dashboard")} className="text-foreground hover:bg-accent">
-                      <Briefcase className="h-4 w-4 mr-2" />
-                      Provider Dashboard
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/service/add")} className="text-foreground hover:bg-accent">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add New Service
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </NavigationMenuItem>
-        )}
-
-        {/* Become a Service Provider Link (show when logged in as guest) */}
-        {session && isGuest && (
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              className="text-heritage-cream/80 hover:text-heritage-cream transition-colors cursor-pointer py-2 px-4 font-medium"
-              onClick={() => navigate("/register/service-provider")}
-            >
-              <Briefcase className="h-4 w-4 inline-block mr-2" />
-              Become a Provider
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        )}
-      </NavigationMenuList>
-    </NavigationMenu>
-  );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-heritage-deep-maroon/95 backdrop-blur-md border-b border-heritage-warm-gold/10 shadow-xl">
-      <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
+    <div className="fixed top-0 left-0 right-0 z-50 glass-navbar">
+      <div className="container mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          {/* LEFT: Logo */}
           <Button 
             variant="ghost" 
             className="p-0 hover:bg-transparent"
@@ -263,170 +120,258 @@ const Navbar = () => {
             <img 
               src="/logo.png" 
               alt="Subhakary Logo" 
-              className="h-12"
+              className="h-10 transition-transform hover:scale-105"
             />
           </Button>
 
-          <div className="flex items-center gap-8">
-            <NavLinks />
+          {/* CENTER: Menu Items in Pill Container */}
+          <nav className="hidden lg:flex items-center gap-2 glass-pill px-3 py-2">
+            <button
+              onClick={() => navigate("/about")}
+              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+            >
+              {t('nav.about')}
+            </button>
+            
+            <button
+              onClick={() => navigate("/services")}
+              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+            >
+              {t('nav.services')}
+            </button>
 
-            <div className="flex items-center gap-4">
-              {session && <NotificationBell />}
-              
-              {session ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="hidden md:flex text-heritage-cream/80 hover:text-heritage-cream hover:bg-heritage-warm-gold/10 transition-colors focus:ring-2 focus:ring-heritage-warm-gold">
-                      <UserRound className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 glass-strong shadow-premium border-ceremonial-gold/20">
-                    <DropdownMenuItem onClick={handleProfileClick} className="text-foreground hover:bg-accent">
-                      <UserRound className="h-4 w-4 mr-2" />
-                      My Profile
+            <button
+              onClick={() => navigate("/blog")}
+              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+            >
+              {t('nav.blog')}
+            </button>
+
+            <button
+              onClick={() => navigate("/contact")}
+              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+            >
+              {t('nav.contact')}
+            </button>
+
+            <button
+              onClick={() => navigate("/track-booking")}
+              className="text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 hover-glow"
+            >
+              {t('nav.track')}
+            </button>
+          </nav>
+
+          {/* RIGHT: Login + Join Us Button + Actions */}
+          <div className="flex items-center gap-4">
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+
+            {/* Notification Bell - Only for Logged In Users */}
+            {session && <NotificationBell />}
+
+            {/* User Menu or Auth Buttons */}
+            {session ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-glass-white-low hover:text-glass-white-high hover:bg-white/5 transition-all hover-glow"
+                    aria-label={t('nav.profile')}
+                  >
+                    <UserRound className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  align="end" 
+                  className="glass-dropdown min-w-[200px]"
+                >
+                  <DropdownMenuItem 
+                    onClick={handleProfileClick}
+                    className="text-glass-white-high hover:bg-white/5"
+                  >
+                    <UserRound className="mr-2 h-4 w-4" />
+                    <span>{t('nav.profile')}</span>
+                  </DropdownMenuItem>
+                  {(isAdmin || isServiceProvider) && (
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/dashboard')}
+                      className="text-glass-white-high hover:bg-white/5"
+                    >
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>{t('nav.dashboard')}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="text-destructive hover:bg-destructive/10">
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <div className="hidden md:flex items-center gap-3">
+                  )}
+                  <DropdownMenuSeparator className="bg-glass-border" />
+                  <DropdownMenuItem 
+                    onClick={handleSignOut}
+                    className="text-glass-white-high hover:bg-white/5"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>{t('nav.logout')}</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate("/auth/login")}
+                  className="hidden lg:inline-flex text-glass-white-low hover:text-glass-white-high transition-all text-sm font-medium hover-glow px-4 py-2"
+                >
+                  {t('nav.login')}
+                </button>
+                <button
+                  onClick={() => navigate("/register")}
+                  className="glass-button-gold text-sm px-6 py-2.5 rounded-full"
+                >
+                  {t('nav.join')}
+                </button>
+              </>
+            )}
+
+            {/* Mobile Menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="lg:hidden text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                  aria-label={t('nav.menu')}
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="glass-strong w-[300px] sm:w-[400px] text-glass-white-high">
+                <nav className="flex flex-col gap-4 mt-8">
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className="text-heritage-cream/80 hover:text-heritage-cream hover:bg-heritage-warm-gold/10 transition-colors min-h-[44px] font-medium"
-                    onClick={() => navigate("/auth/login")}
+                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    onClick={() => navigate("/")}
                   >
-                    Login
+                    {t('nav.home')}
                   </Button>
-                  <Button
-                    size="sm"
-                    className="bg-heritage-warm-gold border-2 border-heritage-warm-gold text-heritage-maroon-text hover:bg-heritage-warm-gold/90 transition-all min-h-[44px] font-semibold rounded-full px-6 shadow-lg"
-                    onClick={() => navigate("/register")}
-                  >
-                    Join Us
-                  </Button>
-                </div>
-              )}
-              
-              <Sheet>
-                <SheetTrigger asChild>
                   <Button
                     variant="ghost"
-                    size="icon"
-                    className="md:hidden text-heritage-cream/80 hover:text-heritage-cream transition-colors focus:ring-2 focus:ring-heritage-warm-gold"
-                    aria-label="Open navigation menu"
+                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    onClick={() => navigate("/about")}
                   >
-                    <Menu className="h-5 w-5" />
+                    {t('nav.about')}
                   </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-full h-full p-0 glass-dark border-l-0 animate-in slide-in-from-right duration-300">
-                  <SheetHeader className="p-6 glass border-b border-ceremonial-gold/20">
-                    <SheetTitle className="text-2xl font-display text-ceremonial-maroon text-glass-shadow">
-                      Menu
-                    </SheetTitle>
-                  </SheetHeader>
-                  <div className="flex flex-col py-4 overflow-y-auto h-[calc(100vh-100px)]">
-                    <MenuLink 
-                      icon={HomeIcon} 
-                      text="Home" 
-                      onClick={() => navigate("/")} 
-                    />
-                    <MenuLink 
-                      icon={Search} 
-                      text="Track Booking" 
-                      onClick={() => navigate("/track-booking")} 
-                      className="text-primary"
-                    />
-                    <MenuLink 
-                      icon={Info} 
-                      text="About Us" 
-                      onClick={() => navigate("/about")} 
-                    />
-                    <MenuLink 
-                      icon={MessageSquare} 
-                      text="Services" 
-                      onClick={() => navigate("/services")} 
-                    />
-                    <MenuLink 
-                      icon={Phone} 
-                      text="Contact" 
-                      onClick={() => navigate("/contact")} 
-                    />
+                  
+                  <Collapsible>
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                      >
+                        {t('nav.services')}
+                        <ChevronDown className="ml-auto h-4 w-4" />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pl-4 space-y-2 mt-2">
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        onClick={() => navigate("/services/photography")}
+                      >
+                        {t('nav.services_photography')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        onClick={() => navigate("/services/catering")}
+                      >
+                        {t('nav.services_catering')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        onClick={() => navigate("/services/decoration")}
+                      >
+                        {t('nav.services_decoration')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        onClick={() => navigate("/services/pooja")}
+                      >
+                        {t('nav.services_pooja')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        onClick={() => navigate("/services/mehendi")}
+                      >
+                        {t('nav.services_mehendi')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        onClick={() => navigate("/services/music")}
+                      >
+                        {t('nav.services_music')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        onClick={() => navigate("/services/function-halls")}
+                      >
+                        {t('nav.services_halls')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-sm text-glass-white-low hover:text-glass-white-high hover:bg-white/5 w-full"
+                        onClick={() => navigate("/services/bundles")}
+                      >
+                        {t('nav.services_bundles')}
+                      </Button>
+                    </CollapsibleContent>
+                  </Collapsible>
 
-                    <Separator className="my-4" />
-                    
-                    {/* Mobile Auth Section */}
-                    {session ? (
-                      <>
-                        <MenuLink 
-                          icon={UserRound}
-                          text="Profile"
-                          onClick={handleProfileClick}
-                        />
-                        {isGuest && (
-                          <MenuLink 
-                            icon={Briefcase}
-                            text="Become a Service Provider"
-                            onClick={() => navigate("/register/service-provider")}
-                            className="text-primary"
-                          />
-                        )}
-                        {isAdminUser && (
-                          <MenuLink 
-                            icon={HomeIcon}
-                            text="Admin Dashboard"
-                            onClick={() => navigate("/admin")}
-                            className="text-primary"
-                          />
-                        )}
-                        {isServiceProvider && (
-                          <>
-                            <MenuLink 
-                              icon={Briefcase}
-                              text="Provider Dashboard"
-                              onClick={() => navigate("/dashboard")}
-                              className="text-primary"
-                            />
-                            <MenuLink 
-                              icon={Plus}
-                              text="Add New Service"
-                              onClick={() => navigate("/service/add")}
-                              className="text-primary"
-                            />
-                          </>
-                        )}
-                        <Separator className="my-4" />
-                        <MenuLink 
-                          icon={LogOut}
-                          text="Sign Out"
-                          onClick={handleSignOut}
-                          className="text-destructive hover:text-destructive/90"
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <MenuLink 
-                          icon={UserRound}
-                          text="Sign In"
-                          onClick={() => navigate("/auth/login")}
-                          className="text-primary"
-                        />
-                        <MenuLink 
-                          icon={Plus}
-                          text="Join Us"
-                          onClick={() => navigate("/register")}
-                          className="text-primary"
-                        />
-                      </>
-                    )}
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    onClick={() => navigate("/blog")}
+                  >
+                    {t('nav.blog')}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    onClick={() => navigate("/contact")}
+                  >
+                    {t('nav.contact')}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                    onClick={() => navigate("/track-booking")}
+                  >
+                    {t('nav.track')}
+                  </Button>
+
+                  {!session && (
+                    <>
+                      <Separator className="my-2 bg-glass-border" />
+                      <Button
+                        variant="ghost"
+                        className="justify-start text-glass-white-low hover:text-glass-white-high hover:bg-white/5"
+                        onClick={() => navigate("/auth/login")}
+                      >
+                        {t('nav.login')}
+                      </Button>
+                      <button
+                        className="glass-button-gold rounded-full shadow-lg px-6 py-3 text-sm font-semibold"
+                        onClick={() => navigate("/register")}
+                      >
+                        {t('nav.join')}
+                      </button>
+                    </>
+                  )}
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>

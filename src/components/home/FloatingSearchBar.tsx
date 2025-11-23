@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { serviceCategories } from "@/data/services";
 
 const FloatingSearchBar = () => {
@@ -29,28 +30,27 @@ const FloatingSearchBar = () => {
 
   return (
     <div className="relative z-20 w-full max-w-5xl mx-auto px-4">
-      <div className="bg-heritage-cream rounded-full shadow-2xl p-2 border border-heritage-warm-gold/20">
+      <div className="glass-strong rounded-full p-2 shadow-glass-lg">
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center gap-1">
           {/* Section 1: Service Type */}
-          <div className="flex items-center gap-3 flex-1 px-5 py-4 rounded-full hover:bg-heritage-warm-gold/5 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-heritage-warm-gold/10 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-heritage-warm-gold" />
+          <div className="flex items-center gap-3 flex-1 px-5 py-4 rounded-full hover:bg-white/5 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-glass-gold/10 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-glass-gold" />
             </div>
             <div className="flex-1">
-              <label className="text-xs font-semibold text-heritage-maroon-text uppercase tracking-wider block mb-1">
+              <label className="text-xs font-semibold text-glass-white-low uppercase tracking-wider block mb-1">
                 Service
               </label>
               <Select value={serviceType} onValueChange={setServiceType}>
                 <SelectTrigger 
-                  className="border-0 focus:ring-0 h-auto bg-transparent p-0 text-heritage-maroon-text font-medium"
-                  aria-label="Select service type"
+                  className="border-0 focus:ring-0 h-auto bg-transparent p-0 text-glass-white-high font-medium"
                 >
                   <SelectValue placeholder="Choose service" />
                 </SelectTrigger>
-                <SelectContent className="bg-heritage-cream border-heritage-warm-gold/20">
+                <SelectContent className="glass-dropdown">
                   {serviceCategories.map((service) => (
-                    <SelectItem key={service.id} value={service.id} className="text-heritage-maroon-text">
+                    <SelectItem key={service.id} value={service.id} className="text-glass-white-high">
                       {service.name}
                     </SelectItem>
                   ))}
@@ -60,46 +60,44 @@ const FloatingSearchBar = () => {
           </div>
 
           {/* Divider */}
-          <div className="h-12 w-px bg-heritage-warm-gold/20" />
+          <div className="h-12 w-px bg-glass-border" />
 
           {/* Section 2: Date */}
-          <div className="flex items-center gap-3 flex-1 px-5 py-4 rounded-full hover:bg-heritage-warm-gold/5 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-heritage-warm-gold/10 flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-5 h-5 text-heritage-warm-gold" />
+          <div className="flex items-center gap-3 flex-1 px-5 py-4 rounded-full hover:bg-white/5 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-glass-gold/10 flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-5 h-5 text-glass-gold" />
             </div>
             <div className="flex-1">
-              <label className="text-xs font-semibold text-heritage-maroon-text uppercase tracking-wider block mb-1">
+              <label className="text-xs font-semibold text-glass-white-low uppercase tracking-wider block mb-1">
                 Date
               </label>
               <Input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="border-0 focus-visible:ring-0 h-auto p-0 bg-transparent text-heritage-maroon-text font-medium"
-                aria-label="Select event date"
+                className="border-0 focus-visible:ring-0 h-auto p-0 bg-transparent text-glass-white-high font-medium"
               />
             </div>
           </div>
 
           {/* Divider */}
-          <div className="h-12 w-px bg-heritage-warm-gold/20" />
+          <div className="h-12 w-px bg-glass-border" />
 
           {/* Section 3: Location */}
-          <div className="flex items-center gap-3 flex-1 px-5 py-4 rounded-full hover:bg-heritage-warm-gold/5 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-heritage-warm-gold/10 flex items-center justify-center flex-shrink-0">
-              <MapPin className="w-5 h-5 text-heritage-warm-gold" />
+          <div className="flex items-center gap-3 flex-1 px-5 py-4 rounded-full hover:bg-white/5 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-glass-gold/10 flex items-center justify-center flex-shrink-0">
+              <MapPin className="w-5 h-5 text-glass-gold" />
             </div>
             <div className="flex-1">
-              <label className="text-xs font-semibold text-heritage-maroon-text uppercase tracking-wider block mb-1">
+              <label className="text-xs font-semibold text-glass-white-low uppercase tracking-wider block mb-1">
                 Location
               </label>
               <Input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="border-0 focus-visible:ring-0 h-auto p-0 bg-transparent text-heritage-maroon-text font-medium"
+                className="border-0 focus-visible:ring-0 h-auto p-0 bg-transparent text-glass-white-high font-medium"
                 placeholder="Enter location"
-                aria-label="Enter location"
               />
             </div>
           </div>
@@ -107,35 +105,31 @@ const FloatingSearchBar = () => {
           {/* Circular Gold Search Button */}
           <Button
             onClick={handleSearch}
-            className="bg-heritage-warm-gold hover:bg-heritage-warm-gold/90 text-heritage-maroon-text rounded-full h-14 w-14 flex-shrink-0 shadow-lg hover:shadow-xl transition-all"
+            className="glass-button-gold rounded-full h-14 w-14 flex-shrink-0"
             size="icon"
-            aria-label="Search"
           >
-            <Search className="w-6 h-6" />
+            <Search className="w-6 h-6 text-glass-navy-dark" />
           </Button>
         </div>
 
         {/* Mobile Layout */}
-        <div className="flex flex-col gap-3 md:hidden p-2">
+        <div className="flex md:hidden flex-col gap-4 p-4">
           {/* Service Type */}
-          <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-4 border border-heritage-warm-gold/10">
-            <div className="w-10 h-10 rounded-full bg-heritage-warm-gold/10 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-heritage-warm-gold" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-glass-gold/10 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-glass-gold" />
             </div>
             <div className="flex-1">
-              <label className="text-xs font-semibold text-heritage-maroon-text uppercase tracking-wider block mb-1">
+              <label className="text-xs font-semibold text-glass-white-low uppercase tracking-wider block mb-1">
                 Service
               </label>
               <Select value={serviceType} onValueChange={setServiceType}>
-                <SelectTrigger 
-                  className="border-0 focus:ring-0 h-auto bg-transparent p-0 text-heritage-maroon-text font-medium"
-                  aria-label="Select service type"
-                >
+                <SelectTrigger className="border-0 focus:ring-0 h-auto bg-transparent p-0 text-glass-white-high font-medium">
                   <SelectValue placeholder="Choose service" />
                 </SelectTrigger>
-                <SelectContent className="bg-heritage-cream border-heritage-warm-gold/20">
+                <SelectContent className="glass-dropdown">
                   {serviceCategories.map((service) => (
-                    <SelectItem key={service.id} value={service.id} className="text-heritage-maroon-text">
+                    <SelectItem key={service.id} value={service.id} className="text-glass-white-high">
                       {service.name}
                     </SelectItem>
                   ))}
@@ -144,41 +138,43 @@ const FloatingSearchBar = () => {
             </div>
           </div>
 
+          <Separator className="bg-glass-border" />
+
           {/* Date */}
-          <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-4 border border-heritage-warm-gold/10">
-            <div className="w-10 h-10 rounded-full bg-heritage-warm-gold/10 flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-5 h-5 text-heritage-warm-gold" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-glass-gold/10 flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-5 h-5 text-glass-gold" />
             </div>
             <div className="flex-1">
-              <label className="text-xs font-semibold text-heritage-maroon-text uppercase tracking-wider block mb-1">
+              <label className="text-xs font-semibold text-glass-white-low uppercase tracking-wider block mb-1">
                 Date
               </label>
               <Input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="border-0 focus-visible:ring-0 h-auto p-0 bg-transparent text-heritage-maroon-text font-medium"
-                aria-label="Select event date"
+                className="border-0 focus-visible:ring-0 h-auto p-0 bg-transparent text-glass-white-high font-medium"
               />
             </div>
           </div>
 
+          <Separator className="bg-glass-border" />
+
           {/* Location */}
-          <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-4 border border-heritage-warm-gold/10">
-            <div className="w-10 h-10 rounded-full bg-heritage-warm-gold/10 flex items-center justify-center flex-shrink-0">
-              <MapPin className="w-5 h-5 text-heritage-warm-gold" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-glass-gold/10 flex items-center justify-center flex-shrink-0">
+              <MapPin className="w-5 h-5 text-glass-gold" />
             </div>
             <div className="flex-1">
-              <label className="text-xs font-semibold text-heritage-maroon-text uppercase tracking-wider block mb-1">
+              <label className="text-xs font-semibold text-glass-white-low uppercase tracking-wider block mb-1">
                 Location
               </label>
               <Input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="border-0 focus-visible:ring-0 h-auto p-0 bg-transparent text-heritage-maroon-text font-medium"
+                className="border-0 focus-visible:ring-0 h-auto p-0 bg-transparent text-glass-white-high font-medium"
                 placeholder="Enter location"
-                aria-label="Enter location"
               />
             </div>
           </div>
@@ -186,10 +182,10 @@ const FloatingSearchBar = () => {
           {/* Search Button */}
           <Button
             onClick={handleSearch}
-            className="bg-heritage-warm-gold hover:bg-heritage-warm-gold/90 text-heritage-maroon-text rounded-full h-14 font-semibold shadow-lg hover:shadow-xl transition-all"
+            className="w-full glass-button-gold font-semibold rounded-full shadow-lg"
           >
             <Search className="w-5 h-5 mr-2" />
-            Search
+            Search Services
           </Button>
         </div>
       </div>
